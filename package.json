@@ -13,19 +13,23 @@
     "clean": "rimraf .next out",
     "lint": "next lint",
     "check-types": "tsc --noEmit --pretty",
+    "format": "next lint --fix && prettier '**/*.{json,yaml}' --write --ignore-path .gitignore",
     "commit": "cz",
     "prepare": "husky install",
     "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@next/font": "^13.0.5",
+    "@rainbow-me/rainbowkit": "^0.8.1",
     "clsx": "^1.2.1",
+    "ethers": "^5.7.2",
     "next": "13.1.0",
     "next-seo": "^5.15.0",
     "next-sitemap": "^3.1.43",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwind-merge": "^1.8.0"
+    "tailwind-merge": "^1.8.0",
+    "wagmi": "^0.9.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",

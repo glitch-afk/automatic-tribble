@@ -1,3 +1,5 @@
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
 import { Meta } from '@/layout/Meta';
 import { Main } from '@/templates/Main';
 
@@ -11,6 +13,7 @@ export default function Home() {
       <h1 className="text-3xl font-bold leading-[1.1] tracking-tighter sm:text-5xl md:text-6xl">
         Fetcch Wallet
       </h1>
+      <ConnectButton />
     </Main>
   );
 }
