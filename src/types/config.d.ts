@@ -1,5 +1,3 @@
-import type { MainNavItem } from '.';
-
 export interface SiteConfig {
   name: string;
   title: string;
@@ -9,8 +7,4 @@ export interface SiteConfig {
     twitter: string;
     github: string;
   };
-}
-
-export interface LandingConfig {
-  mainNav: MainNavItem;
 }

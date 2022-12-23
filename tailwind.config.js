@@ -14,7 +14,9 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-inter)', ...fontFamily.sans],
       },
-      colors: {},
+      colors: {
+        card: '#F4F4F5',
+      },
     },
   },
   // eslint-disable-next-line global-require

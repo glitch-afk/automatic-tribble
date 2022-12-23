@@ -1,55 +1,27 @@
 import '../styles/globals.css';
-import '@rainbow-me/rainbowkit/styles.css';
 
 import { Inter as FontSans } from '@next/font/google';
-import {
-  getDefaultWallets,
-  midnightTheme,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
 import type { AppProps } from 'next/app';
-import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { mainnet, polygon } from 'wagmi/chains';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
+
+import WalletConnect from '@/lib/WalletConnect';
+import type { NextPageWithLayout } from '@/types';
 
 const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-inter',
 });
 
-const { chains, provider } = configureChains(
-  [mainnet, polygon],
-  [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string })]
-);
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
 
-const { connectors } = getDefaultWallets({
-  appName: 'Fetcch Wallet',
-  chains,
-});
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  provider,
-  connectors,
-});
-
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
   return (
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider
-        chains={chains}
-        modalSize="compact"
-        theme={midnightTheme({
-          ...midnightTheme.accentColors.orange,
-          borderRadius: 'medium',
-          overlayBlur: 'small',
-          fontStack: 'system',
-        })}
-      >
-        <main className={`${fontSans.variable} font-sans`}>
-          <Component {...pageProps} />
-        </main>
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <WalletConnect>
+      <main className={`${fontSans.variable} font-sans`}>
+        {getLayout(<Component {...pageProps} />)}
+      </main>
+    </WalletConnect>
   );
 }

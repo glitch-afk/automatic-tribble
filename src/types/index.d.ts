@@ -1,8 +1,6 @@
-export interface NavItem {
-  title: string;
-  href: string;
-  disabled: boolean;
-  icon?: any;
-}
+import type { NextPage } from 'next';
+import type { ReactElement, ReactNode } from 'react';
 
-export type MainNavItem = Pick<NavItem, 'title' | 'href' | 'disabled'>;
+export type NextPageWithLayout<P = {}> = NextPage<P> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
