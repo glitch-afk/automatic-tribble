@@ -57,7 +57,7 @@ const HomePage: NextPageWithLayout = () => {
           </div>
           <div className="text-center">
             <Link
-              href="/home"
+              href="/receive"
               className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white"
             >
               <Down className="h-5 w-5" />

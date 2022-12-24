@@ -33,13 +33,13 @@ const Home: NextPageWithLayout = () => {
       {isConnected ? (
         <>
           {address && (
-            <div className="mx-2 mt-5 mb-3 flex h-9 w-full items-center rounded-full bg-gray-200 md:mx-0 xl:mt-6">
-              <div className="truncate bg-center pl-4 text-xs text-gray-500 dark:text-gray-300 sm:text-sm">
+            <div className="mx-2 mt-5 mb-3 flex h-9 w-full items-center rounded-full bg-neutral-200 md:mx-0 xl:mt-6">
+              <div className="truncate bg-center pl-4 text-xs text-black sm:text-sm">
                 {address}
               </div>
               <div
                 title="Copy Address"
-                className="flex cursor-pointer items-center px-4 text-gray-500 transition hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                className="flex cursor-pointer items-center px-4 text-neutral-500 transition hover:text-black"
                 onClick={() => handleCopyToClipboard()}
               >
                 {copyButtonStatus ? (

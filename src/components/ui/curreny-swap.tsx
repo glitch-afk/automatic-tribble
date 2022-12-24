@@ -39,7 +39,7 @@ export default function CurrencySwap({
         </div>
         <div className="ml-3 flex flex-col items-start justify-center">
           <div className="flex">
-            <div className=" whitespace-nowrap text-sm font-semibold uppercase text-black dark:text-white">
+            <div className="whitespace-nowrap text-sm font-semibold uppercase text-black">
               {from}
             </div>
             <span className="ml-1 text-sm text-neutral-400">on {to}</span>
