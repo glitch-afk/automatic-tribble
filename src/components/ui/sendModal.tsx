@@ -5,7 +5,7 @@ import { useClickAway } from 'react-use';
 import { useLockBodyScroll } from '@/hooks/use-lock-body-scroll';
 
 import { Cross } from '../icons/cross';
-import { Loading } from '../icons/loading';
+import LoadingScreen from '../loading';
 
 interface ISendModalProps {
   isOpen: boolean;
@@ -46,10 +46,7 @@ const SendModal = ({ isOpen, setIsOpen }: ISendModalProps) => {
           >
             <div className="xs:w-[440px] container w-full min-w-[400px] rounded-lg bg-white text-sm">
               {loading ? (
-                <div className="flex h-44 flex-col items-center justify-center">
-                  <Loading className="mb-4 h-20 w-20 animate-spin" />
-                  <h3>Processing Transaction</h3>
-                </div>
+                <LoadingScreen isLoading={loading} setIsLoading={setLoading} />
               ) : (
                 <>
                   {/* send data */}
