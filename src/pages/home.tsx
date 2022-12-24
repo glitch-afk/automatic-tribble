@@ -28,13 +28,13 @@ const HomePage: NextPageWithLayout = () => {
           {/* wallets */}
           <div>
             <Link href="/home">
-              <div className="h-6 w-6 rounded-full bg-orange-600" />
+              <div className="h-6 w-6 rounded-full bg-gradient-to-b from-yellow-500 to-orange-600" />
             </Link>
             <span className="sr-only">Wallets</span>
           </div>
           {/* notifications */}
-          <Link href="/home">
-            <Bell />
+          <Link href="/notifications">
+            <Bell fill="black" />
           </Link>
         </div>
       </div>
