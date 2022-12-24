@@ -1,15 +1,13 @@
 import axios from 'axios';
 import { useState } from 'react';
 
-import { BACKEND_BASE_URL, SECRET_KEY } from '@/config';
-
 export const useGraphQL = (query: string, data: any) => {
   const [result, setResult] = useState<any>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(undefined);
 
   axios({
-    url: BACKEND_BASE_URL,
+    url: process.env.BACKEND_BASE_URL,
     method: 'POST',
     data: {
       query,
@@ -17,7 +15,7 @@ export const useGraphQL = (query: string, data: any) => {
     },
     headers: {
       'content-type': 'application/json',
-      'secret-key': SECRET_KEY,
+      'secret-key': process.env.SECRET_KEY,
     },
   })
     .then((res) => res.data)

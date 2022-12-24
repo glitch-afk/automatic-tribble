@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-import { BACKEND_BASE_URL, SECRET_KEY } from '@/config';
 import { request } from '@/utils/request';
 
 export interface WalletId {
@@ -67,7 +66,7 @@ export const findWalletId = async (id: string) => {
 export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
   try {
     const res = await axios({
-      url: BACKEND_BASE_URL,
+      url: process.env.BACKEND_BASE_URL,
       method: 'POST',
       data: {
         query: `mutation UploadAndIndexWalletId($walletId: WalletIdCreateInput!) {
@@ -108,7 +107,7 @@ export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
       },
       headers: {
         'content-type': 'application/json',
-        'secret-key': SECRET_KEY,
+        'secret-key': process.env.SECRET_KEY,
       },
     });
 
