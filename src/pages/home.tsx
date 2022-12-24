@@ -39,21 +39,30 @@ const HomePage: NextPageWithLayout = () => {
         {/* send - receive - request */}
         <div className="mt-6 flex w-1/2 items-center justify-between">
           <div className="text-center">
-            <div className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white">
-              <Down />
-            </div>
+            <Link
+              href="/send"
+              className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white"
+            >
+              <Up />
+            </Link>
             <span>Send</span>
           </div>
           <div className="text-center">
-            <div className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white">
-              <Up />
-            </div>
+            <Link
+              href="/"
+              className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white"
+            >
+              <Down />
+            </Link>
             <span>Receive</span>
           </div>
           <div className="text-center">
-            <div className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white">
+            <Link
+              href="/"
+              className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white"
+            >
               <UpDown />
-            </div>
+            </Link>
             <span>Request</span>
           </div>
         </div>
