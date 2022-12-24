@@ -33,7 +33,7 @@ const index = () => {
                   {result[keys]?.map((res) => (
                     <div className="mb-3">
                       <CurrencySwap
-                        from={res.tokenTicker as any}
+                        from={res.tokenTicker.substring(0, 8) as any}
                         to="ETH"
                         balance={res.balance as string}
                         usdBalance={res.balanceUsd as string}
@@ -47,39 +47,6 @@ const index = () => {
           })}
         </>
       }
-      <TransactionsList>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-      </TransactionsList>
-      <TransactionsList>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-      </TransactionsList>
-      <TransactionsList>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-        <div className="mb-3">
-          <CurrencySwap from="USDC" to="ETH" />
-        </div>
-      </TransactionsList>
     </ul>
   );
 };

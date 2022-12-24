@@ -16,7 +16,7 @@ const HomePage: NextPageWithLayout = () => {
     <div className="flex flex-col">
       {/* header */}
       <div className="flex w-full items-center justify-between">
-        <h2 className="text-xl font-bold">💰 Wallet</h2>
+        <h2 className="text-xl font-bold">💰 Star</h2>
         {/* right side */}
         <div className="flex items-center space-x-2">
           {/* wallets */}
