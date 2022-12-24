@@ -1,8 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 
-import { Usdc } from '@/components/icons/coins/usdc';
-
 import { ChevDown } from '../icons/ChevDown';
 import { ChevUp } from '../icons/ChevUp';
 

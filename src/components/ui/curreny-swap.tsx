@@ -26,7 +26,7 @@ export default function CurrencySwap({ from, to, balance, usdBalance, image }: C
           {/* <div className="relative">{coinIcons[from]}</div> */}
           <img
             src={image}
-            onError={(e) =>
+            onError={(_e) =>
               (image =
                 "https://cdn.sstatic.net/Img/teams/teams-illo-free-sidebar-promo.svg?v=47faa659a05e")
             }

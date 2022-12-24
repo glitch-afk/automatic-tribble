@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import SelectToken from '@/components/token-select';
@@ -14,7 +14,7 @@ const SendPage: NextPageWithLayout = () => {
   const [showModal, setShowModal] = useState(false);
   
   const { balances } = useAppContext();
-  const [tokens, setTokens] = useState(Object.values(balances).flat());
+  const [tokens, _setTokens] = useState(Object.values(balances).flat());
 
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
 

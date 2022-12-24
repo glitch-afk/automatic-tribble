@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react';
-
 import CurrencySwap from '@/components/ui/curreny-swap';
 
 import TransactionsList from './list';
@@ -55,6 +53,8 @@ const index = () => {
                   ))}
                 </TransactionsList>
               );
+            } else {
+              return <></>
             }
           })}
         </>

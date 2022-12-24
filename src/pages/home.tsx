@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
-import React from 'react';
 
 import { Bell } from '@/components/icons/bell';
 import { Down } from '@/components/icons/down';
@@ -16,7 +15,7 @@ import { useAppContext } from '@/lib/store';
 const HomePage: NextPageWithLayout = () => {
   const { identity, usdBalance } = useAppContext()
   
-  const { result } = useBalances(identity);
+  const { result: _result } = useBalances(identity);
   
   return (
     <div className="flex flex-col">

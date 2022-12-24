@@ -6,8 +6,8 @@ import type { AppProps } from 'next/app';
 import WalletConnect from '@/lib/WalletConnect';
 import type { NextPageWithLayout } from '@/types';
 import { AppContext } from '@/lib/store';
-import { useEffect, useState } from 'react';
-import { Balance, useBalances } from '@/hooks/useBalances';
+import { useState } from 'react';
+import { Balance } from '@/hooks/useBalances';
 
 const fontSans = FontSans({
   subsets: ['latin'],

@@ -1,29 +1,9 @@
 import { Listbox, Transition } from '@headlessui/react';
-import React, { useState } from 'react';
-
-import { Bnb } from '@/components/icons/coins/bnb';
-import { Usdc } from '@/components/icons/coins/usdc';
 
 import { ChevDown } from './icons/ChevDown';
-import { useAppContext } from '@/lib/store';
 import { ethers } from 'ethers';
-import { randomUUID } from 'crypto';
 import { Balance } from '@/hooks/useBalances';
 
-const tokensList = [
-  {
-    id: 1,
-    name: 'USDC',
-    value: 'usdc',
-    icon: <Usdc />,
-  },
-  {
-    id: 2,
-    name: 'BNB',
-    value: 'bnb',
-    icon: <Bnb />,
-  },
-];
 
 const SelectToken = ({
   selectedToken,
