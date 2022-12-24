@@ -1,4 +1,4 @@
-import { useAccountModal, useConnectModal } from '@rainbow-me/rainbowkit';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
@@ -14,11 +14,9 @@ import type { NextPageWithLayout } from '@/types';
 
 const Home: NextPageWithLayout = () => {
   const { openConnectModal } = useConnectModal();
-  const { openAccountModal } = useAccountModal();
   const { isConnected, address } = useAccount();
   const [copyButtonStatus, setCopyButtonStatus] = useState(false);
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention, unused-imports/no-unused-vars
   const [_, copyToClipboard] = useCopyToClipboard();
   function handleCopyToClipboard() {
     copyToClipboard(address as string);
@@ -29,20 +27,13 @@ const Home: NextPageWithLayout = () => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
+    <div className="flex h-full w-full flex-col items-center justify-center">
       <Logo className="mb-4" />
       <h3>Making Crosschain seemless</h3>
-
       {isConnected ? (
         <>
           {address && (
             <div className="mx-2 mt-5 mb-3 flex h-9 w-full items-center rounded-full bg-gray-200 md:mx-0 xl:mt-6">
-              <button
-                className="inline-flex h-full shrink-0 grow-0 items-center rounded-full bg-gray-900 px-4 text-xs text-white sm:text-sm"
-                onClick={openAccountModal}
-              >
-                Change Account
-              </button>
               <div className="truncate bg-center pl-4 text-xs text-gray-500 dark:text-gray-300 sm:text-sm">
                 {address}
               </div>
@@ -68,7 +59,6 @@ const Home: NextPageWithLayout = () => {
         </>
       ) : (
         <>
-          {/* connect wallet button */}
           {openConnectModal && (
             <button
               onClick={openConnectModal}
@@ -78,7 +68,6 @@ const Home: NextPageWithLayout = () => {
               Connect Wallet
             </button>
           )}
-          {/* create wallet button */}
           <button className="w-full rounded-xl border border-black p-3 text-black">
             Create Wallet
           </button>

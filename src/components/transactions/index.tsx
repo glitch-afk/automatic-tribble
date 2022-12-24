@@ -1,22 +1,26 @@
-import CurrencySwap from '@/components/ui/curreny-swap';
-
-import TransactionsList from './list';
-import { useAppContext } from "@/lib/store";
+/* eslint-disable no-return-assign */
+/* eslint-disable react/jsx-key */
 import { ethers } from 'ethers';
 
-const index = () => {
-  const { balances: result } = useAppContext()
+import CurrencySwap from '@/components/ui/curreny-swap';
+import { useAppContext } from '@/lib/store';
+
+import TransactionsList from './list';
+
+const Index = () => {
+  const { balances: result } = useAppContext();
 
   return (
     <ul className="mx-auto mt-10 max-h-[480px] w-full overflow-y-scroll">
-      {result && 
+      {result ? (
         <>
-          {Object.keys(result).map(keys => {
+          {Object.keys(result).map((keys) => {
             // @ts-ignore
-            if(keys && result[keys] && result[keys]?.length > 0) {
-              
-              let totalUsdBalance = 0
-              result[keys]?.map(e => totalUsdBalance += Number(e.balanceUsd))
+            if (keys && result[keys] && result[keys]?.length > 0) {
+              let totalUsdBalance = 0;
+              result[keys]?.map(
+                (e) => (totalUsdBalance += Number(e.balanceUsd))
+              );
 
               return (
                 <TransactionsList
@@ -33,8 +37,8 @@ const index = () => {
                   // @ts-ignore
                   image={result[keys][0]?.tokenLogo}
                 >
-                  {result[keys]?.map((res) => (
-                    <div className="mb-3">
+                  {result[keys]?.map((res, index) => (
+                    <div className="mb-3" key={index}>
                       <CurrencySwap
                         from={res.tokenTicker.substring(0, 8) as any}
                         to="ETH"
@@ -53,14 +57,17 @@ const index = () => {
                   ))}
                 </TransactionsList>
               );
-            } else {
-              return <></>
             }
+            return <></>;
           })}
         </>
-      }
+      ) : (
+        <span className="flex w-full items-center justify-center text-center text-sm text-neutral-300">
+          Your Transactions will appear here
+        </span>
+      )}
     </ul>
   );
 };
 
-export default index;
+export default Index;

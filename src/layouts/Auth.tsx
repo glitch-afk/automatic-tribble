@@ -19,11 +19,11 @@ const appMenu = [
   },
   {
     icon: <Blocks />,
-    value: '/',
+    value: '/home',
   },
   {
     icon: <Bolt />,
-    value: '/',
+    value: '/home',
   },
 ];
 
@@ -45,12 +45,12 @@ function ActiveNavLink({ href, icon, className }: any) {
 const AuthLayout = ({ children, meta }: IAuthLayoutProps) => {
   const router = useRouter();
   return (
-    <div className="min-h-screen w-full bg-blue-900 antialiased">
+    <div className="flex min-h-screen w-full items-center justify-center bg-indigo-300 antialiased">
       {meta}
-      <div className="container pt-8 text-sm xl:pt-10">
-        <div className="xs:p-6 xs:pt-5 mx-auto w-full max-w-[390px] h-[844px] rounded-lg bg-card p-5 pt-4">
+      <div className="container text-sm">
+        <div className="xs:p-6 relative mx-auto max-h-fit min-h-[600px] w-full max-w-[390px] rounded-lg bg-card p-5">
           {children}
-          <div className="mx-auto mt-5 flex w-4/5 items-center justify-between text-gray-600 dark:text-gray-400">
+          <div className="absolute inset-x-0 bottom-6 mx-auto flex w-4/5 items-center justify-between">
             {appMenu.map((item, idx) => (
               <ActiveNavLink
                 key={idx}

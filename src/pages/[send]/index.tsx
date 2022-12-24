@@ -7,21 +7,23 @@ import SelectToken from '@/components/token-select';
 import SendModal from '@/components/ui/sendModal';
 import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
-import type { NextPageWithLayout } from '@/types';
 import { useAppContext } from '@/lib/store';
+import type { NextPageWithLayout } from '@/types';
 
 const SendPage: NextPageWithLayout = () => {
   const [showModal, setShowModal] = useState(false);
-  
+
   const { balances } = useAppContext();
-  const [tokens, _setTokens] = useState(Object.values(balances).flat());
+  const [tokens, _setTokens] = useState(
+    balances != null ? Object.values(balances).flat() : []
+  );
 
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
 
   return (
     <header>
       {/* back button */}
-      <div className="flex font-inter w-full items-center">
+      <div className="flex w-full items-center">
         <Link href="/home" className="z-20">
           <LeftIcon className="z-10 h-6 w-6" />
         </Link>
@@ -39,6 +41,7 @@ const SendPage: NextPageWithLayout = () => {
             name="wallet_id"
             id="wallet_id"
             placeholder="rohan@fetcch"
+            pattern="[-+]?[0-9]*[.,]?[0-9]+"
             className="mb-3 rounded-md border-none px-2 py-3 outline-none ring-0 placeholder:text-neutral-300 focus:outline-neutral-300 focus:ring-0"
           />
         </div>
@@ -50,12 +53,12 @@ const SendPage: NextPageWithLayout = () => {
         />
         {/* amount */}
         <div className="mb-4 mt-8 flex flex-col">
-          <label htmlFor="amount" className="mb-1">
-            Send to
-          </label>
-          <label htmlFor="amount" className="mb-1">
-            Max ${selectedToken?.balance}
-          </label>
+          <div className="mb-1 flex items-center justify-between">
+            <label htmlFor="amount">Send to</label>
+            <span className="text-xs text-neutral-500">
+              Max ${selectedToken?.balance ?? '0.00'}
+            </span>
+          </div>
           <input
             type="number"
             name="amount"

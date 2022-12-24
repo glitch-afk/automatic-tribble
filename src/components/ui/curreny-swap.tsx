@@ -18,7 +18,13 @@ interface CurrencySwapProps {
   image: string;
 }
 
-export default function CurrencySwap({ from, to, balance, usdBalance, image }: CurrencySwapProps) {
+export default function CurrencySwap({
+  from,
+  to,
+  balance,
+  usdBalance,
+  image,
+}: CurrencySwapProps) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex">
@@ -26,11 +32,8 @@ export default function CurrencySwap({ from, to, balance, usdBalance, image }: C
           {/* <div className="relative">{coinIcons[from]}</div> */}
           <img
             src={image}
-            onError={(_e) =>
-              (image =
-                "https://cdn.sstatic.net/Img/teams/teams-illo-free-sidebar-promo.svg?v=47faa659a05e")
-            }
-            className="w-6 h-6 z-50 rounded-xl bg-white"
+            alt="error_image"
+            className="z-50 h-6 w-6 rounded-xl bg-white"
           />
           <div className="-ml-2.5">{coinIcons[to]}</div>
         </div>

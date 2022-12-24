@@ -2,12 +2,12 @@ import '../styles/globals.css';
 
 import { Inter as FontSans } from '@next/font/google';
 import type { AppProps } from 'next/app';
+import { useState } from 'react';
 
+import type { Balance } from '@/hooks/useBalances';
+import { AppContext } from '@/lib/store';
 import WalletConnect from '@/lib/WalletConnect';
 import type { NextPageWithLayout } from '@/types';
-import { AppContext } from '@/lib/store';
-import { useState } from 'react';
-import { Balance } from '@/hooks/useBalances';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -25,8 +25,8 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [balances, setBalances] = useState<{
     [key: string]: Array<Balance>;
   }>({});
-  const [identity, setIdentity] = useState<string>('sa@12x')
-  const [usdBalance, setUsdBalance] = useState<string>("")
+  const [identity, setIdentity] = useState<string>('sa@12x');
+  const [usdBalance, setUsdBalance] = useState<string>('');
 
   const sharedState = {
     balances,
@@ -34,8 +34,8 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     usdBalance,
     setUsdBalance,
     identity,
-    setIdentity
-  }
+    setIdentity,
+  };
 
   return (
     <WalletConnect>

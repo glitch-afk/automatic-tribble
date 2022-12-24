@@ -1,5 +1,6 @@
-import { BACKEND_BASE_URL, SECRET_KEY } from '@/config'
-import axios from 'axios'
+import axios from 'axios';
+
+import { BACKEND_BASE_URL, SECRET_KEY } from '@/config';
 
 export const request = (query: string, variables: any) => {
   return axios({
@@ -7,11 +8,11 @@ export const request = (query: string, variables: any) => {
     url: BACKEND_BASE_URL,
     data: {
       query,
-      variables
+      variables,
     },
     headers: {
       'content-type': 'application/json',
-      'secret-key': SECRET_KEY
-    }
-  })
-}
+      'secret-key': SECRET_KEY,
+    },
+  });
+};

@@ -4,7 +4,17 @@ import React, { useState } from 'react';
 import { ChevDown } from '../icons/ChevDown';
 import { ChevUp } from '../icons/ChevUp';
 
-const TransactionsList = ({ tokenTicker, balance, image, children }: { tokenTicker: string, balance: string, image: string, children: React.ReactNode }) => {
+const TransactionsList = ({
+  tokenTicker,
+  balance,
+  image,
+  children,
+}: {
+  tokenTicker: string;
+  balance: string;
+  image: string;
+  children: React.ReactNode;
+}) => {
   const [isExpand, setIsExpand] = useState(false);
   return (
     <li className="mb-3">
@@ -12,7 +22,7 @@ const TransactionsList = ({ tokenTicker, balance, image, children }: { tokenTick
         <div className="flex items-center justify-between">
           {/* left side */}
           <div className="flex items-center">
-            <img src={image} alt="" className='w-5 h-5' />
+            <img src={image} alt="" className="h-5 w-5" />
             <span className="ml-1 text-sm font-semibold">{tokenTicker}</span>
           </div>
           {/* right side */}

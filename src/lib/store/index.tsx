@@ -1,5 +1,6 @@
-import { Balance } from "@/hooks/useBalances";
-import { createContext, useContext } from "react";
+import { createContext, useContext } from 'react';
+
+import type { Balance } from '@/hooks/useBalances';
 
 export interface ContextInterface {
   balances: {
@@ -12,13 +13,14 @@ export interface ContextInterface {
   setIdentity: Function;
 }
 
-export const AppContext = createContext<ContextInterface>({} as ContextInterface);
+export const AppContext = createContext<ContextInterface>(
+  {} as ContextInterface
+);
 
 export function useAppContext() {
-	return useContext(AppContext);
+  return useContext(AppContext);
 }
 
-
-export default function () {
-  return <div></div>;
-}
+// export default function () {
+//   return <div></div>;
+// }

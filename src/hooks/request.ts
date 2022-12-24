@@ -1,4 +1,4 @@
-import { request } from "@/utils/request";
+import { request } from '@/utils/request';
 
 interface CreatePaymentRequest {
   payee: string;
@@ -17,9 +17,11 @@ interface UpdatePaymentRequest {
   fromToken: string;
 }
 
-type PaymentRequest = CreatePaymentRequest & UpdatePaymentRequest
+type PaymentRequest = CreatePaymentRequest & UpdatePaymentRequest;
 
-export const createPaymentRequest = async (requestData: CreatePaymentRequest) => {
+export const createPaymentRequest = async (
+  requestData: CreatePaymentRequest
+) => {
   const res = await request(
     `mutation PaymentRequest($request: RequestCreateInput!) {
         paymentRequests(request: $request) {
@@ -54,16 +56,18 @@ export const createPaymentRequest = async (requestData: CreatePaymentRequest) =>
         }
     }`,
     {
-      request: requestData
+      request: requestData,
     }
   );
 
-  const data = await res.data
+  const data = await res.data;
 
   return data.data.paymentRequests;
 };
 
-export const updatePaymentRequest = async (requestData: UpdatePaymentRequest) => {
+export const updatePaymentRequest = async (
+  requestData: UpdatePaymentRequest
+) => {
   const res = await request(
     `mutation PaymentRequest($request: RequestCreateInput!) {
         paymentRequests(request: $request) {
@@ -149,4 +153,4 @@ export const getPaymentRequest = async (params: Partial<PaymentRequest>) => {
   const data = await res.data;
 
   return data.data.requests;
-}
+};

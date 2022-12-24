@@ -3,27 +3,28 @@ import type { ReactElement } from 'react';
 
 import { Bell } from '@/components/icons/bell';
 import { Down } from '@/components/icons/down';
+import { Logo } from '@/components/icons/logo';
 import { Up } from '@/components/icons/up';
 import { UpDown } from '@/components/icons/upDown';
 import Transactions from '@/components/transactions';
+import { useBalances } from '@/hooks/useBalances';
 import AuthLayout from '@/layouts/Auth';
 import { Meta } from '@/lib/Meta';
-import type { NextPageWithLayout } from '@/types';
-import { useBalances } from '@/hooks/useBalances';
 import { useAppContext } from '@/lib/store';
+import type { NextPageWithLayout } from '@/types';
 
 const HomePage: NextPageWithLayout = () => {
-  const { identity, usdBalance } = useAppContext()
-  
+  const { identity, usdBalance } = useAppContext();
+
   const { result: _result } = useBalances(identity);
-  
+
   return (
     <div className="flex flex-col">
       {/* header */}
       <div className="flex w-full items-center justify-between">
-        <h2 className="text-xl font-bold">💰 Star</h2>
+        <Logo className="w-14" />
         {/* right side */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-6">
           {/* wallets */}
           <div>
             <Link href="/home">
@@ -39,36 +40,38 @@ const HomePage: NextPageWithLayout = () => {
       </div>
       {/* header end */}
       <div className="mt-12 flex w-full flex-col items-center justify-center">
-        <h2 className="mb-1 text-2xl font-bold sm:text-3xl">$ {usdBalance}</h2>
+        <h2 className="mb-1 text-2xl font-bold sm:text-3xl">
+          {+usdBalance > 0 ? `$ ${usdBalance}` : '$ 0.00'}
+        </h2>
         <h3>mandar@backpack</h3>
         {/* send - receive - request */}
-        <div className="mt-6 flex w-1/2 items-center justify-between">
+        <div className="mt-8 flex w-2/3 items-center justify-between">
           <div className="text-center">
             <Link
               href="/send"
               className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white"
             >
-              <Up />
+              <Up className="h-5 w-5" />
             </Link>
-            <span>Send</span>
+            <span className="mt-1 text-xs">Send</span>
           </div>
           <div className="text-center">
             <Link
-              href="/"
+              href="/home"
               className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white"
             >
-              <Down />
+              <Down className="h-5 w-5" />
             </Link>
-            <span>Receive</span>
+            <span className="mt-1 text-xs">Receive</span>
           </div>
           <div className="text-center">
             <Link
-              href="/"
+              href="/home"
               className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white"
             >
-              <UpDown />
+              <UpDown className="h-5 w-5" />
             </Link>
-            <span>Request</span>
+            <span className="mt-1 text-xs">Request</span>
           </div>
         </div>
       </div>

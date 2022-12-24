@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import  { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useClickAway } from 'react-use';
 
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
