@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
-import React from 'react';
 
 import { Bell } from '@/components/icons/bell';
 import { Down } from '@/components/icons/down';
@@ -10,13 +9,19 @@ import Transactions from '@/components/transactions';
 import AuthLayout from '@/layouts/Auth';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
+import { useBalances } from '@/hooks/useBalances';
+import { useAppContext } from '@/lib/store';
 
 const HomePage: NextPageWithLayout = () => {
+  const { identity, usdBalance } = useAppContext()
+  
+  const { result: _result } = useBalances(identity);
+  
   return (
     <div className="flex flex-col">
       {/* header */}
       <div className="flex w-full items-center justify-between">
-        <h2 className="text-xl font-bold">💰 Wallet</h2>
+        <h2 className="text-xl font-bold">💰 Star</h2>
         {/* right side */}
         <div className="flex items-center space-x-2">
           {/* wallets */}
@@ -34,7 +39,7 @@ const HomePage: NextPageWithLayout = () => {
       </div>
       {/* header end */}
       <div className="mt-12 flex w-full flex-col items-center justify-center">
-        <h2 className="mb-1 text-2xl font-bold sm:text-3xl">$ 102.18</h2>
+        <h2 className="mb-1 text-2xl font-bold sm:text-3xl">$ {usdBalance}</h2>
         <h3>mandar@backpack</h3>
         {/* send - receive - request */}
         <div className="mt-6 flex w-1/2 items-center justify-between">

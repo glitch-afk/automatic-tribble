@@ -1,12 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 
-import { Usdc } from '@/components/icons/coins/usdc';
-
 import { ChevDown } from '../icons/ChevDown';
 import { ChevUp } from '../icons/ChevUp';
 
-const TransactionsList = ({ children }: { children: React.ReactNode }) => {
+const TransactionsList = ({ tokenTicker, balance, image, children }: { tokenTicker: string, balance: string, image: string, children: React.ReactNode }) => {
   const [isExpand, setIsExpand] = useState(false);
   return (
     <li className="mb-3">
@@ -14,12 +12,12 @@ const TransactionsList = ({ children }: { children: React.ReactNode }) => {
         <div className="flex items-center justify-between">
           {/* left side */}
           <div className="flex items-center">
-            <Usdc />
-            <span className="ml-1 text-sm font-semibold">USDC</span>
+            <img src={image} alt="" className='w-5 h-5' />
+            <span className="ml-1 text-sm font-semibold">{tokenTicker}</span>
           </div>
           {/* right side */}
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-semibold">$107.56</span>
+            <span className="text-sm font-semibold">${balance}</span>
             <div
               className="rounded-xl bg-card p-2"
               onClick={() => setIsExpand(!isExpand)}

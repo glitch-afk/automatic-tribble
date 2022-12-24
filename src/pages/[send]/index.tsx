@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import SelectToken from '@/components/token-select';
@@ -8,14 +8,20 @@ import SendModal from '@/components/ui/sendModal';
 import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
+import { useAppContext } from '@/lib/store';
 
 const SendPage: NextPageWithLayout = () => {
   const [showModal, setShowModal] = useState(false);
+  
+  const { balances } = useAppContext();
+  const [tokens, _setTokens] = useState(Object.values(balances).flat());
+
+  const [selectedToken, setSelectedToken] = useState(tokens[0]);
 
   return (
     <header>
       {/* back button */}
-      <div className="flex w-full items-center">
+      <div className="flex font-inter w-full items-center">
         <Link href="/home" className="z-20">
           <LeftIcon className="z-10 h-6 w-6" />
         </Link>
@@ -37,11 +43,18 @@ const SendPage: NextPageWithLayout = () => {
           />
         </div>
         {/* select token */}
-        <SelectToken />
+        <SelectToken
+          tokens={tokens}
+          setSelectedToken={setSelectedToken}
+          selectedToken={selectedToken}
+        />
         {/* amount */}
         <div className="mb-4 mt-8 flex flex-col">
           <label htmlFor="amount" className="mb-1">
             Send to
+          </label>
+          <label htmlFor="amount" className="mb-1">
+            Max ${selectedToken?.balance}
           </label>
           <input
             type="number"
