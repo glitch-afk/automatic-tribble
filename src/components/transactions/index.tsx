@@ -3,15 +3,11 @@ import React, { useEffect } from 'react';
 import CurrencySwap from '@/components/ui/curreny-swap';
 
 import TransactionsList from './list';
-import { useBalances } from '@/hooks/useBalances';
+import { useAppContext } from "@/lib/store";
+import { ethers } from 'ethers';
 
 const index = () => {
-  const { result, isLoading, error } = useBalances('sa@12x')
-
-  useEffect(
-    () => console.log(result, isLoading, error),
-    [result, isLoading, error]
-  );
+  const { balances: result } = useAppContext()
 
   return (
     <ul className="mx-auto mt-10 max-h-[480px] w-full overflow-y-scroll">
@@ -20,13 +16,22 @@ const index = () => {
           {Object.keys(result).map(keys => {
             // @ts-ignore
             if(keys && result[keys] && result[keys]?.length > 0) {
-              console.log(result, "result")
+              
+              let totalUsdBalance = 0
+              result[keys]?.map(e => totalUsdBalance += Number(e.balanceUsd))
+
               return (
                 <TransactionsList
                   // @ts-ignore
                   tokenTicker={result[keys][0]?.tokenTicker}
-                  // @ts-ignore
-                  balance={result[keys][0]?.balance}
+                  balance={ethers.utils
+                    .formatUnits(
+                      // @ts-ignore
+                      result[keys][0]?.balance as string,
+                      // @ts-ignore
+                      result[keys][0]?.tokenDecimal as number
+                    )
+                    .toString()}
                   // @ts-ignore
                   image={result[keys][0]?.tokenLogo}
                 >
@@ -35,7 +40,14 @@ const index = () => {
                       <CurrencySwap
                         from={res.tokenTicker.substring(0, 8) as any}
                         to="ETH"
-                        balance={res.balance as string}
+                        balance={ethers.utils
+                          .formatUnits(
+                            // @ts-ignore
+                            res?.balance as string,
+                            // @ts-ignore
+                            res?.tokenDecimal as number
+                          )
+                          .toString()}
                         usdBalance={res.balanceUsd as string}
                         image={res.tokenLogo as string}
                       />

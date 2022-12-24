@@ -10,8 +10,14 @@ import Transactions from '@/components/transactions';
 import AuthLayout from '@/layouts/Auth';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
+import { useBalances } from '@/hooks/useBalances';
+import { useAppContext } from '@/lib/store';
 
 const HomePage: NextPageWithLayout = () => {
+  const { identity, usdBalance } = useAppContext()
+  
+  const { result } = useBalances(identity);
+  
   return (
     <div className="flex flex-col">
       {/* header */}
@@ -34,7 +40,7 @@ const HomePage: NextPageWithLayout = () => {
       </div>
       {/* header end */}
       <div className="mt-12 flex w-full flex-col items-center justify-center">
-        <h2 className="mb-1 text-2xl font-bold sm:text-3xl">$ 102.18</h2>
+        <h2 className="mb-1 text-2xl font-bold sm:text-3xl">$ {usdBalance}</h2>
         <h3>mandar@backpack</h3>
         {/* send - receive - request */}
         <div className="mt-6 flex w-1/2 items-center justify-between">

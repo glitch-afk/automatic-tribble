@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react"
 import axios from 'axios'
 import { findWalletId } from "./user"
+import { useAppContext } from "@/lib/store";
 
 export interface Balance {
-  tokenName: string
-  tokenAddress: string
-  tokenLogo: string
-  tokenTicker: string
-  balance: string | number
-  balanceUsd: string | number
-  chain: string | number
+  tokenName: string;
+  tokenAddress: string;
+  tokenLogo: string;
+  tokenTicker: string;
+  balance: string | number;
+  balanceUsd: string | number;
+  chain: string | number;
+  tokenDecimal: number;
 }
 
 const API_KEY = 'ckey_ed497df39d654966875e01c195e'
@@ -21,13 +23,15 @@ export const getBalance = async (address: string, chain: string) => {
 }
 
 export const useBalances = (id: string) => {
-  const [result, setResult] = useState<{ [key: string]: Array<Balance> } | null>({});
+  const { balances, setBalances, setUsdBalance } = useAppContext()
+  
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<any>()
 
   const getBalances = async () => {
     try {
       let balances: { [key: string]: Array<Balance> } = {}
+      let usdBalance = 0
       
       const walletId = await findWalletId(id)
 
@@ -48,18 +52,23 @@ export const useBalances = (id: string) => {
                 const token = tokens[k];
                 
                 if(!balances[token.contract_ticker_symbol]) balances[token.contract_ticker_symbol] = []
-    
+                
+                usdBalance += token.quote ? Number(token.quote) : 0 ;
+
                 balances[token.contract_ticker_symbol]?.push({
                   tokenAddress: token.contract_address,
                   tokenTicker: token.contract_ticker_symbol,
                   tokenName: token.contract_name,
                   tokenLogo: token.logo_url,
+                  tokenDecimal: token.contract_decimals,
                   balance: token.balance,
                   balanceUsd: token.quote_rate,
                   chain: address.chain[j] as string
                 })
               }
-              setResult(balances)
+
+              setUsdBalance(usdBalance)
+              setBalances(balances)
               setIsLoading(false)
               setError(null)
             })
@@ -69,7 +78,7 @@ export const useBalances = (id: string) => {
   
     } catch (e) {
       console.log(e)
-      setResult(null)
+      setBalances(null);
       setIsLoading(false)
       setError(e)
     }
@@ -82,7 +91,7 @@ export const useBalances = (id: string) => {
   }, [])
 
   return {
-    result,
+    result: balances,
     isLoading,
     error
   }
