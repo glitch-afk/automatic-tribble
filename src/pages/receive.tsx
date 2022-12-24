@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { QRCodeSVG } from 'qrcode.react';
 import type { ReactElement } from 'react';
 import React, { useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
@@ -39,7 +40,9 @@ const ReceivePage: NextPageWithLayout = () => {
       </header>
       {/* qrcode */}
       <div className="mt-12 flex w-full flex-col items-center justify-center">
-        <div className="h-36 w-36 rounded-xl bg-neutral-400" />
+        <div className="h-36 w-36 rounded-xl">
+          <QRCodeSVG value="mandar@backpack" />
+        </div>
         <div className="mx-auto mt-5 mb-3 flex h-9 max-w-xs items-center rounded-full bg-neutral-200 md:mx-0 xl:mt-6">
           <div className="truncate bg-center pl-4 text-xs text-black  sm:text-sm">
             mandar@backpack
