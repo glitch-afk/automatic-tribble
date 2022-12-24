@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useClickAway } from 'react-use';
 
-import { useLockBodyScroll } from '@/hooks/use-lock-body-scroll';
+import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 
 import { Cross } from '../icons/cross';
 import LoadingScreen from '../loading';

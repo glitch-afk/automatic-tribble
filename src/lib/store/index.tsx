@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type { Balance } from '@/hooks/useBalances';
+import type { Balance } from '@/lib/hooks/useBalances';
 
 export interface ContextInterface {
   balances: {

@@ -4,7 +4,7 @@ import { Inter as FontSans } from '@next/font/google';
 import type { AppProps } from 'next/app';
 import { useState } from 'react';
 
-import type { Balance } from '@/hooks/useBalances';
+import type { Balance } from '@/lib/hooks/useBalances';
 import { AppContext } from '@/lib/store';
 import WalletConnect from '@/lib/WalletConnect';
 import type { NextPageWithLayout } from '@/types';

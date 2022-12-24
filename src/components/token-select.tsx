@@ -1,7 +1,7 @@
 import { Listbox, Transition } from '@headlessui/react';
 import { ethers } from 'ethers';
 
-import type { Balance } from '@/hooks/useBalances';
+import type { Balance } from '@/lib/hooks/useBalances';
 
 import { ChevDown } from './icons/ChevDown';
 
