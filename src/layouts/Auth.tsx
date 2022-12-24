@@ -45,12 +45,12 @@ function ActiveNavLink({ href, icon, className }: any) {
 const AuthLayout = ({ children, meta }: IAuthLayoutProps) => {
   const router = useRouter();
   return (
-    <div className="min-h-screen w-full bg-white antialiased">
+    <div className="min-h-screen w-full bg-black antialiased">
       {meta}
       <div className="container pt-8 text-sm xl:pt-10">
-        <div className="xs:p-6 xs:pt-5 mx-auto w-full max-w-lg rounded-lg bg-card p-5 pt-4">
+        <div className="xs:p-6 xs:pt-5 mx-auto w-full max-w-[390px] h-[844px] rounded-lg bg-card p-5 pt-4">
           {children}
-          <div className="mx-auto mt-20 flex w-4/5 items-center justify-between text-gray-600 dark:text-gray-400">
+          <div className="mx-auto mt-5 flex w-4/5 items-center justify-between text-gray-600 dark:text-gray-400">
             {appMenu.map((item, idx) => (
               <ActiveNavLink
                 key={idx}

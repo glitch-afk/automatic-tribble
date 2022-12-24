@@ -14,7 +14,7 @@ const index = () => {
   );
 
   return (
-    <ul className="mx-auto mt-10 max-h-60 w-full overflow-y-scroll">
+    <ul className="mx-auto mt-10 max-h-[480px] w-full overflow-y-scroll">
       {result && 
         <>
           {Object.keys(result).map(keys => {
@@ -22,21 +22,27 @@ const index = () => {
             if(keys && result[keys] && result[keys]?.length > 0) {
               console.log(result, "result")
               return (
-                // @ts-ignore
-                <TransactionsList tokenTicker={result[keys][0]?.tokenTicker} balance={result[keys][0]?.balance}>
-                  {result[keys]?.map(res => (
+                <TransactionsList
+                  // @ts-ignore
+                  tokenTicker={result[keys][0]?.tokenTicker}
+                  // @ts-ignore
+                  balance={result[keys][0]?.balance}
+                  // @ts-ignore
+                  image={result[keys][0]?.tokenLogo}
+                >
+                  {result[keys]?.map((res) => (
                     <div className="mb-3">
-                      <CurrencySwap from={res.tokenTicker as any} to="ETH" />
+                      <CurrencySwap
+                        from={res.tokenTicker as any}
+                        to="ETH"
+                        balance={res.balance as string}
+                        usdBalance={res.balanceUsd as string}
+                        image={res.tokenLogo as string}
+                      />
                     </div>
                   ))}
-                  <div className="mb-3">
-                    <CurrencySwap from="USDC" to="ETH" />
-                  </div>
-                  <div className="mb-3">
-                    <CurrencySwap from="USDC" to="ETH" />
-                  </div>
                 </TransactionsList>
-              )
+              );
             }
           })}
         </>

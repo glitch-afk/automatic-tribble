@@ -13,14 +13,25 @@ const coinIcons: Record<CoinList, JSX.Element> = {
 interface CurrencySwapProps {
   from: CoinList;
   to: CoinList;
+  balance: string;
+  usdBalance: string;
+  image: string;
 }
 
-export default function CurrencySwap({ from, to }: CurrencySwapProps) {
+export default function CurrencySwap({ from, to, balance, usdBalance, image }: CurrencySwapProps) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex">
         <div className="flex items-center">
-          <div className="relative">{coinIcons[from]}</div>
+          {/* <div className="relative">{coinIcons[from]}</div> */}
+          <img
+            src={image}
+            onError={(e) =>
+              (image =
+                "https://cdn.sstatic.net/Img/teams/teams-illo-free-sidebar-promo.svg?v=47faa659a05e")
+            }
+            className="w-6 h-6 z-50 rounded-xl bg-white"
+          />
           <div className="-ml-2.5">{coinIcons[to]}</div>
         </div>
         <div className="ml-3 flex flex-col items-start justify-center">
@@ -30,11 +41,13 @@ export default function CurrencySwap({ from, to }: CurrencySwapProps) {
             </div>
             <span className="ml-1 text-sm text-neutral-400">on {to}</span>
           </div>
-          <p className="text-neutral-600">35 {from}</p>
+          <p className="text-neutral-600">
+            ${balance} {from}
+          </p>
         </div>
       </div>
       {/* right side */}
-      <span className="text-lg font-semibold">$ 35.56</span>
+      <span className="text-lg font-semibold">${usdBalance}</span>
     </div>
   );
 }
