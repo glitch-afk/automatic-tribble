@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [balances, setBalances] = useState<{
     [key: string]: Array<Balance>;
   }>({});
-  const [identity, setIdentity] = useState<string>('sa@12x');
+  const [identity, setIdentity] = useState<string>('sa@fetcch');
   const [usdBalance, setUsdBalance] = useState<string>('');
 
   const sharedState = {

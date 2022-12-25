@@ -27,7 +27,7 @@ const TransactionsList = ({
           </div>
           {/* right side */}
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-semibold">${balance}</span>
+            <span className="text-sm font-semibold">{balance}</span>
             <div
               className="rounded-xl bg-card p-2"
               onClick={() => setIsExpand(!isExpand)}

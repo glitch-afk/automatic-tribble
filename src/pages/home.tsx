@@ -16,7 +16,7 @@ import type { NextPageWithLayout } from '@/types';
 const HomePage: NextPageWithLayout = () => {
   const { identity, usdBalance } = useAppContext();
 
-  const { result: _result } = useBalances(identity);
+  const { result: _result } = useBalances();
 
   return (
     <div className="flex flex-col">

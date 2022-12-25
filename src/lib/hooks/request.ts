@@ -19,6 +19,13 @@ interface UpdatePaymentRequest {
 
 type PaymentRequest = CreatePaymentRequest & UpdatePaymentRequest;
 
+export const fetcchChains: any = {
+  '1': '1',
+  '137': '2',
+  '56': '3',
+  '10': '4'
+}
+
 export const createPaymentRequest = async (
   requestData: CreatePaymentRequest
 ) => {
@@ -56,7 +63,10 @@ export const createPaymentRequest = async (
         }
     }`,
     {
-      request: requestData,
+      request: {
+        ...requestData,
+        chain: fetcchChains[requestData.chain]
+      },
     }
   );
 
@@ -111,9 +121,9 @@ export const updatePaymentRequest = async (
   return data.data.paymentRequests;
 };
 
-export const getPaymentRequest = async (params: Partial<PaymentRequest>) => {
+export const getPaymentRequest = async (params: any) => {
   const res = await request(
-    `mutation PaymentRequest($request: RequestWhereInput!) {
+    `query PaymentRequest($request: RequestWhereInput!) {
         requests(where: $request) {
             id
             payer {
@@ -146,7 +156,7 @@ export const getPaymentRequest = async (params: Partial<PaymentRequest>) => {
         }
     }`,
     {
-      where: params,
+      request: params,
     }
   );
 
@@ -154,3 +164,43 @@ export const getPaymentRequest = async (params: Partial<PaymentRequest>) => {
 
   return data.data.requests;
 };
+
+interface BuildTransactionParams {
+  payee?: string;
+  paymentRequestId?: string;
+  userConfig: {
+    fromId: string;
+    fromToken: string;
+    fromAddress: string;
+    fromChain: string;
+    amount: string;
+  };
+}
+
+export const buildTransaction = async (params: BuildTransactionParams) => {
+  const res = await request(
+    `query t($data: BuildTransactionInput) {
+        buildTransaction(data:$data){
+          transactionData
+          approvalTransaction
+          bridgeDetails {
+              tool
+              name
+              estAmount
+              toChain {
+                  name
+              }
+              gasFeesUsd
+              toToken
+          }
+        }
+      }`,
+    {
+      data: params,
+    }
+  );
+
+  const data = await res.data;
+
+  return data.data.buildTransaction;
+}

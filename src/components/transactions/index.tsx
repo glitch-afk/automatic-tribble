@@ -11,7 +11,7 @@ const Index = () => {
   const { balances: result } = useAppContext();
 
   return (
-    <ul className="mx-auto mt-10 max-h-[480px] w-full overflow-y-scroll">
+    <ul className="mx-auto mt-10 max-h-[400px] w-full overflow-y-scroll">
       {result ? (
         <>
           {Object.keys(result).map((keys) => {
@@ -26,14 +26,8 @@ const Index = () => {
                 <TransactionsList
                   // @ts-ignore
                   tokenTicker={result[keys][0]?.tokenTicker}
-                  balance={ethers.utils
-                    .formatUnits(
-                      // @ts-ignore
-                      result[keys][0]?.balance as string,
-                      // @ts-ignore
-                      result[keys][0]?.tokenDecimal as number
-                    )
-                    .toString()}
+                  // @ts-ignore
+                  balance={result[keys][0]?.balance as string}
                   // @ts-ignore
                   image={result[keys][0]?.tokenLogo}
                 >
@@ -42,14 +36,8 @@ const Index = () => {
                       <CurrencySwap
                         from={res.tokenTicker.substring(0, 8) as any}
                         to="ETH"
-                        balance={ethers.utils
-                          .formatUnits(
-                            // @ts-ignore
-                            res?.balance as string,
-                            // @ts-ignore
-                            res?.tokenDecimal as number
-                          )
-                          .toString()}
+                        // @ts-ignore
+                        balance={res?.balance as string}
                         usdBalance={res.balanceUsd as string}
                         image={res.tokenLogo as string}
                       />

@@ -8,11 +8,13 @@ import { Cross } from '../icons/cross';
 import LoadingScreen from '../loading';
 
 interface ISendModalProps {
+  txDetails?: any;
+  reviewDetails: any;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
 
-const SendModal = ({ isOpen, setIsOpen }: ISendModalProps) => {
+const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalProps) => {
   const [loading, setLoading] = useState(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
   useClickAway(modalContainerRef, () => {
@@ -61,7 +63,8 @@ const SendModal = ({ isOpen, setIsOpen }: ISendModalProps) => {
                     </div>
                     {/* amount */}
                     <span className="text-center text-2xl font-bold">
-                      0.5 USDC
+                      {reviewDetails.amount}{" "}
+                      {reviewDetails.selectedToken.tokenTicker}
                     </span>
                     {/* details */}
                     <div className="my-4 flex w-full flex-col space-y-2 rounded-xl border border-card p-2">
@@ -73,21 +76,27 @@ const SendModal = ({ isOpen, setIsOpen }: ISendModalProps) => {
                       {/* to details */}
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-neutral-500">To</h3>
-                        <span className="font-semibold">rohan@fetcch</span>
+                        <span className="font-semibold">
+                          {reviewDetails.payerId}
+                        </span>
                       </div>
                       {/* Network Details */}
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-neutral-500">
                           Network
                         </h3>
-                        <span className="font-semibold">Ethereum</span>
+                        <span className="font-semibold">
+                          {reviewDetails.selectedToken.chain}
+                        </span>
                       </div>
                       {/* Network Fee */}
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-neutral-500">
                           Netwrok Fee
                         </h3>
-                        <span className="font-semibold">0.089753 ETH</span>
+                        <span className="font-semibold">
+                          {txDetails?.bridgeDetails.gasFeesUsd}
+                        </span>
                       </div>
                       {/* Bridge Used */}
                       <div className="flex items-center justify-between">
@@ -95,7 +104,11 @@ const SendModal = ({ isOpen, setIsOpen }: ISendModalProps) => {
                           Bridge Used
                         </h3>
                         <span className="font-semibold">
-                          mandar@Bridge Name
+                          {txDetails?.bridgeDetails.name
+                            .charAt(0)
+                            .toUpperCase() +
+                            txDetails?.bridgeDetails.name
+                              .slice(1)}
                         </span>
                       </div>
                       {/* Speed */}

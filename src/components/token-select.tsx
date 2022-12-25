@@ -74,10 +74,7 @@ const SelectToken = ({
                           </span>
                         </div>
                         <span className="text-xs font-semibold">
-                          {ethers.utils.formatUnits(
-                            token.balance.toString(),
-                            token.tokenDecimal
-                          )}
+                            {token.balance.toString()}
                         </span>
                       </div>
                     )}
