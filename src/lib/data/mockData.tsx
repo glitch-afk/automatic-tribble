@@ -24,3 +24,18 @@ export const NotificationsData = [
     requestedBy: 'rohan@fetcch',
   },
 ];
+
+export const secretPhrase = [
+  'fan',
+  'house',
+  'flower',
+  'table',
+  'rail',
+  'yarn',
+  'number',
+  'festive',
+  'good',
+  'tree',
+  'vehicle',
+  'letter',
+];
