@@ -14,7 +14,7 @@ import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
 
 const HomePage: NextPageWithLayout = () => {
-  const { identity, usdBalance } = useAppContext();
+  const {  usdBalance } = useAppContext();
 
   const { result: _result } = useBalances();
 

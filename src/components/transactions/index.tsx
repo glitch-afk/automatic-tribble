@@ -1,6 +1,5 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable react/jsx-key */
-import { ethers } from 'ethers';
 
 import CurrencySwap from '@/components/ui/curreny-swap';
 import { useAppContext } from '@/lib/store';

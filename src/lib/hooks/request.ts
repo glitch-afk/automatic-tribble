@@ -17,7 +17,7 @@ interface UpdatePaymentRequest {
   fromToken: string;
 }
 
-type PaymentRequest = CreatePaymentRequest & UpdatePaymentRequest;
+// type PaymentRequest = CreatePaymentRequest & UpdatePaymentRequest;
 
 export const fetcchChains: any = {
   '1': '1',

@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import { ReactElement, useEffect, useState } from 'react';
-import React from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import { Wait } from '@/components/icons/wait';
 import NotificationItem from '@/components/ui/notification-item';
 import { ActionLayout } from '@/layouts/Action';
-import { NotificationsData } from '@/lib/data/mockData';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { getPaymentRequest } from '@/lib/hooks/request';

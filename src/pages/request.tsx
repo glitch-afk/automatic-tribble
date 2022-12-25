@@ -21,7 +21,7 @@ const RequestPage: NextPageWithLayout = () => {
     balances != null ? Object.values(balances).flat() : []
   );
 
-  const [isValid, setIsValid] = useState(true)
+  const [_isValid, setIsValid] = useState(true)
 
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const [payerId, setPayerId] = useState("")
