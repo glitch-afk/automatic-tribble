@@ -2,9 +2,9 @@ import '../styles/globals.css';
 
 import { Inter as FontSans } from '@next/font/google';
 import type { AppProps } from 'next/app';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import type { Balance } from '@/lib/hooks/useBalances';
+import { Balance, getBalances } from '@/lib/hooks/useBalances';
 import { AppContext } from '@/lib/store';
 import WalletConnect from '@/lib/WalletConnect';
 import type { NextPageWithLayout } from '@/types';
@@ -27,6 +27,16 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   }>({});
   const [identity, setIdentity] = useState<string>('sa@fetcch');
   const [usdBalance, setUsdBalance] = useState<string>('');
+
+  useEffect(() => {
+    getBalances(identity)
+      .then(res => {
+        if(res) {
+          setBalances(res?.balances)
+          setUsdBalance(res?.usdBalance.toFixed(2))
+        }
+      })
+  }, [])
 
   const sharedState = {
     balances,

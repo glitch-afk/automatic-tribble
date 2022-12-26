@@ -43,12 +43,18 @@ const RequestPage: NextPageWithLayout = () => {
     const paymentRequest = await createPaymentRequest({
       payee: "sa@fetcch",
       payer: payerId,
-      token: selectedToken?.tokenAddress as string,
+      token:
+        (selectedToken?.tokenAddress.toString() as string) ===
+        "0x0000000000000000000000000000000000001010"
+          ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          : (selectedToken?.tokenAddress.toString() as string),
       chain: selectedToken?.chain as string,
-      amount: ethers.utils.parseUnits(amount, selectedToken?.tokenDecimal).toString(),
+      amount: ethers.utils
+        .parseUnits(amount, selectedToken?.tokenDecimal)
+        .toString(),
       message: "YOYO",
-      label: "123"
-    })
+      label: "123",
+    });
 
     setLoading(false)
 

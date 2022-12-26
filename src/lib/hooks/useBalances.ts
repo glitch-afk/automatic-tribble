@@ -65,7 +65,11 @@ export const getBalances = async (id: string) => {
 
       for (let j = 0; j < address.chain.length; j++) {
         const res = await getBalanceOnApi(address.address, address.chain[j] as string)
-        const tokens = await res.data.assets
+        const data = await res.data
+
+        if(!data) continue
+
+        const tokens = data.assets
         for (let k = 0; k < tokens.length; k++) {
           const token = tokens[k];
           console.log(token);

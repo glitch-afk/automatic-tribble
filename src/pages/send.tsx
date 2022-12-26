@@ -51,8 +51,12 @@ const SendPage: NextPageWithLayout = () => {
       userConfig: {
         fromId: "sa@fetcch",
         fromAddress: "0x4e7f624C9f2dbc3bcf97D03E765142Dd46fe1C46",
-        fromChain: '1',
-        fromToken: selectedToken?.tokenAddress.toString() as string,
+        fromChain: "1",
+        fromToken:
+          (selectedToken?.tokenAddress.toString() as string) ===
+          "0x0000000000000000000000000000000000001010"
+            ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            : (selectedToken?.tokenAddress.toString() as string),
         amount: ethers.utils
           .parseUnits(amount, selectedToken?.tokenDecimal)
           .toString(),

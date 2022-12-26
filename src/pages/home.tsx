@@ -8,15 +8,12 @@ import { Up } from '@/components/icons/up';
 import { UpDown } from '@/components/icons/upDown';
 import Transactions from '@/components/transactions';
 import AuthLayout from '@/layouts/Auth';
-import { useBalances } from '@/lib/hooks/useBalances';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
 
 const HomePage: NextPageWithLayout = () => {
   const {  usdBalance } = useAppContext();
-
-  const { result: _result } = useBalances();
 
   return (
     <div className="flex flex-col">

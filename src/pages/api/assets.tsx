@@ -15,14 +15,18 @@ const getBalanceOnApi = async (address: string, chain: string) => {
 };
 
 const assets = async (req: NextApiRequest, res: NextApiResponse) => {
-  const params = req.query
-
-  const ress = await getBalanceOnApi(params.address as string, params.chain as string)
-  console.log(ress)
-  const data = await ress.data
-  console.log(data)
-
-  res.status(200).send(data)
+  try {
+    const params = req.query
+  
+    const ress = await getBalanceOnApi(params.address as string, params.chain as string)
+    console.log(ress)
+    const data = await ress.data
+    console.log(data)
+  
+    res.status(200).send(data)
+  } catch (e) {
+    res.status(200).send(null);
+  }
 }
 
 export default assets
