@@ -44,13 +44,15 @@ const SendPage: NextPageWithLayout = () => {
     else setIsValid(true);
   }, [amount, payerId]);
 
+  const { idData } = useAppContext()
+
   const sendDetails = async () => {  
     setLoading(true)
     const tx = await buildTransaction({
       payee: payerId,
       userConfig: {
-        fromId: "sa@fetcch",
-        fromAddress: "0x4e7f624C9f2dbc3bcf97D03E765142Dd46fe1C46",
+        fromId: idData?.id as string,
+        fromAddress: idData?.default.address as string,
         fromChain: "1",
         fromToken:
           (selectedToken?.tokenAddress.toString() as string) ===

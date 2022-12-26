@@ -1,3 +1,8 @@
+import { Bnb } from "@/components/icons/coins/bnb";
+import { Ethereum } from "@/components/icons/coins/ethereum";
+import { Polygon } from "@/components/icons/coins/polygon";
+import { Chain } from "@/types";
+
 export const NotificationsData = [
   {
     amount: '20 MATIC',
@@ -38,4 +43,31 @@ export const secretPhrase = [
   'tree',
   'vehicle',
   'letter',
+];
+
+export const chainsList: Chain[] = [
+  {
+    id: 1,
+    chainId: 1,
+    name: "Ethereum Mainnet",
+    logo: Ethereum,
+    blockExplorer: "https://etherscan.io",
+    selected: false,
+  },
+  {
+    id: 2,
+    chainId: 137,
+    name: "Polygon Mainnet",
+    logo: Polygon,
+    blockExplorer: "https://polygonscan.io",
+    selected: false,
+  },
+  {
+    id: 3,
+    chainId: 56,
+    name: "BSC Mainnet",
+    logo: Bnb,
+    blockExplorer: "https://bscscan.io",
+    selected: false,
+  },
 ];

@@ -16,7 +16,7 @@ interface IWalleConnectProps {
 
 const { chains, provider } = configureChains(
   [mainnet, polygon, polygonMumbai],
-  [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string })]
+  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string })]
 );
 
 const { connectors } = getDefaultWallets({

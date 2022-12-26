@@ -1,12 +1,15 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import React from 'react';
 
 import CreateWalletLayout from '@/layouts/create';
 import { Meta } from '@/lib/Meta';
+import { useAppContext } from '@/lib/store';
 
 // use loading screen from components if needed
 const CreatePassword = () => {
+  // const { identity, addresses, chains } = useAppContext()
+  
   return (
     <div className="mt-12 flex w-full flex-col space-y-2">
       <h2 className="text-xl font-semibold">Create a Password</h2>

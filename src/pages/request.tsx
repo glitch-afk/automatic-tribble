@@ -27,6 +27,8 @@ const RequestPage: NextPageWithLayout = () => {
   const [payerId, setPayerId] = useState("")
   const [amount, setAmount] = useState("")
 
+  const { idData } = useAppContext()
+
   useEffect(() => {
     console.log(
       amount,
@@ -41,7 +43,7 @@ const RequestPage: NextPageWithLayout = () => {
     setLoading(true)
 
     const paymentRequest = await createPaymentRequest({
-      payee: "sa@fetcch",
+      payee: idData?.id as string,
       payer: payerId,
       token:
         (selectedToken?.tokenAddress.toString() as string) ===

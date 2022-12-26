@@ -13,7 +13,8 @@ import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
 
 const HomePage: NextPageWithLayout = () => {
-  const {  usdBalance } = useAppContext();
+  const {  usdBalance, idData } = useAppContext();
+  console.log(idData)
 
   return (
     <div className="flex flex-col">
@@ -40,7 +41,7 @@ const HomePage: NextPageWithLayout = () => {
         <h2 className="mb-1 text-2xl font-bold sm:text-3xl">
           {+usdBalance > 0 ? `$ ${usdBalance}` : '$ 0.00'}
         </h2>
-        <h3>mandar@backpack</h3>
+        <h3>{idData?.id}</h3>
         {/* send - receive - request */}
         <div className="mt-8 flex w-2/3 items-center justify-between">
           <div className="text-center">

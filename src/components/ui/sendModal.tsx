@@ -6,6 +6,7 @@ import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 
 import { Cross } from '../icons/cross';
 import LoadingScreen from '../loading';
+import { useAppContext } from '@/lib/store';
 
 interface ISendModalProps {
   txDetails?: any;
@@ -21,6 +22,8 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
     setIsOpen(false);
   });
   useLockBodyScroll(isOpen);
+
+  const { idData } = useAppContext()
 
   return (
     <AnimatePresence>
@@ -71,7 +74,7 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
                       {/* from */}
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-neutral-500">From</h3>
-                        <span className="font-semibold">mandar@backpack</span>
+                        <span className="font-semibold">{idData?.id}</span>
                       </div>
                       {/* to details */}
                       <div className="flex items-center justify-between">
@@ -95,7 +98,7 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
                           Netwrok Fee
                         </h3>
                         <span className="font-semibold">
-                          {txDetails?.bridgeDetails.gasFeesUsd}
+                          {txDetails?.bridgeDetails?.gasFeesUsd}
                         </span>
                       </div>
                       {/* Bridge Used */}
@@ -104,10 +107,10 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
                           Bridge Used
                         </h3>
                         <span className="font-semibold">
-                          {txDetails?.bridgeDetails.name
+                          {txDetails?.bridgeDetails?.name
                             .charAt(0)
                             .toUpperCase() +
-                            txDetails?.bridgeDetails.name
+                            txDetails?.bridgeDetails?.name
                               .slice(1)}
                         </span>
                       </div>

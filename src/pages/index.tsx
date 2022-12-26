@@ -51,7 +51,7 @@ const Home: NextPageWithLayout = () => {
             </div>
           )}
           <Link
-            href="/home"
+            href="/create/"
             className="w-full rounded-md bg-black p-3 text-center text-white"
           >
             Continue
