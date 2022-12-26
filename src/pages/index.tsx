@@ -68,9 +68,12 @@ const Home: NextPageWithLayout = () => {
               Connect Wallet
             </button>
           )}
-          <button className="w-full rounded-xl border border-black p-3 text-black">
+          <Link
+            href="/create"
+            className="w-full rounded-xl border border-black p-3 text-center text-black"
+          >
             Create Wallet
-          </button>
+          </Link>
         </>
       )}
     </div>

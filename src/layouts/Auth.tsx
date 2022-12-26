@@ -19,11 +19,11 @@ const appMenu = [
   },
   {
     icon: <Blocks />,
-    value: '/home',
+    value: '/',
   },
   {
     icon: <Bolt />,
-    value: '/home',
+    value: '/recent',
   },
 ];
 
