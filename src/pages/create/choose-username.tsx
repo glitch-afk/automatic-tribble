@@ -1,9 +1,8 @@
-import Link from 'next/link';
 import { ReactElement, useState } from 'react';
 
 import CreateWalletLayout from '@/layouts/create';
 import { Meta } from '@/lib/Meta';
-import type { Address, NextPageWithLayout } from '@/types';
+import type { NextPageWithLayout } from '@/types';
 import { useAppContext } from '@/lib/store';
 import { createWalletId, generateMessage, WalletId } from '@/lib/hooks/user';
 import { ethers } from 'ethers';

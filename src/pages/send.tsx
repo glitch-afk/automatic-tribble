@@ -14,7 +14,6 @@ import { ethers } from 'ethers';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import LoadingScreen from '@/components/loading';
 import { useRouter } from 'next/router';
-import { tokensList } from '@/lib/data/mockData';
 
 const SendPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);

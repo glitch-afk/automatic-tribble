@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ReactElement, useEffect } from 'react';
+import { ReactElement } from 'react';
 
 import { Bell } from '@/components/icons/bell';
 import { Down } from '@/components/icons/down';

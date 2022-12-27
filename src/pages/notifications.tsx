@@ -8,7 +8,6 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { getPaymentRequest } from '@/lib/hooks/request';
-import { ethers } from 'ethers';
 import { useAppContext } from '@/lib/store';
 
 const NotificationsPage: NextPageWithLayout = () => {

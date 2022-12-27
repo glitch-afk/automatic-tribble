@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useClickAway, useLockBodyScroll } from 'react-use';
 
 import { Loading } from './icons/loading';

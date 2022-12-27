@@ -6,7 +6,6 @@ import { useCopyToClipboard } from 'react-use';
 import { Check } from '@/components/icons/check';
 import { Copy } from '@/components/icons/copy';
 import CreateWalletLayout from '@/layouts/create';
-import { secretPhrase } from '@/lib/data/mockData';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { ethers } from 'ethers';
@@ -32,7 +31,6 @@ const RecoveryPhrasePage: NextPageWithLayout = () => {
   
   const [copyButtonStatus, setCopyButtonStatus] = useState(false);
 
-  let secret_phrase = '';
 
   const [_, copyToClipboard] = useCopyToClipboard();
   function handleCopyToClipboard() {

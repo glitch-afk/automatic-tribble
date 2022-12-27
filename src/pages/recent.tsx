@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react';
-import React from 'react';
 
 import AuthLayout from '@/layouts/Auth';
 import { Meta } from '@/lib/Meta';

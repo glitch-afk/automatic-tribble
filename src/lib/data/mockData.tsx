@@ -3,7 +3,7 @@ import { Busd } from "@/components/icons/coins/busd";
 import { Ethereum } from "@/components/icons/coins/ethereum";
 import { Polygon } from "@/components/icons/coins/polygon";
 import { Usdc } from "@/components/icons/coins/usdc";
-import { Chain, Token } from "@/types";
+import { Chain } from "@/types";
 import { Balance } from "../hooks/useBalances";
 
 export const NotificationsData = [

@@ -1,10 +1,8 @@
 import Link from 'next/link';
-import { ReactElement, useEffect } from 'react';
-import React from 'react';
+import { ReactElement } from 'react';
 
 import CreateWalletLayout from '@/layouts/create';
 import { Meta } from '@/lib/Meta';
-import { useAppContext } from '@/lib/store';
 
 // use loading screen from components if needed
 const CreatePassword = () => {

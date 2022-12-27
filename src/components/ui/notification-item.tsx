@@ -2,7 +2,7 @@ import { getTokenDetail } from '@/lib/hooks/request';
 import { Balance } from '@/lib/hooks/useBalances';
 import { ethers } from 'ethers';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface INotificationItemProps {
   amount: string; // change the type as per api requirement

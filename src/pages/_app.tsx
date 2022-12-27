@@ -87,6 +87,8 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     if(!seedPHrase) return () => {}
 
     setSeedPhrase(seedPHrase.split(" "))
+    
+    return () => {};
   }, [])
 
   useEffect(() => {

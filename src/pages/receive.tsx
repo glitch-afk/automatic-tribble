@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 import type { ReactElement } from 'react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
 
 import { Check } from '@/components/icons/check';

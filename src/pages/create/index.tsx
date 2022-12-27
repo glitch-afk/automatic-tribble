@@ -3,7 +3,7 @@ import { ReactElement, useState } from 'react';
 
 import CreateWalletLayout from '@/layouts/create';
 import { Meta } from '@/lib/Meta';
-import type { Chain, NextPageWithLayout } from '@/types';
+import type { NextPageWithLayout } from '@/types';
 import { useAppContext } from '@/lib/store';
 import { Check } from '@/components/icons/check';
 import { useRouter } from 'next/router';
@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 const CreateWallet: NextPageWithLayout = () => {
   const { query } = useRouter()
 
-  const [connect, setConnect] = useState<boolean>(query.connect === 'true')
+  const [connect] = useState<boolean>(query.connect === 'true')
   
   const { chains, setChains } = useAppContext()
 
@@ -33,20 +33,6 @@ const CreateWallet: NextPageWithLayout = () => {
     setChains(shallowCopy);
   }
 
-  const removeChain = (chain: Chain) => {
-    setChains((chains: any) => {
-      let shallowCopy = [...chains];
-
-      const found = shallowCopy.findIndex((c: any) => c.id === chain.id);
-
-      if (found > 0) {
-        delete shallowCopy[found]
-      }
-
-      return shallowCopy;
-    })
-  }
-
   return (
     <div className="my-4 flex flex-col">
       <h2 className="text-xl font-semibold text-center">
@@ -58,7 +44,7 @@ const CreateWallet: NextPageWithLayout = () => {
           {/* single network 😿 like me */}
           {chains.map((chain, idx) => (
             <div
-              onClick={(e) => selectChain(idx)}
+              onClick={() => selectChain(idx)}
               className="relative cursor-pointer col-span-1 flex flex-col items-start justify-center space-y-3 rounded-xl bg-white p-2"
             >
               <chain.logo className="m-0 h-10 w-8" />
