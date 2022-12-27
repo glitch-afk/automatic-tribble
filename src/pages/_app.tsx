@@ -11,6 +11,7 @@ import type { Address, Chain, NextPageWithLayout } from '@/types';
 import { useAccount } from 'wagmi';
 import { chainsList } from '@/lib/data/mockData';
 import { findWalletId, WalletId } from '@/lib/hooks/user';
+import { getPaymentRequest } from '@/lib/hooks/request';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -34,6 +35,17 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [addresses, setAddresses] = useState<Array<Address>>([])
   const [chains, setChains] = useState<Array<Chain>>(chainsList);
   const [seedPhrase, setSeedPhrase] = useState<Array<string>>([])
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    getPaymentRequest({
+      payer: {
+        id: idData?.id,
+      },
+    }).then((res) => {
+      setRequests(res);
+    });
+  }, []);
 
   useEffect(() => {
     if(identity) {
@@ -132,7 +144,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     idData,
     setIdData,
     seedPhrase,
-    setSeedPhrase
+    setSeedPhrase,
+    requests,
+    setRequests
   };
 
   return (

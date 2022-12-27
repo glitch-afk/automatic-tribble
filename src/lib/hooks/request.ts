@@ -139,6 +139,9 @@ export const getPaymentRequest = async (params: any) => {
               id
               name
               chainId
+              explorers {
+                url
+              }
             }
             amount
             message
@@ -151,6 +154,9 @@ export const getPaymentRequest = async (params: any) => {
               id
               name
               chainId
+              explorers {
+                url
+              }
             }
             fromToken
             dstTransactionHash
