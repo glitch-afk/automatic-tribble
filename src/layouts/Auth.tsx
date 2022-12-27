@@ -50,7 +50,7 @@ const AuthLayout = ({ children, meta }: IAuthLayoutProps) => {
       <div className="container text-sm">
         <div className="xs:p-6 relative mx-auto max-h-fit min-h-[600px] w-full max-w-[390px] rounded-lg bg-card p-5">
           {children}
-          <div className="absolute inset-x-0 bottom-6 mx-auto flex w-4/5 items-center justify-between">
+          <div className="inset-x-0 bottom-6 mx-auto flex w-4/5 items-center justify-between">
             {appMenu.map((item, idx) => (
               <ActiveNavLink
                 key={idx}

@@ -1,16 +1,29 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
-import React from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import { Wait } from '@/components/icons/wait';
 import NotificationItem from '@/components/ui/notification-item';
 import { ActionLayout } from '@/layouts/Action';
-import { NotificationsData } from '@/lib/data/mockData';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
+import { getPaymentRequest } from '@/lib/hooks/request';
+import { ethers } from 'ethers';
 
 const NotificationsPage: NextPageWithLayout = () => {
+  const [requests, setRequests] = useState([])
+
+  useEffect(() => {
+    getPaymentRequest({
+      payer: {
+        id: "sa@fetcch",
+      },
+    }).then((res) => {
+      console.log(res);
+      setRequests(res);
+    });
+  }, [])
+  
   return (
     <div>
       <header className="flex w-full items-center">
@@ -26,12 +39,12 @@ const NotificationsPage: NextPageWithLayout = () => {
       {/* notification list */}
       <div className="mt-8 max-h-[500px] overflow-y-auto">
         <ul className=" flex w-full flex-col items-center justify-center space-y-3 rounded-xl">
-          {NotificationsData.length > 0 ? (
-            NotificationsData.map((notification, index) => (
+          {requests.length > 0 ? (
+            requests.map((notification: any, index) => (
               <NotificationItem
-                amount={notification.amount}
+                amount={ethers.utils.formatUnits(notification.amount, 18)}
                 key={index}
-                requestedBy={notification.requestedBy}
+                requestedBy={notification.payee.id}
               />
             ))
           ) : (

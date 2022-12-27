@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { useState } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
@@ -9,8 +9,15 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
+import { buildTransaction } from '@/lib/hooks/request';
+import { ethers } from 'ethers';
+import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
+import LoadingScreen from '@/components/loading';
 
 const SendPage: NextPageWithLayout = () => {
+  const [loading, setLoading] = useState(false);
+  useLockBodyScroll(loading);
+  
   const [showModal, setShowModal] = useState(false);
 
   const { balances } = useAppContext();
@@ -19,6 +26,51 @@ const SendPage: NextPageWithLayout = () => {
   );
 
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const [isValid, setIsValid] = useState(true);
+
+  const [payerId, setPayerId] = useState("");
+  const [amount, setAmount] = useState("");
+
+  const [transactionDetails, setTransactionDetails] = useState<any>()
+
+  useEffect(() => {
+    console.log(
+      amount,
+      selectedToken?.balance,
+      Number(amount) > Number(selectedToken?.balance)
+    );
+    if (!amount || Number(amount) > Number(selectedToken?.balance) || !payerId)
+      setIsValid(false);
+    else setIsValid(true);
+  }, [amount, payerId]);
+
+  const { idData } = useAppContext()
+
+  const sendDetails = async () => {  
+    setLoading(true)
+    const tx = await buildTransaction({
+      payee: payerId,
+      userConfig: {
+        fromId: idData?.id as string,
+        fromAddress: idData?.default.address as string,
+        fromChain: "1",
+        fromToken:
+          (selectedToken?.tokenAddress.toString() as string) ===
+          "0x0000000000000000000000000000000000001010"
+            ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            : (selectedToken?.tokenAddress.toString() as string),
+        amount: ethers.utils
+          .parseUnits(amount, selectedToken?.tokenDecimal)
+          .toString(),
+      },
+    });
+    setLoading(false);
+
+    console.log(tx)
+    setTransactionDetails(tx)
+
+    setShowModal(true)
+  }
 
   return (
     <div>
@@ -37,6 +89,8 @@ const SendPage: NextPageWithLayout = () => {
             Send to
           </label>
           <input
+            value={payerId}
+            onChange={(e) => setPayerId(e.target.value)}
             type="email"
             name="wallet_id"
             id="wallet_id"
@@ -55,11 +109,18 @@ const SendPage: NextPageWithLayout = () => {
         <div className="mb-4 mt-8 flex flex-col">
           <div className="mb-1 flex items-center justify-between">
             <label htmlFor="amount">Amount</label>
-            <span className="text-xs text-neutral-500">
-              Max ${selectedToken?.balance ?? '0.00'}
+            <span
+              onClick={() =>
+                setAmount(selectedToken?.balance.toString() as string)
+              }
+              className="cursor-pointer text-xs text-neutral-500"
+            >
+              Max ${selectedToken?.balance ?? "0.00"}
             </span>
           </div>
           <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
             type="number"
             name="amount"
             id="amount"
@@ -68,17 +129,38 @@ const SendPage: NextPageWithLayout = () => {
           />
         </div>
         {/* send button */}
-        <button
-          type="button"
-          className="w-full rounded-xl bg-black py-3 text-sm text-white"
-          onClick={() => setShowModal(true)}
-        >
-          Continue
-        </button>
+        {isValid && (
+          <button
+            type="button"
+            className="w-full rounded-xl bg-black py-3 text-sm text-white"
+            onClick={() => sendDetails()}
+          >
+            Continue
+          </button>
+        )}
+
+        {!isValid && (
+          <button
+            type="button"
+            className="w-full rounded-xl bg-red-400 py-3 text-sm text-black"
+          >
+            Invalid Details
+          </button>
+        )}
       </div>
 
       {/* modal */}
-      {showModal && <SendModal isOpen={showModal} setIsOpen={setShowModal} />}
+      {showModal && (
+        <SendModal
+          reviewDetails={{ payerId, amount, selectedToken }}
+          txDetails={transactionDetails}
+          isOpen={showModal}
+          setIsOpen={setShowModal}
+        />
+      )}
+      {loading && (
+        <LoadingScreen isLoading={loading} setIsLoading={setLoading} />
+      )}
     </div>
   );
 };

@@ -13,13 +13,16 @@ import { LeftIcon } from '@/components/icons/leftIcon';
 import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
+import { useAppContext } from '@/lib/store';
 
 const ReceivePage: NextPageWithLayout = () => {
+  const { idData } = useAppContext()
+
   const [copyButtonStatus, setCopyButtonStatus] = useState(false);
 
   const [_, copyToClipboard] = useCopyToClipboard();
   function handleCopyToClipboard() {
-    copyToClipboard('mandar@backpack'); // replace mandar@backpack with anything you want to be copied
+    copyToClipboard(idData?.id as string); // replace mandar@backpack with anything you want to be copied
     setCopyButtonStatus(true);
     setTimeout(() => {
       setCopyButtonStatus(copyButtonStatus);
@@ -45,7 +48,7 @@ const ReceivePage: NextPageWithLayout = () => {
         </div>
         <div className="mx-auto mt-5 mb-3 flex h-9 max-w-xs items-center rounded-full bg-neutral-200 md:mx-0 xl:mt-6">
           <div className="truncate bg-center pl-4 text-xs text-black  sm:text-sm">
-            mandar@backpack
+            {idData?.id}
           </div>
           <div
             title="Copy Address"

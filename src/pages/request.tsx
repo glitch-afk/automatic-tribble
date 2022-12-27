@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import React, { useState } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
@@ -10,6 +10,8 @@ import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
+import { createPaymentRequest } from '@/lib/hooks/request';
+import { ethers } from 'ethers';
 
 const RequestPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,48 @@ const RequestPage: NextPageWithLayout = () => {
     balances != null ? Object.values(balances).flat() : []
   );
 
+  const [_isValid, setIsValid] = useState(true)
+
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const [payerId, setPayerId] = useState("")
+  const [amount, setAmount] = useState("")
+
+  const { idData } = useAppContext()
+
+  useEffect(() => {
+    console.log(
+      amount,
+      selectedToken?.balance,
+      Number(amount) > Number(selectedToken?.balance)
+    );
+    if(!amount || Number(amount) > Number(selectedToken?.balance) || !payerId) setIsValid(false)
+    else setIsValid(true)
+  }, [amount, payerId])
+
+  const createRequest = async () => {
+    setLoading(true)
+
+    const paymentRequest = await createPaymentRequest({
+      payee: idData?.id as string,
+      payer: payerId,
+      token:
+        (selectedToken?.tokenAddress.toString() as string) ===
+        "0x0000000000000000000000000000000000001010"
+          ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          : (selectedToken?.tokenAddress.toString() as string),
+      chain: selectedToken?.chain as string,
+      amount: ethers.utils
+        .parseUnits(amount, selectedToken?.tokenDecimal)
+        .toString(),
+      message: "YOYO",
+      label: "123",
+    });
+
+    setLoading(false)
+
+    console.log(paymentRequest)
+  }
+
   return (
     <div>
       <header className="flex w-full items-center">
@@ -39,6 +82,8 @@ const RequestPage: NextPageWithLayout = () => {
             Request to
           </label>
           <input
+            value={payerId}
+            onChange={(e) => setPayerId(e.target.value)}
             type="email"
             name="wallet_id"
             id="wallet_id"
@@ -57,11 +102,18 @@ const RequestPage: NextPageWithLayout = () => {
         <div className="mb-4 mt-8 flex flex-col">
           <div className="mb-1 flex items-center justify-between">
             <label htmlFor="amount">Amount</label>
-            <span className="text-xs text-neutral-500">
-              Max ${selectedToken?.balance ?? '0.00'}
+            <span
+              onClick={() =>
+                setAmount(selectedToken?.balance.toString() ?? "0")
+              }
+              className="cursor-pointer text-xs text-neutral-500"
+            >
+              Max ${selectedToken?.balance ?? "0.00"}
             </span>
           </div>
           <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
             type="number"
             name="amount"
             id="amount"
@@ -70,13 +122,14 @@ const RequestPage: NextPageWithLayout = () => {
           />
         </div>
         {/* send button */}
-        <button
-          type="button"
-          className="w-full rounded-xl bg-black py-3 text-sm text-white"
-          onClick={() => setLoading(true)}
-        >
-          Request
-        </button>
+        
+          <button
+            type="button"
+            className="w-full rounded-xl bg-black py-3 text-sm text-white"
+            onClick={() => createRequest()}
+          >
+            Request
+          </button>
       </div>
       {loading && (
         <LoadingScreen isLoading={loading} setIsLoading={setLoading} />

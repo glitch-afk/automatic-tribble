@@ -1,6 +1,4 @@
 import { Listbox, Transition } from '@headlessui/react';
-import { ethers } from 'ethers';
-
 import type { Balance } from '@/lib/hooks/useBalances';
 
 import { ChevDown } from './icons/ChevDown';
@@ -74,10 +72,7 @@ const SelectToken = ({
                           </span>
                         </div>
                         <span className="text-xs font-semibold">
-                          {ethers.utils.formatUnits(
-                            token.balance.toString(),
-                            token.tokenDecimal
-                          )}
+                            {token.balance.toString()}
                         </span>
                       </div>
                     )}

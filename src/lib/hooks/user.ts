@@ -59,57 +59,104 @@ export const findWalletId = async (id: string) => {
   );
 
   const data = await res.data;
+  console.log(
+    data.data
+  );
 
   return data.data.walletIds.length > 0 ? data.data.walletIds[0] : undefined;
 };
 
+export const generateMessage = async (walletId: Partial<WalletId>) => {
+  try {
+
+    const res = await request(
+      `query A($id: WalletIdCreateInput!) {
+				generateMessage(id: $id) {
+					message
+					nonce
+					walletId {
+						id
+						provider {
+							id
+							delimiter
+						}
+						identifier
+						currentSignature
+						previousSignature
+						default {
+							address
+							chain {
+								id
+								name
+								chainId
+							}
+						}
+						others {
+							address
+							chain {
+								id
+								name
+								chainId
+							}
+						}
+					}
+					providerSignature
+				}
+			}
+`,
+      {id: walletId}
+    );
+
+    const data = await res.data
+
+    return data.data.generateMessage
+
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+    throw e;
+  }
+}
+
 export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
   try {
-    const res = await axios({
-      url: process.env.BACKEND_BASE_URL,
-      method: 'POST',
-      data: {
-        query: `mutation UploadAndIndexWalletId($walletId: WalletIdCreateInput!) {
-            uploadAndIndexWalletId(data: $walletId) {
-              id
-              walletId {
-                identifier
-                provider {
+    const res = await request(
+      `mutation UploadAndIndexWalletId($walletId: WalletIdCreateInput!) {
+          uploadAndIndexWalletId(data: $walletId) {
+            id
+            walletId {
+              identifier
+              provider {
+                id
+                delimiter
+              }
+              default {
+                address
+                chain {
                   id
-                  delimiter
-                }
-                default {
-                  address
-                  chain {
-                    id
-                    name
-                    chainId
-                  }
-                }
-                others {
-                  address
-                  chain {
-                    id
-                    name
-                    chainId
-                  }
+                  name
+                  chainId
                 }
               }
-              nonce
-              dataSourceTx {
-                txId
+              others {
+                address
+                chain {
+                  id
+                  name
+                  chainId
+                }
               }
             }
-          }`,
-        variables: {
-          walletId,
-        },
-      },
-      headers: {
-        'content-type': 'application/json',
-        'secret-key': process.env.SECRET_KEY,
-      },
-    });
+            nonce
+            dataSourceTx {
+              txId
+            }
+          }
+        }`,
+        {
+          walletId
+        }
+    );
 
     const data = await res.data;
 
