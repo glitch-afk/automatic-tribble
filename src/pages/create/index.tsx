@@ -1,16 +1,18 @@
 import Link from 'next/link';
-import { ReactElement, useEffect } from 'react';
-import React from 'react';
+import { ReactElement, useState } from 'react';
 
-import { Bnb } from '@/components/icons/coins/bnb';
-import { Ethereum } from '@/components/icons/coins/ethereum';
 import CreateWalletLayout from '@/layouts/create';
 import { Meta } from '@/lib/Meta';
 import type { Chain, NextPageWithLayout } from '@/types';
 import { useAppContext } from '@/lib/store';
 import { Check } from '@/components/icons/check';
+import { useRouter } from 'next/router';
 
 const CreateWallet: NextPageWithLayout = () => {
+  const { query } = useRouter()
+
+  const [connect, setConnect] = useState<boolean>(query.connect === 'true')
+  
   const { chains, setChains } = useAppContext()
 
   const selectChain = (idx: number) => {
@@ -73,7 +75,11 @@ const CreateWallet: NextPageWithLayout = () => {
           <div className="container absolute inset-x-0 bottom-4 w-full">
             <div className="flex w-full">
               <Link
-                href="/create/choose-username"
+                href={
+                  connect
+                    ? "/create/choose-username"
+                    : "/create/recovery-phrase"
+                }
                 className="w-full rounded-xl font-bold bg-black py-3 text-center text-sm text-white"
               >
                 Next
@@ -83,9 +89,7 @@ const CreateWallet: NextPageWithLayout = () => {
         ) : (
           <div className="container absolute inset-x-0 bottom-4 w-full">
             <div className="flex w-full">
-              <div
-                className="cursor-not-allowed w-full rounded-xl font-bold bg-black/40 py-3 text-center text-sm text-white"
-              >
+              <div className="cursor-not-allowed w-full rounded-xl font-bold bg-black/40 py-3 text-center text-sm text-white">
                 Next
               </div>
             </div>

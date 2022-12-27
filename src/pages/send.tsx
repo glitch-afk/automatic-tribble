@@ -9,15 +9,18 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
-import { buildTransaction } from '@/lib/hooks/request';
+import { buildTransaction, createPaymentRequest } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import LoadingScreen from '@/components/loading';
+import { useRouter } from 'next/router';
+import { tokensList } from '@/lib/data/mockData';
 
 const SendPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
   useLockBodyScroll(loading);
   
+  const [lockInput, setLockInput] = useState(false)
   const [showModal, setShowModal] = useState(false);
 
   const { balances } = useAppContext();
@@ -32,6 +35,24 @@ const SendPage: NextPageWithLayout = () => {
   const [amount, setAmount] = useState("");
 
   const [transactionDetails, setTransactionDetails] = useState<any>()
+
+  const { query } = useRouter();
+
+  useEffect(() => {
+    if (query) {
+      try {
+        setLockInput(true)
+        const request = JSON.parse(query.request as string);
+        const token = JSON.parse(query.token as string)
+  
+        setSelectedToken(token)
+        setPayerId(request.payer.id)
+        setAmount(request.amount)
+      } catch (e) {
+        setLockInput(false)
+      }
+    }
+  }, []);
 
   useEffect(() => {
     console.log(
@@ -48,12 +69,28 @@ const SendPage: NextPageWithLayout = () => {
 
   const sendDetails = async () => {  
     setLoading(true)
+    const paymentRequest = await createPaymentRequest({
+      amount: ethers.utils
+        .parseUnits(amount, selectedToken?.tokenDecimal)
+        .toString(),
+      token:
+        (selectedToken?.tokenAddress.toString() as string) ===
+        "0x0000000000000000000000000000000000001010"
+          ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          : (selectedToken?.tokenAddress.toString() as string),
+      chain: selectedToken?.chain.toString() as string,
+      payee: idData?.id as string,
+      payer: payerId,
+      message: "#1",
+      label: "#1"
+    });
+
     const tx = await buildTransaction({
-      payee: payerId,
+      paymentRequestId: paymentRequest.id,
       userConfig: {
         fromId: idData?.id as string,
         fromAddress: idData?.default.address as string,
-        fromChain: "1",
+        fromChain: selectedToken?.chain.toString() as string,
         fromToken:
           (selectedToken?.tokenAddress.toString() as string) ===
           "0x0000000000000000000000000000000000001010"
@@ -97,6 +134,7 @@ const SendPage: NextPageWithLayout = () => {
             placeholder="rohan@fetcch"
             pattern="[-+]?[0-9]*[.,]?[0-9]+"
             className="mb-3 rounded-md border-none px-2 py-3 outline-none ring-0 placeholder:text-neutral-300 focus:outline-neutral-300 focus:ring-0"
+            disabled={lockInput}
           />
         </div>
         {/* select token */}
@@ -104,6 +142,7 @@ const SendPage: NextPageWithLayout = () => {
           tokens={tokens}
           setSelectedToken={setSelectedToken}
           selectedToken={selectedToken}
+          lockInput={lockInput}
         />
         {/* amount */}
         <div className="mb-4 mt-8 flex flex-col">
@@ -126,6 +165,7 @@ const SendPage: NextPageWithLayout = () => {
             id="amount"
             placeholder="0.00"
             className="mb-3 rounded-md border-none px-2 py-3 outline-none ring-0 placeholder:text-neutral-300 focus:outline-neutral-300 focus:ring-0"
+            disabled={lockInput}
           />
         </div>
         {/* send button */}

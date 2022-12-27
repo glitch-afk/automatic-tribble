@@ -9,14 +9,17 @@ import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { getPaymentRequest } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
+import { useAppContext } from '@/lib/store';
 
 const NotificationsPage: NextPageWithLayout = () => {
+  const { idData } = useAppContext()
+  
   const [requests, setRequests] = useState([])
 
   useEffect(() => {
     getPaymentRequest({
       payer: {
-        id: "sa@fetcch",
+        id: idData?.id,
       },
     }).then((res) => {
       console.log(res);
@@ -42,7 +45,10 @@ const NotificationsPage: NextPageWithLayout = () => {
           {requests.length > 0 ? (
             requests.map((notification: any, index) => (
               <NotificationItem
-                amount={ethers.utils.formatUnits(notification.amount, 18)}
+                request={notification}
+                address={notification.token}
+                chain={notification.chain.id}
+                amount={notification.amount}
                 key={index}
                 requestedBy={notification.payee.id}
               />

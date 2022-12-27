@@ -19,6 +19,8 @@ export interface ContextInterface {
   setChains: Function;
   idData: WalletId | undefined;
   setIdData: Function;
+  seedPhrase: string[];
+  setSeedPhrase: Function;
 }
 
 export const AppContext = createContext<ContextInterface>(

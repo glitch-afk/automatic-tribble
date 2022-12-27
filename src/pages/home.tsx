@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 
 import { Bell } from '@/components/icons/bell';
 import { Down } from '@/components/icons/down';
@@ -14,7 +14,6 @@ import type { NextPageWithLayout } from '@/types';
 
 const HomePage: NextPageWithLayout = () => {
   const {  usdBalance, idData } = useAppContext();
-  console.log(idData)
 
   return (
     <div className="flex flex-col">

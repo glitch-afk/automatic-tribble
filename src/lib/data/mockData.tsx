@@ -1,7 +1,10 @@
 import { Bnb } from "@/components/icons/coins/bnb";
+import { Busd } from "@/components/icons/coins/busd";
 import { Ethereum } from "@/components/icons/coins/ethereum";
 import { Polygon } from "@/components/icons/coins/polygon";
-import { Chain } from "@/types";
+import { Usdc } from "@/components/icons/coins/usdc";
+import { Chain, Token } from "@/types";
+import { Balance } from "../hooks/useBalances";
 
 export const NotificationsData = [
   {
@@ -69,5 +72,56 @@ export const chainsList: Chain[] = [
     logo: Bnb,
     blockExplorer: "https://bscscan.io",
     selected: false,
+  },
+];
+
+export const tokensList: Partial<Balance>[] = [
+  {
+    tokenName: "USD Coin",
+    tokenTicker: "USDC",
+    tokenAddress: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    tokenLogo: Usdc,
+    tokenDecimal: 6,
+    chain: 1,
+  },
+  {
+    tokenName: "USD Coin",
+    tokenTicker: "USDC",
+    tokenAddress: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+    tokenLogo: Usdc,
+    tokenDecimal: 6,
+    chain: 2,
+  },
+  {
+    tokenName: "Binance USD",
+    tokenTicker: "BUSD",
+    tokenAddress: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+    tokenLogo: Busd,
+    tokenDecimal: 18,
+    chain: 3,
+  },
+  {
+    tokenName: "Ethereum",
+    tokenTicker: "ETH",
+    tokenAddress: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    tokenLogo: Ethereum,
+    tokenDecimal: 18,
+    chain: 1,
+  },
+  {
+    tokenName: "Matic",
+    tokenTicker: "MATIC",
+    tokenAddress: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    tokenLogo: Polygon,
+    tokenDecimal: 18,
+    chain: 2,
+  },
+  {
+    tokenName: "Binance",
+    tokenTicker: "BNB",
+    tokenAddress: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    tokenLogo: Bnb,
+    tokenDecimal: 18,
+    chain: 3,
   },
 ];

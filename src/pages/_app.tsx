@@ -28,21 +28,25 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [balances, setBalances] = useState<{
     [key: string]: Array<Balance>;
   }>({});
-  const [identity, setIdentity] = useState<string>('sa@fetcch');
+  const [identity, setIdentity] = useState<string>('');
   const [idData, setIdData] = useState<WalletId>()
   const [usdBalance, setUsdBalance] = useState<string>('');
   const [addresses, setAddresses] = useState<Array<Address>>([])
   const [chains, setChains] = useState<Array<Chain>>(chainsList);
+  const [seedPhrase, setSeedPhrase] = useState<Array<string>>([])
 
   useEffect(() => {
-    getBalances(`${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`).then(
-      (res) => {
-        if (res) {
-          setBalances(res?.balances);
-          setUsdBalance(res?.usdBalance.toFixed(2));
+    if(identity) {
+      getBalances(`${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`).then(
+        (res) => {
+          console.log(res)
+          if (res) {
+            setBalances(res?.balances);
+            setUsdBalance(res?.usdBalance.toFixed(2));
+          }
         }
-      }
-    );
+      );
+    }
   }, [identity])
 
   useEffect(() => {
@@ -51,27 +55,43 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   }, [])
 
   useEffect(() => {
-    localStorage.setItem("addresses", JSON.stringify(addresses))
+    if(addresses.length > 0) localStorage.setItem("addresses", JSON.stringify(addresses))
   }, [addresses])
 
   useEffect(() => {
     const identity = localStorage.getItem("identity") as string;
     console.log(identity)
-    setIdentity(identity);
+    setIdentity(identity.split("@")[0] as string);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("identity", identity);
+    if(identity) {
+      localStorage.setItem("identity", identity);
+    }
   }, [identity]);
 
   useEffect(() => {
-    findWalletId(
-      `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
-    ).then((data) => {
-      console.log(data);
-      setIdData(data);
-    });
+    if(identity) {
+      findWalletId(
+        `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
+      ).then((data) => {
+        console.log(data);
+        setIdData(data);
+      });
+    }
   }, [identity])
+
+  useEffect(() => {
+    const seedPHrase = localStorage.getItem("seedPhrase")
+
+    if(!seedPHrase) return () => {}
+
+    setSeedPhrase(seedPHrase.split(" "))
+  }, [])
+
+  useEffect(() => {
+    if(seedPhrase.length > 0) localStorage.setItem("seedPhrase", seedPhrase.join(" "))
+  }, [seedPhrase])
 
   const { address } = useAccount();
 
@@ -108,7 +128,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     chains,
     setChains,
     idData,
-    setIdData
+    setIdData,
+    seedPhrase,
+    setSeedPhrase
   };
 
   return (

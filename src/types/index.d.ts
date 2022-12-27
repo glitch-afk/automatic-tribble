@@ -19,3 +19,11 @@ export interface Chain {
   blockExplorer: string
   selected: boolean
 }
+
+export interface Token {
+  name: string;
+  address: string;
+  logo: any;
+  decimals: number;
+  chain: number;
+}

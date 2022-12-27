@@ -11,12 +11,13 @@ import { ethers } from 'ethers';
 export interface Balance {
   tokenName: string;
   tokenAddress: string;
-  tokenLogo: string;
+  tokenLogo: any;
   tokenTicker: string;
   balance: string | number;
   balanceUsd: string | number;
   chain: string | number;
   tokenDecimal: number;
+  usdPrice?: string | number
 }
 
 const API_KEY = 'ckey_ed497df39d654966875e01c195e';

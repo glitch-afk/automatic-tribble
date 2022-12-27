@@ -11,7 +11,7 @@ const Index = () => {
 
   return (
     <ul className="mx-auto mt-10 max-h-[400px] w-full overflow-y-scroll">
-      {result ? (
+      {result && Object.keys(result).length > 0 ? (
         <>
           {Object.keys(result).map((keys) => {
             // @ts-ignore

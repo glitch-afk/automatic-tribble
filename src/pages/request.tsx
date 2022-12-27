@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ReactElement, useEffect } from 'react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import LoadingScreen from '@/components/loading';
@@ -12,18 +12,20 @@ import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
 import { createPaymentRequest } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
+import { tokensList } from '@/lib/data/mockData';
+import { Balance } from '@/lib/hooks/useBalances';
 
 const RequestPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
   useLockBodyScroll(loading);
   const { balances } = useAppContext();
   const [tokens, _setTokens] = useState(
-    balances != null ? Object.values(balances).flat() : []
+    (balances != null ? Object.values(balances).flat() : [])
   );
 
   const [_isValid, setIsValid] = useState(true)
 
-  const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const [selectedToken, setSelectedToken] = useState(tokens[0] ? tokens[0] : tokensList[0]);
   const [payerId, setPayerId] = useState("")
   const [amount, setAmount] = useState("")
 
@@ -41,15 +43,18 @@ const RequestPage: NextPageWithLayout = () => {
 
   const createRequest = async () => {
     setLoading(true)
+    console.log(
+      ethers.utils.parseUnits(amount, selectedToken?.tokenDecimal).toString()
+    );
 
     const paymentRequest = await createPaymentRequest({
       payee: idData?.id as string,
       payer: payerId,
       token:
-        (selectedToken?.tokenAddress.toString() as string) ===
+        (selectedToken?.tokenAddress?.toString() as string) ===
         "0x0000000000000000000000000000000000001010"
           ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-          : (selectedToken?.tokenAddress.toString() as string),
+          : (selectedToken?.tokenAddress?.toString() as string),
       chain: selectedToken?.chain as string,
       amount: ethers.utils
         .parseUnits(amount, selectedToken?.tokenDecimal)
@@ -94,9 +99,10 @@ const RequestPage: NextPageWithLayout = () => {
         </div>
         {/* select token */}
         <SelectToken
-          tokens={tokens}
+          tokens={[...tokens, ...tokensList]}
           setSelectedToken={setSelectedToken}
-          selectedToken={selectedToken}
+          selectedToken={selectedToken as Balance}
+          lockInput={false}
         />
         {/* amount */}
         <div className="mb-4 mt-8 flex flex-col">
@@ -104,7 +110,7 @@ const RequestPage: NextPageWithLayout = () => {
             <label htmlFor="amount">Amount</label>
             <span
               onClick={() =>
-                setAmount(selectedToken?.balance.toString() ?? "0")
+                setAmount(selectedToken?.balance?.toString() ?? "0")
               }
               className="cursor-pointer text-xs text-neutral-500"
             >
@@ -122,14 +128,14 @@ const RequestPage: NextPageWithLayout = () => {
           />
         </div>
         {/* send button */}
-        
-          <button
-            type="button"
-            className="w-full rounded-xl bg-black py-3 text-sm text-white"
-            onClick={() => createRequest()}
-          >
-            Request
-          </button>
+
+        <button
+          type="button"
+          className="w-full rounded-xl bg-black py-3 text-sm text-white"
+          onClick={() => createRequest()}
+        >
+          Request
+        </button>
       </div>
       {loading && (
         <LoadingScreen isLoading={loading} setIsLoading={setLoading} />

@@ -1,4 +1,6 @@
 import { request } from '@/utils/request';
+import axios from 'axios';
+import { Balance } from './useBalances';
 
 interface CreatePaymentRequest {
   payee: string;
@@ -203,4 +205,26 @@ export const buildTransaction = async (params: BuildTransactionParams) => {
   const data = await res.data;
 
   return data.data.buildTransaction;
+}
+
+export const getTokenDetail = async (address: string, chain: string): Promise<Partial<Balance>> => {
+  const res = await axios({
+    url: `/api/tokens/`,
+    params: {
+      address,
+      chain
+    }
+  })
+
+  const data = (await res.data).data
+
+  return {
+    tokenAddress: data.id,
+    chain: chain,
+    tokenName: data.name,
+    tokenTicker: data.symbol,
+    tokenDecimal: data.decimals,
+    usdPrice: data.price,
+    tokenLogo: data.logo_url
+  }
 }
