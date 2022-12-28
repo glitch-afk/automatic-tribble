@@ -1,7 +1,8 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable react/jsx-key */
 
-import CurrencySwap from '@/components/ui/curreny-swap';
+import CurrencySwap, { CoinList } from '@/components/ui/curreny-swap';
+import { chainsList } from '@/lib/data/mockData';
 import { useAppContext } from '@/lib/store';
 
 import TransactionsList from './list';
@@ -34,7 +35,7 @@ const Index = () => {
                     <div className="mb-3" key={index}>
                       <CurrencySwap
                         from={res.tokenTicker.substring(0, 8) as any}
-                        to="ETH"
+                        to={chainsList.find(i => i.chainId.toString() === res.chain.toString())?.name as CoinList}
                         // @ts-ignore
                         balance={res?.balance as string}
                         usdBalance={res.balanceUsd as string}

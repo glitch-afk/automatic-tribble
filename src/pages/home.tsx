@@ -37,8 +37,8 @@ const HomePage: NextPageWithLayout = () => {
       </div>
       {/* header end */}
       <div className="mt-12 flex w-full flex-col items-center justify-center">
-        <h2 className="mb-1 text-2xl font-bold sm:text-3xl">
-          {+usdBalance > 0 ? `$ ${usdBalance}` : '$ 0.00'}
+        <h2 className="mb-1 text-4xl font-bold">
+          {+usdBalance > 0 ? `$${usdBalance}` : '$0.00'}
         </h2>
         <h3>{idData?.id}</h3>
         {/* send - receive - request */}

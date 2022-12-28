@@ -14,7 +14,6 @@ import type { NextPageWithLayout } from '@/types';
 import { useRouter } from 'next/router';
 import { useAppContext } from '@/lib/store';
 import { findWalletId } from '@/lib/hooks/user';
-import { ethers } from 'ethers';
 
 const Home: NextPageWithLayout = () => {
   const { openConnectModal } = useConnectModal();

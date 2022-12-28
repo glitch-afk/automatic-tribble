@@ -7,7 +7,7 @@ import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import { Cross } from '../icons/cross';
 import LoadingScreen from '../loading';
 import { useAppContext } from '@/lib/store';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { getTokenDetail } from '@/lib/hooks/request';
 
 interface ISendModalProps {
