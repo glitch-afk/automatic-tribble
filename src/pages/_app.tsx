@@ -40,7 +40,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     console.log(identity, "dsa")
     getPaymentRequest({
-      payer: {
+      payee: {
         id: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`,
       },
     }).then((res) => {

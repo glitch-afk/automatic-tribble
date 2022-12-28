@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import { Wait } from '@/components/icons/wait';
@@ -8,9 +8,22 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { useAppContext } from '@/lib/store';
+import { getPaymentRequest } from '@/lib/hooks/request';
 
 const NotificationsPage: NextPageWithLayout = () => {
-  const { requests } = useAppContext()  
+  const { requests, idData, setRequests } = useAppContext()  
+
+  useEffect(() => {
+    getPaymentRequest({
+      payee: {
+        id: idData?.id
+      },
+    }).then((res) => {
+      console.log(res, "dsa");
+      setRequests(res);
+    });
+  }, []);
+
   return (
     <div>
       <header className="flex w-full items-center">
