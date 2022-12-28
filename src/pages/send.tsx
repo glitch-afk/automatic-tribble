@@ -9,14 +9,19 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
-import { buildTransaction, createPaymentRequest } from '@/lib/hooks/request';
+import { buildTransaction } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import LoadingScreen from '@/components/loading';
 import { useRouter } from 'next/router';
+import ErrorScreen from '@/components/error';
+import SucessScreen from '@/components/success';
 
 const SendPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false)
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Transaction not executed")
   useLockBodyScroll(loading);
   
   const [lockInput, setLockInput] = useState(false)
@@ -68,44 +73,49 @@ const SendPage: NextPageWithLayout = () => {
 
   const sendDetails = async () => {  
     setLoading(true)
-    const paymentRequest = await createPaymentRequest({
-      amount: ethers.utils
-        .parseUnits(amount, selectedToken?.tokenDecimal)
-        .toString(),
-      token:
-        (selectedToken?.tokenAddress.toString() as string) ===
-        "0x0000000000000000000000000000000000001010"
-          ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-          : (selectedToken?.tokenAddress.toString() as string),
-      chain: selectedToken?.chain.toString() as string,
-      payee: payerId,
-      payer: idData?.id as string,
-      message: "#1",
-      label: "#1",
-    });
+    
+    try {
+      // const paymentRequest = await createPaymentRequest({
+      //   amount: ethers.utils
+      //     .parseUnits(amount, selectedToken?.tokenDecimal)
+      //     .toString(),
+      //   token:
+      //     (selectedToken?.tokenAddress.toString() as string) ===
+      //     "0x0000000000000000000000000000000000001010"
+      //       ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      //       : (selectedToken?.tokenAddress.toString() as string),
+      //   chain: selectedToken?.chain.toString() as string,
+      //   payee: payerId,
+      //   payer: idData?.id as string,
+      //   message: "#1",
+      //   label: "#1",
+      // });
+  
+      const tx = await buildTransaction({
+        payee: payerId,
+        userConfig: {
+          fromId: idData?.id as string,
+          fromAddress: idData?.default.address as string,
+          fromChain: selectedToken?.chain.toString() as string,
+          fromToken:
+            (selectedToken?.tokenAddress.toString() as string) ===
+            "0x0000000000000000000000000000000000001010"
+              ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+              : (selectedToken?.tokenAddress.toString() as string),
+          amount: ethers.utils
+            .parseUnits(amount, selectedToken?.tokenDecimal)
+            .toString(),
+        },
+      });
 
-    const tx = await buildTransaction({
-      paymentRequestId: paymentRequest.id,
-      userConfig: {
-        fromId: idData?.id as string,
-        fromAddress: idData?.default.address as string,
-        fromChain: selectedToken?.chain.toString() as string,
-        fromToken:
-          (selectedToken?.tokenAddress.toString() as string) ===
-          "0x0000000000000000000000000000000000001010"
-            ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-            : (selectedToken?.tokenAddress.toString() as string),
-        amount: ethers.utils
-          .parseUnits(amount, selectedToken?.tokenDecimal)
-          .toString(),
-      },
-    });
+      console.log(tx)
+      setTransactionDetails(tx)
+  
+      setShowModal(true)
+    } catch (e) {
+      setError(true)
+    }
     setLoading(false);
-
-    console.log(tx)
-    setTransactionDetails(tx)
-
-    setShowModal(true)
   }
 
   return (
@@ -195,10 +205,30 @@ const SendPage: NextPageWithLayout = () => {
           txDetails={transactionDetails}
           isOpen={showModal}
           setIsOpen={setShowModal}
+          isLoading={loading}
+          setIsLoading={setLoading}
+          error={error}
+          setError={setError}
+          setErrorMessage={setErrorMessage}
+          setSuccess={setSuccess}
         />
       )}
       {loading && (
         <LoadingScreen isLoading={loading} setIsLoading={setLoading} />
+      )}
+      {error && (
+        <ErrorScreen
+          message={errorMessage}
+          isLoading={error}
+          setIsLoading={setError}
+        />
+      )}
+      {success && (
+        <SucessScreen
+          message={"Successful transaction"}
+          isLoading={success}
+          setIsLoading={setSuccess}
+        />
       )}
     </div>
   );

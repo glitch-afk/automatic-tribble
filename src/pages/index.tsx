@@ -54,7 +54,9 @@ const Home: NextPageWithLayout = () => {
       setIdentity(id.identifier)
       const addresses = [id.default.address, id.others.map((o: any) => o.address)].flat()
       console.log(addresses, id, id.identifier);
-      setAddresses(addresses)
+      setAddresses(addresses.map(ad => ({ address: ad, type: 'injected' })))
+
+      router.push("/home/")
     }
   }
 

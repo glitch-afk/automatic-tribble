@@ -7,17 +7,25 @@ import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import { Cross } from '../icons/cross';
 import LoadingScreen from '../loading';
 import { useAppContext } from '@/lib/store';
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { getTokenDetail } from '@/lib/hooks/request';
+import { chainsList } from '@/lib/data/mockData';
+import { useSigner } from 'wagmi';
 
 interface ISendModalProps {
   txDetails?: any;
   reviewDetails: any;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
+  error: boolean;
+  setError: (error: boolean) => void;
+  setErrorMessage: (error: string) => void;
+  setSuccess: (success: boolean) => void;
 }
 
-const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalProps) => {
+const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen, setIsLoading, setError, setErrorMessage, setSuccess }: ISendModalProps) => {
   const [loading, setLoading] = useState(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
   const [ethPrice, setETHPrice] = useState(0)
@@ -38,6 +46,61 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
   useLockBodyScroll(isOpen);
 
   const { idData } = useAppContext()
+  const { data: signer } = useSigner()
+
+  const doTransaction = async () => {
+    try {
+      if(!signer) throw new Error("Signer not present")
+
+      setIsLoading(true)
+
+      if(txDetails.approvalTransaction) {
+        const approval = txDetails.approvalTransaction;
+        const contract = new ethers.Contract(
+          approval.tokenAddress,
+          [
+            {
+              constant: false,
+              inputs: [
+                {
+                  name: "_spender",
+                  type: "address",
+                },
+                {
+                  name: "_value",
+                  type: "uint256",
+                },
+              ],
+              name: "approve",
+              outputs: [
+                {
+                  name: "",
+                  type: "bool",
+                },
+              ],
+              payable: false,
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+          ],
+          signer
+        );
+        const _tx = await contract.approve(approval.to, approval.approvalAmount)
+        await _tx.wait()
+      }
+
+      const tx = await signer.sendTransaction(txDetails.transactionData)
+      console.log(tx)
+      setSuccess(true)
+      setIsLoading(false);
+    } catch (e: any) {
+      setIsLoading(false)
+      if(e.message.startsWith("Signer")) setErrorMessage(e.message)
+      else setErrorMessage("Transaction couldn't be executed")
+
+      setError(true)
+    }
+  }
 
   return (
     <AnimatePresence>
@@ -103,7 +166,13 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
                           Network
                         </h3>
                         <span className="font-semibold">
-                          {reviewDetails.selectedToken.chain}
+                          {
+                            chainsList.find(
+                              (i) =>
+                                i.chainId.toString() ===
+                                reviewDetails.selectedToken.chain.toString()
+                            )?.name
+                          }
                         </span>
                       </div>
                       {/* Network Fee */}
@@ -121,27 +190,40 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
                             txDetails.transactionData.gasLimit &&
                             ethPrice && (
                               <p>
-                                ${(BigNumber.from(
-                                  txDetails?.transactionData.gasLimit
-                                ).toNumber() *
+                                $
+                                {(
+                                  BigNumber.from(
+                                    txDetails?.transactionData.gasLimit
+                                  ).toNumber() *
                                   Number(ethPrice) *
-                                  0.000000001).toFixed(6)}
+                                  0.000000001
+                                ).toFixed(6)}
                               </p>
                             )}
                         </span>
                       </div>
-                      {/* Bridge Used */}
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-neutral-500">
-                          Bridge Used
+                          Need Approval
                         </h3>
                         <span className="font-semibold">
-                          {txDetails?.bridgeDetails?.name
-                            .charAt(0)
-                            .toUpperCase() +
-                            txDetails?.bridgeDetails?.name.slice(1)}
+                          {txDetails.approvalTransaction ? "Yes" : "No"}
                         </span>
                       </div>
+                      {/* Bridge Used */}
+                      {txDetails?.bridgeDetails && (
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-neutral-500">
+                            Bridge Used
+                          </h3>
+                          <span className="font-semibold">
+                            {txDetails?.bridgeDetails?.name
+                              .charAt(0)
+                              .toUpperCase() +
+                              txDetails?.bridgeDetails?.name.slice(1)}
+                          </span>
+                        </div>
+                      )}
                       {/* Speed */}
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-neutral-500">
@@ -154,7 +236,7 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
                     <button
                       type="button"
                       className="mb-4 w-full rounded-xl bg-black py-3 text-sm text-white"
-                      onClick={() => setLoading(true)}
+                      onClick={() => doTransaction()}
                     >
                       Send
                     </button>
