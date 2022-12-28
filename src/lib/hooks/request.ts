@@ -204,7 +204,13 @@ export const buildTransaction = async (params: BuildTransactionParams) => {
         }
       }`,
     {
-      data: params,
+      data: {
+        ...params,
+        userConfig: {
+          ...params.userConfig,
+          fromChain: fetcchChains[params.userConfig.fromChain]
+        }
+      },
     }
   );
 

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ReactElement, useEffect } from 'react';
 import { useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
-import { useAccount } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 
 import { Check } from '@/components/icons/check';
 import { Copy } from '@/components/icons/copy';
@@ -13,11 +13,15 @@ import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { useRouter } from 'next/router';
 import { useAppContext } from '@/lib/store';
+import { findWalletId } from '@/lib/hooks/user';
+import { ethers } from 'ethers';
 
 const Home: NextPageWithLayout = () => {
   const { openConnectModal } = useConnectModal();
   const { isConnected, address } = useAccount();
   const [copyButtonStatus, setCopyButtonStatus] = useState(false);
+
+  const { data: signer } = useSigner()
 
   const [_, copyToClipboard] = useCopyToClipboard();
   function handleCopyToClipboard() {
@@ -36,6 +40,24 @@ const Home: NextPageWithLayout = () => {
       router.push("/home");
     }
   }, []);
+
+  const { setIdData, setIdentity, setAddresses } = useAppContext()
+
+  const retrieve = async () => {
+    if(signer) {
+      const signature = await signer.signMessage('wagpay did this')
+
+      const id = await findWalletId({
+        signedMsg: signature
+      })
+
+      setIdData(id)
+      setIdentity(id.identifier)
+      const addresses = [id.default.address, id.others.map((o: any) => o.address)].flat()
+      console.log(addresses, id, id.identifier);
+      setAddresses(addresses)
+    }
+  }
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
@@ -61,12 +83,20 @@ const Home: NextPageWithLayout = () => {
               </div>
             </div>
           )}
-          <Link
-            href="/create/?connect=true"
-            className="w-full rounded-md bg-black p-3 text-center text-white"
-          >
-            Continue
-          </Link>
+          <div className="w-full flex flex-col justify-center items-center space-y-1">
+            <Link
+              href="/create/?connect=true"
+              className="w-full rounded-md bg-black p-3 text-center text-white"
+            >
+              Continue
+            </Link>
+            <div
+              onClick={() => retrieve()}
+              className="w-full rounded-md bg-black p-3 text-center text-white"
+            >
+              Retrieve
+            </div>
+          </div>
         </>
       ) : (
         <>

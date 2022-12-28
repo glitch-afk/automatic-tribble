@@ -89,7 +89,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     if(identity) {
       findWalletId(
-        `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
+        {id :`${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`}
       ).then((data) => {
         console.log(data);
         setIdData(data);

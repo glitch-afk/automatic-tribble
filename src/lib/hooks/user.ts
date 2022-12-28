@@ -17,10 +17,10 @@ export interface WalletId {
   previousSignature?: string;
 }
 
-export const findWalletId = async (id: string) => {
+export const findWalletId = async (where: any) => {
   const res = await request(
-    `query WalletId($id: String!) {
-      walletIds(where: { id: $id }) {
+    `query WalletId($where: WalletIdWhereInput!) {
+      walletIds(where: $where) {
         id
         identifier
         provider {
@@ -52,7 +52,7 @@ export const findWalletId = async (id: string) => {
       }
     }`,
     {
-      id,
+      where
     }
   );
 

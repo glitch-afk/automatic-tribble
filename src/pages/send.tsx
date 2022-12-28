@@ -78,10 +78,10 @@ const SendPage: NextPageWithLayout = () => {
           ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
           : (selectedToken?.tokenAddress.toString() as string),
       chain: selectedToken?.chain.toString() as string,
-      payee: idData?.id as string,
-      payer: payerId,
+      payee: payerId,
+      payer: idData?.id as string,
       message: "#1",
-      label: "#1"
+      label: "#1",
     });
 
     const tx = await buildTransaction({

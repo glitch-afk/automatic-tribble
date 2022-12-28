@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useClickAway } from 'react-use';
 
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
@@ -7,6 +7,8 @@ import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import { Cross } from '../icons/cross';
 import LoadingScreen from '../loading';
 import { useAppContext } from '@/lib/store';
+import { BigNumber, ethers } from 'ethers';
+import { getTokenDetail } from '@/lib/hooks/request';
 
 interface ISendModalProps {
   txDetails?: any;
@@ -18,6 +20,18 @@ interface ISendModalProps {
 const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalProps) => {
   const [loading, setLoading] = useState(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
+  const [ethPrice, setETHPrice] = useState(0)
+
+  useEffect(() => {
+    console.log(typeof(reviewDetails.selectedToken.chain));
+    getTokenDetail(
+      reviewDetails.selectedToken.chain === "137" ? "0x0000000000000000000000000000000000001010" : (reviewDetails.selectedToken.chain === "1" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"),
+      reviewDetails.selectedToken.chain
+    ).then((res) => {
+      setETHPrice(Number(res.usdPrice));
+    });
+  }, [])
+
   useClickAway(modalContainerRef, () => {
     setIsOpen(false);
   });
@@ -98,7 +112,22 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
                           Netwrok Fee
                         </h3>
                         <span className="font-semibold">
-                          {txDetails?.bridgeDetails?.gasFeesUsd}
+                          {txDetails && txDetails.bridgeDetails && (
+                            <p>${txDetails?.bridgeDetails?.gasFeesUsd}</p>
+                          )}
+                          {txDetails &&
+                            !txDetails.bridgeDetails &&
+                            txDetails.transactionData &&
+                            txDetails.transactionData.gasLimit &&
+                            ethPrice && (
+                              <p>
+                                ${(BigNumber.from(
+                                  txDetails?.transactionData.gasLimit
+                                ).toNumber() *
+                                  Number(ethPrice) *
+                                  0.000000001).toFixed(6)}
+                              </p>
+                            )}
                         </span>
                       </div>
                       {/* Bridge Used */}
@@ -110,8 +139,7 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen }: ISendModalPr
                           {txDetails?.bridgeDetails?.name
                             .charAt(0)
                             .toUpperCase() +
-                            txDetails?.bridgeDetails?.name
-                              .slice(1)}
+                            txDetails?.bridgeDetails?.name.slice(1)}
                         </span>
                       </div>
                       {/* Speed */}

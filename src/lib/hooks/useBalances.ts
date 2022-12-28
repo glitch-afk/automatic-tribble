@@ -42,7 +42,9 @@ export const getBalances = async (id: string) => {
     const balances: { [key: string]: Array<Balance> } = {};
     let usdBalance = 0;
 
-    const walletId = await findWalletId(id);
+    const walletId = await findWalletId({
+      id
+    });
     console.log(walletId);
 
     if (!walletId) throw new Error(`${id} doesn't exist`);
@@ -133,7 +135,9 @@ export const useBalances = () => {
       const balances: { [key: string]: Array<Balance> } = {};
       let usdBalance = 0;
 
-      const walletId = await findWalletId(id);
+      const walletId = await findWalletId({
+        id
+      });
       console.log(walletId)
 
       if (!walletId) throw new Error(`${id} doesn't exist`);
