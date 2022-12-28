@@ -38,14 +38,16 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
+    console.log(identity, "dsa")
     getPaymentRequest({
       payer: {
-        id: idData?.id,
+        id: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`,
       },
     }).then((res) => {
+      console.log(res, "dsa")
       setRequests(res);
     });
-  }, []);
+  }, [identity]);
 
   useEffect(() => {
     if(identity) {
@@ -63,17 +65,19 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   useEffect(() => {
     const _addresses = JSON.parse(localStorage.getItem("addresses") as string)
-    setAddresses(_addresses)
+    if(_addresses) setAddresses(_addresses)
   }, [])
 
   useEffect(() => {
-    if(addresses.length > 0) localStorage.setItem("addresses", JSON.stringify(addresses))
+    if(addresses && addresses.length > 0) localStorage.setItem("addresses", JSON.stringify(addresses))
   }, [addresses])
 
   useEffect(() => {
     const identity = localStorage.getItem("identity") as string;
+    if(!identity) return () => {}
     console.log(identity)
     setIdentity(identity.split("@")[0] as string);
+    return () => {};
   }, []);
 
   useEffect(() => {
