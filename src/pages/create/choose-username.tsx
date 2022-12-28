@@ -53,7 +53,7 @@ const ChooseUserName: NextPageWithLayout = () => {
       },
       others: addresses.map(address => ({
         address: address.address,
-        chain: chains.slice(1).map(i => Number(i.id))
+        chain: chains.slice(1).filter(i => i.selected).map(i => Number(i.id))
       })),
       currentSignature: ""
     };
