@@ -14,9 +14,13 @@ import { createPaymentRequest } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { tokensList } from '@/lib/data/mockData';
 import { Balance } from '@/lib/hooks/useBalances';
+import SucessScreen from '@/components/success';
+import ErrorScreen from '@/components/error';
 
 const RequestPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState(false);
   useLockBodyScroll(loading);
   const { balances } = useAppContext();
   const [tokens, _setTokens] = useState(
@@ -43,30 +47,45 @@ const RequestPage: NextPageWithLayout = () => {
 
   const createRequest = async () => {
     setLoading(true)
-    console.log(
-      ethers.utils.parseUnits(amount, selectedToken?.tokenDecimal).toString()
-    );
+    try {
+      await createPaymentRequest({
+        payee: idData?.id as string,
+        payer: payerId,
+        token:
+          (selectedToken?.tokenAddress?.toString() as string) ===
+          "0x0000000000000000000000000000000000001010"
+            ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            : (selectedToken?.tokenAddress?.toString() as string),
+        chain: selectedToken?.chain as string,
+        amount: ethers.utils
+          .parseUnits(amount, selectedToken?.tokenDecimal)
+          .toString(),
+        message: "YOYO",
+        label: "123",
+      });
 
-    const paymentRequest = await createPaymentRequest({
-      payee: idData?.id as string,
-      payer: payerId,
-      token:
-        (selectedToken?.tokenAddress?.toString() as string) ===
-        "0x0000000000000000000000000000000000001010"
-          ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-          : (selectedToken?.tokenAddress?.toString() as string),
-      chain: selectedToken?.chain as string,
-      amount: ethers.utils
-        .parseUnits(amount, selectedToken?.tokenDecimal)
-        .toString(),
-      message: "YOYO",
-      label: "123",
-    });
-
+      setSuccess(true)
+    } catch (e) {
+      setError(true)
+    }
     setLoading(false)
-
-    console.log(paymentRequest)
   }
+
+  useEffect(() => {
+    if(success) {
+      setTimeout(() => {
+        setSuccess(false)
+      }, 5000)
+    }
+  }, [success])
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+    }
+  }, [error]);
 
   return (
     <div>
@@ -139,6 +158,20 @@ const RequestPage: NextPageWithLayout = () => {
       </div>
       {loading && (
         <LoadingScreen isLoading={loading} setIsLoading={setLoading} />
+      )}
+      {error && (
+        <ErrorScreen
+          message={"Can't send a payment request"}
+          isLoading={error}
+          setIsLoading={setError}
+        />
+      )}
+      {success && (
+        <SucessScreen
+          message={"Successful transaction"}
+          isLoading={success}
+          setIsLoading={setSuccess}
+        />
       )}
     </div>
   );

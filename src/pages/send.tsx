@@ -9,7 +9,7 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
-import { buildTransaction } from '@/lib/hooks/request';
+import { buildTransaction, createPaymentRequest } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import LoadingScreen from '@/components/loading';
@@ -37,6 +37,7 @@ const SendPage: NextPageWithLayout = () => {
 
   const [payerId, setPayerId] = useState("");
   const [amount, setAmount] = useState("");
+  const [txRequest, setTxRequest] = useState()
 
   const [transactionDetails, setTransactionDetails] = useState<any>()
 
@@ -49,6 +50,7 @@ const SendPage: NextPageWithLayout = () => {
         const request = JSON.parse(query.request as string);
         const token = JSON.parse(query.token as string)
   
+        setTxRequest(request)
         setSelectedToken(token)
         setPayerId(request.payer.id)
         setAmount(request.amount)
@@ -75,38 +77,66 @@ const SendPage: NextPageWithLayout = () => {
     setLoading(true)
     
     try {
-      // const paymentRequest = await createPaymentRequest({
-      //   amount: ethers.utils
-      //     .parseUnits(amount, selectedToken?.tokenDecimal)
-      //     .toString(),
-      //   token:
-      //     (selectedToken?.tokenAddress.toString() as string) ===
-      //     "0x0000000000000000000000000000000000001010"
-      //       ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-      //       : (selectedToken?.tokenAddress.toString() as string),
-      //   chain: selectedToken?.chain.toString() as string,
-      //   payee: payerId,
-      //   payer: idData?.id as string,
-      //   message: "#1",
-      //   label: "#1",
-      // });
-  
-      const tx = await buildTransaction({
-        payee: payerId,
-        userConfig: {
-          fromId: idData?.id as string,
-          fromAddress: idData?.default.address as string,
-          fromChain: selectedToken?.chain.toString() as string,
-          fromToken:
+      let paymentRequest: any;
+      if(!txRequest) {
+        paymentRequest = await createPaymentRequest({
+          amount: ethers.utils
+            .parseUnits(amount, selectedToken?.tokenDecimal)
+            .toString(),
+          token:
             (selectedToken?.tokenAddress.toString() as string) ===
             "0x0000000000000000000000000000000000001010"
               ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
               : (selectedToken?.tokenAddress.toString() as string),
-          amount: ethers.utils
-            .parseUnits(amount, selectedToken?.tokenDecimal)
-            .toString(),
-        },
-      });
+          chain: selectedToken?.chain.toString() as string,
+          payee: payerId,
+          payer: idData?.id as string,
+          message: "#1",
+          label: "#1",
+        });
+
+        setTxRequest(paymentRequest)
+      } else {
+        paymentRequest = txRequest
+      }
+      
+      let tx: any;
+
+      if(paymentRequest) {
+        tx = await buildTransaction({
+          paymentRequestId: paymentRequest.id,
+          userConfig: {
+            fromId: idData?.id as string,
+            fromAddress: idData?.default.address as string,
+            fromChain: selectedToken?.chain.toString() as string,
+            fromToken:
+              (selectedToken?.tokenAddress.toString() as string) ===
+              "0x0000000000000000000000000000000000001010"
+                ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                : (selectedToken?.tokenAddress.toString() as string),
+            amount: ethers.utils
+              .parseUnits(amount, selectedToken?.tokenDecimal)
+              .toString(),
+          },
+        });
+      } else {
+        tx = await buildTransaction({
+          payee: payerId,
+          userConfig: {
+            fromId: idData?.id as string,
+            fromAddress: idData?.default.address as string,
+            fromChain: selectedToken?.chain.toString() as string,
+            fromToken:
+              (selectedToken?.tokenAddress.toString() as string) ===
+              "0x0000000000000000000000000000000000001010"
+                ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                : (selectedToken?.tokenAddress.toString() as string),
+            amount: ethers.utils
+              .parseUnits(amount, selectedToken?.tokenDecimal)
+              .toString(),
+          },
+        });
+      }
 
       console.log(tx)
       setTransactionDetails(tx)
@@ -211,6 +241,7 @@ const SendPage: NextPageWithLayout = () => {
           setError={setError}
           setErrorMessage={setErrorMessage}
           setSuccess={setSuccess}
+          request={txRequest}
         />
       )}
       {loading && (

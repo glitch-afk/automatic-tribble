@@ -8,7 +8,7 @@ import { Cross } from '../icons/cross';
 import LoadingScreen from '../loading';
 import { useAppContext } from '@/lib/store';
 import { BigNumber, ethers } from 'ethers';
-import { getTokenDetail } from '@/lib/hooks/request';
+import { getTokenDetail, updatePaymentRequest } from '@/lib/hooks/request';
 import { chainsList } from '@/lib/data/mockData';
 import { useSigner } from 'wagmi';
 
@@ -23,9 +23,10 @@ interface ISendModalProps {
   setError: (error: boolean) => void;
   setErrorMessage: (error: string) => void;
   setSuccess: (success: boolean) => void;
+  request: any;
 }
 
-const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen, setIsLoading, setError, setErrorMessage, setSuccess }: ISendModalProps) => {
+const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen, setIsLoading, setError, setErrorMessage, setSuccess, request }: ISendModalProps) => {
   const [loading, setLoading] = useState(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
   const [ethPrice, setETHPrice] = useState(0)
@@ -90,7 +91,18 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen, setIsLoading, 
       }
 
       const tx = await signer.sendTransaction(txDetails.transactionData)
+      await tx.wait()
       console.log(tx)
+
+      if(request) {
+        await updatePaymentRequest({
+          id: request.id,
+          fromChain: reviewDetails.selectedToken.chain.toString(),
+          fromToken: reviewDetails.selectedToken.tokenAddress.toString(),
+          transactionHash: tx.hash
+        });
+      }
+
       setSuccess(true)
       setIsLoading(false);
     } catch (e: any) {
