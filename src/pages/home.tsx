@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { Bell } from '@/components/icons/bell';
 import { Down } from '@/components/icons/down';
@@ -13,7 +13,7 @@ import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
 
 const HomePage: NextPageWithLayout = () => {
-  const {  usdBalance, idData } = useAppContext();
+  const { usdBalance, idData } = useAppContext();
 
   return (
     <div className="flex flex-col">
@@ -24,7 +24,7 @@ const HomePage: NextPageWithLayout = () => {
         <div className="flex items-center space-x-6">
           {/* wallets */}
           <div>
-            <Link href="/home">
+            <Link href="/wallets">
               <div className="h-6 w-6 rounded-full bg-gradient-to-b from-yellow-500 to-orange-600" />
             </Link>
             <span className="sr-only">Wallets</span>

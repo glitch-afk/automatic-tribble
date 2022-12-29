@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-loop-func */
-// @ts-nocheck
 import axios from 'axios';
+import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 
 import { useAppContext } from '@/lib/store';
 
 import { findWalletId } from './user';
-import { ethers } from 'ethers';
 
 export interface Balance {
   tokenName: string;
@@ -17,11 +15,11 @@ export interface Balance {
   balanceUsd: string | number;
   chain: string | number;
   tokenDecimal: number;
-  usdPrice?: string | number
+  usdPrice?: string | number;
 }
 
 const API_KEY = 'ckey_ed497df39d654966875e01c195e';
-const ON_API_KEY = 'b80d94df2319fbeee26092357b4400d9bf303f2d'
+const ON_API_KEY = 'b80d94df2319fbeee26092357b4400d9bf303f2d';
 
 export const getBalance = async (address: string, chain: string) => {
   return axios({
@@ -31,19 +29,19 @@ export const getBalance = async (address: string, chain: string) => {
 
 const getBalanceOnApi = async (address: string, chain: string) => {
   return axios({
-    url: `/api/assets?address=${address}&chain=${chain}`
+    url: `/api/assets?address=${address}&chain=${chain}`,
   });
-}
+};
 
 export const getBalances = async (id: string) => {
   try {
-    console.log("dsadsa");
+    console.log('dsadsa');
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const balances: { [key: string]: Array<Balance> } = {};
     let usdBalance = 0;
 
     const walletId = await findWalletId({
-      id
+      id,
     });
     console.log(walletId);
 
@@ -67,12 +65,15 @@ export const getBalances = async (id: string) => {
       if (!address) continue;
 
       for (let j = 0; j < address.chain.length; j++) {
-        const res = await getBalanceOnApi(address.address, address.chain[j] as string)
-        const data = await res.data
+        const res = await getBalanceOnApi(
+          address.address,
+          address.chain[j] as string
+        );
+        const data = await res.data;
 
-        if(!data) continue
+        if (!data) continue;
 
-        const tokens = data.assets
+        const tokens = data.assets;
         for (let k = 0; k < tokens.length; k++) {
           const token = tokens[k];
           console.log(token);
@@ -89,10 +90,7 @@ export const getBalances = async (id: string) => {
             tokenLogo: token.provider_specific.logo_url,
             tokenDecimal: token.contract.decimals,
             balance: Number(
-              ethers.utils.formatUnits(
-                token.balance,
-                token.contract.decimals
-              )
+              ethers.utils.formatUnits(token.balance, token.contract.decimals)
             ).toFixed(2),
             balanceUsd: token.balance_in_usd.toFixed(2),
             chain: address.chain[j] as string,
@@ -114,8 +112,8 @@ export const getBalances = async (id: string) => {
 
     return {
       balances,
-      usdBalance
-    }
+      usdBalance,
+    };
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -123,22 +121,27 @@ export const getBalances = async (id: string) => {
 };
 
 export const useBalances = () => {
-  const { identity: id, balances, setBalances, setUsdBalance } = useAppContext();
+  const {
+    identity: id,
+    balances,
+    setBalances,
+    setUsdBalance,
+  } = useAppContext();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>();
 
   const getBalances = async () => {
     try {
-      console.log("dsadsa")
+      console.log('dsadsa');
       // eslint-disable-next-line @typescript-eslint/no-shadow
       const balances: { [key: string]: Array<Balance> } = {};
       let usdBalance = 0;
 
       const walletId = await findWalletId({
-        id
+        id,
       });
-      console.log(walletId)
+      console.log(walletId);
 
       if (!walletId) throw new Error(`${id} doesn't exist`);
 
@@ -165,7 +168,7 @@ export const useBalances = () => {
             .then((tokens) => {
               for (let k = 0; k < tokens.length; k++) {
                 const token = tokens[k];
-                console.log(token)
+                console.log(token);
 
                 if (!balances[token.contract.ticker_symbol])
                   balances[token.contract.ticker_symbol] = [];
@@ -178,7 +181,12 @@ export const useBalances = () => {
                   tokenName: token.contract.name,
                   tokenLogo: token.provider_specific.logo_url,
                   tokenDecimal: token.contract.decimals,
-                  balance: Number(ethers.utils.formatUnits(token.balance, token.contract.decimals)).toFixed(2),
+                  balance: Number(
+                    ethers.utils.formatUnits(
+                      token.balance,
+                      token.contract.decimals
+                    )
+                  ).toFixed(2),
                   balanceUsd: token.balance_in_usd.toFixed(2),
                   chain: address.chain[j] as string,
                 });

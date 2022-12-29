@@ -1,13 +1,17 @@
 import { Bnb } from '@/components/icons/coins/bnb';
 import { Ethereum } from '@/components/icons/coins/ethereum';
+
 import { Polygon } from '../icons/coins/polygon';
 
-export type CoinList = 'Ethereum Mainnet' | 'Binance Mainnet' | 'Polygon Mainnet';
+export type CoinList =
+  | 'Ethereum Mainnet'
+  | 'Binance Mainnet'
+  | 'Polygon Mainnet';
 
 const coinIcons: Record<CoinList, JSX.Element> = {
-  "Ethereum Mainnet": <Ethereum />,
-  "Binance Mainnet": <Bnb />,
-  "Polygon Mainnet": <Polygon />,
+  'Ethereum Mainnet': <Ethereum />,
+  'Binance Mainnet': <Bnb />,
+  'Polygon Mainnet': <Polygon />,
 };
 
 interface CurrencySwapProps {
