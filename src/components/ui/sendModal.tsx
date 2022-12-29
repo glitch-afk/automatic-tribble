@@ -10,7 +10,8 @@ import { useAppContext } from '@/lib/store';
 import { BigNumber, ethers } from 'ethers';
 import { getTokenDetail, updatePaymentRequest } from '@/lib/hooks/request';
 import { chainsList } from '@/lib/data/mockData';
-import { useSigner } from 'wagmi';
+import { useSigner, useSwitchNetwork } from 'wagmi';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 interface ISendModalProps {
   txDetails?: any;
@@ -48,10 +49,33 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen, setIsLoading, 
 
   const { idData } = useAppContext()
   const { data: signer } = useSigner()
+  const { openConnectModal } = useConnectModal();
+  const { switchNetwork } =
+    useSwitchNetwork();
 
   const doTransaction = async () => {
     try {
-      if(!signer) throw new Error("Signer not present")
+      if(!signer) {
+        if(openConnectModal) {
+          openConnectModal()
+        }
+        return
+      }
+
+      const currChainId = await signer.getChainId()
+      const currAddress = await signer.getAddress()
+
+      if(currChainId !== Number(txDetails.userConfig.fromChain.chainId) && switchNetwork) {
+        switchNetwork(Number(txDetails.userConfig.fromChain.chainId));
+      }
+
+      console.log(currAddress, txDetails.userConfig.fromAddress)
+
+      if (
+        currAddress.toLowerCase() !==
+        txDetails.userConfig.fromAddress.toLowerCase()
+      )
+        throw new Error("from");
 
       setIsLoading(true)
 
@@ -106,8 +130,10 @@ const SendModal = ({ reviewDetails, txDetails, isOpen, setIsOpen, setIsLoading, 
       setSuccess(true)
       setIsLoading(false);
     } catch (e: any) {
+      console.log(e.message);
       setIsLoading(false)
       if(e.message.startsWith("Signer")) setErrorMessage(e.message)
+      if(e.message.startsWith("from")) setErrorMessage("From address and signer's address different");
       else setErrorMessage("Transaction couldn't be executed")
 
       setError(true)

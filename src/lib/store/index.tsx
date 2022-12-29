@@ -24,6 +24,8 @@ export interface ContextInterface {
   setSeedPhrase: Function;
   requests: any[];
   setRequests: Function;
+  selectedAddress: string;
+  setSelectedAddress: Function;
 }
 
 export const AppContext = createContext<ContextInterface>(

@@ -9,6 +9,7 @@ import { useAppContext } from '@/lib/store';
 import { findWalletId } from './user';
 
 export interface Balance {
+  address: string;
   tokenName: string;
   tokenAddress: string;
   tokenLogo: any;
@@ -86,6 +87,7 @@ export const getBalances = async (id: string) => {
           usdBalance += token.balance_in_usd;
 
           balances[token.contract.ticker_symbol]?.push({
+            address: address.address,
             tokenAddress: token.contract.address,
             tokenTicker: token.contract.ticker_symbol,
             tokenName: token.contract.name,

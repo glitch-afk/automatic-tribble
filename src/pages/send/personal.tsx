@@ -1,61 +1,60 @@
-import Link from 'next/link';
-import { ReactElement, useEffect } from 'react';
-import { useState } from 'react';
+import Link from "next/link";
+import { ReactElement, useEffect } from "react";
+import { useState } from "react";
 
-import { LeftIcon } from '@/components/icons/leftIcon';
-import SelectToken from '@/components/token-select';
-import SendModal from '@/components/ui/sendModal';
-import { ActionLayout } from '@/layouts/Action';
-import { Meta } from '@/lib/Meta';
-import { useAppContext } from '@/lib/store';
-import type { NextPageWithLayout } from '@/types';
-import { buildTransaction, createPaymentRequest } from '@/lib/hooks/request';
-import { ethers } from 'ethers';
-import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
-import LoadingScreen from '@/components/loading';
-import { useRouter } from 'next/router';
-import ErrorScreen from '@/components/error';
-import SucessScreen from '@/components/success';
+import { LeftIcon } from "@/components/icons/leftIcon";
+import SelectToken from "@/components/token-select";
+import SendModal from "@/components/ui/sendModal";
+import { ActionLayout } from "@/layouts/Action";
+import { Meta } from "@/lib/Meta";
+import { useAppContext } from "@/lib/store";
+import type { Address, NextPageWithLayout } from "@/types";
+import { buildTransaction, createPaymentRequest } from "@/lib/hooks/request";
+import { ethers } from "ethers";
+import { useLockBodyScroll } from "@/lib/hooks/use-lock-body-scroll";
+import LoadingScreen from "@/components/loading";
+import { useRouter } from "next/router";
+import ErrorScreen from "@/components/error";
+import SucessScreen from "@/components/success";
+import SelectAddress from "@/components/address-select";
 
-const SendPage: NextPageWithLayout = () => {
+const SendPersonalPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Transaction not executed")
+  const [errorMessage, setErrorMessage] = useState("Transaction not executed");
   useLockBodyScroll(loading);
-  
-  const [lockInput, setLockInput] = useState(false)
+
+  const [lockInput, setLockInput] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const { balances, selectedAddress } = useAppContext();
+  const { balances } = useAppContext();
   const [tokens, _setTokens] = useState(
     balances != null ? Object.values(balances).flat() : []
   );
 
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const [selectedAddress, setSelectedAddress] = useState<Address>();
   const [isValid, setIsValid] = useState(true);
 
   const [payerId, setPayerId] = useState("");
   const [amount, setAmount] = useState("");
-  const [txRequest, setTxRequest] = useState()
+  const [txRequest, setTxRequest] = useState();
 
-  const [transactionDetails, setTransactionDetails] = useState<any>()
+  const [transactionDetails, setTransactionDetails] = useState<any>();
 
   const { query } = useRouter();
 
   useEffect(() => {
     if (query) {
       try {
-        setLockInput(true)
+        setLockInput(true);
         const request = JSON.parse(query.request as string);
-        const token = JSON.parse(query.token as string)
-  
-        setTxRequest(request)
-        setSelectedToken(token)
-        setPayerId(request.payer.id)
-        setAmount(request.amount)
+
+        setTxRequest(request);
+        setPayerId(request.to);
       } catch (e) {
-        setLockInput(false)
+        setLockInput(false);
       }
     }
   }, []);
@@ -71,43 +70,45 @@ const SendPage: NextPageWithLayout = () => {
     else setIsValid(true);
   }, [amount, payerId]);
 
-  const { idData } = useAppContext()
+  const { idData } = useAppContext();
 
-  const sendDetails = async () => {  
-    setLoading(true)
+  const sendDetails = async () => {
+    // TODO
     
+    setLoading(true);
+
     try {
       let paymentRequest: any;
-      if(!txRequest) {
-        // paymentRequest = await createPaymentRequest({
-        //   amount: ethers.utils
-        //     .parseUnits(amount, selectedToken?.tokenDecimal)
-        //     .toString(),
-        //   token:
-        //     (selectedToken?.tokenAddress.toString() as string) ===
-        //     "0x0000000000000000000000000000000000001010"
-        //       ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-        //       : (selectedToken?.tokenAddress.toString() as string),
-        //   chain: selectedToken?.chain.toString() as string,
-        //   payee: payerId,
-        //   payer: idData?.id as string,
-        //   message: "#1",
-        //   label: "#1",
-        // });
+      if (!txRequest) {
+        paymentRequest = await createPaymentRequest({
+          amount: ethers.utils
+            .parseUnits(amount, selectedToken?.tokenDecimal)
+            .toString(),
+          token:
+            (selectedToken?.tokenAddress.toString() as string) ===
+            "0x0000000000000000000000000000000000001010"
+              ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+              : (selectedToken?.tokenAddress.toString() as string),
+          chain: selectedToken?.chain.toString() as string,
+          payee: payerId,
+          payer: idData?.id as string,
+          message: "#1",
+          label: "#1",
+        });
 
-        // setTxRequest(paymentRequest)
+        setTxRequest(paymentRequest);
       } else {
-        paymentRequest = txRequest
+        paymentRequest = txRequest;
       }
-      
+
       let tx: any;
 
-      if(paymentRequest) {
+      if (paymentRequest) {
         tx = await buildTransaction({
           paymentRequestId: paymentRequest.id,
           userConfig: {
             fromId: idData?.id as string,
-            fromAddress: selectedAddress,
+            fromAddress: idData?.default.address as string,
             fromChain: selectedToken?.chain.toString() as string,
             fromToken:
               (selectedToken?.tokenAddress.toString() as string) ===
@@ -124,7 +125,7 @@ const SendPage: NextPageWithLayout = () => {
           payee: payerId,
           userConfig: {
             fromId: idData?.id as string,
-            fromAddress: selectedAddress,
+            fromAddress: idData?.default.address as string,
             fromChain: selectedToken?.chain.toString() as string,
             fromToken:
               (selectedToken?.tokenAddress.toString() as string) ===
@@ -138,15 +139,15 @@ const SendPage: NextPageWithLayout = () => {
         });
       }
 
-      console.log(tx)
-      setTransactionDetails(tx)
-  
-      setShowModal(true)
+      console.log(tx);
+      setTransactionDetails(tx);
+
+      setShowModal(true);
     } catch (e) {
-      setError(true)
+      setError(true);
     }
     setLoading(false);
-  }
+  };
 
   return (
     <div>
@@ -176,12 +177,23 @@ const SendPage: NextPageWithLayout = () => {
             disabled={lockInput}
           />
         </div>
+        {idData?.default &&
+          <SelectAddress
+            addresses={[
+              { address: idData.default.address } as Address,
+              idData?.others.map((i) => ({ address: i.address } as Address)),
+            ].flat()}
+            selectedAddress={selectedAddress}
+            setSelectedAddress={setSelectedAddress}
+            lockInput={false}
+          />
+        }
         {/* select token */}
         <SelectToken
           tokens={tokens}
           setSelectedToken={setSelectedToken}
           selectedToken={selectedToken}
-          lockInput={lockInput}
+          lockInput={false}
         />
         {/* amount */}
         <div className="mb-4 mt-8 flex flex-col">
@@ -204,7 +216,6 @@ const SendPage: NextPageWithLayout = () => {
             id="amount"
             placeholder="0.00"
             className="mb-3 rounded-md border-none px-2 py-3 outline-none ring-0 placeholder:text-neutral-300 focus:outline-neutral-300 focus:ring-0"
-            disabled={lockInput}
           />
         </div>
         {/* send button */}
@@ -265,7 +276,7 @@ const SendPage: NextPageWithLayout = () => {
   );
 };
 
-SendPage.getLayout = function getLayout(page: ReactElement) {
+SendPersonalPage.getLayout = function getLayout(page: ReactElement) {
   return (
     <ActionLayout
       meta={<Meta title="Fetcch Wallet" description="Send Tokens" />}
@@ -275,4 +286,4 @@ SendPage.getLayout = function getLayout(page: ReactElement) {
   );
 };
 
-export default SendPage;
+export default SendPersonalPage;

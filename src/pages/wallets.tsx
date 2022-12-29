@@ -32,7 +32,7 @@ const ReceivePage: NextPageWithLayout = () => {
           <WalletComp
             address={idData?.default.address as string}
             chain={idData?.default?.chain.id as number}
-            type="AA"
+            type={idData?.default.isContract ? "AA" : "EOA"}
           />
           {idData?.others.map((wallet, index) => {
             return (
@@ -40,7 +40,7 @@ const ReceivePage: NextPageWithLayout = () => {
                 key={index}
                 address={wallet?.address}
                 chain={wallet?.chain[0].id as number}
-                type="AA"
+                type={wallet.isContract ? "AA" : "EOA"}
               />
             );
           })}

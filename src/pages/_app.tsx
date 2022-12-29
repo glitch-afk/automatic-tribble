@@ -32,6 +32,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     [key: string]: Array<Balance>;
   }>({});
   const [identity, setIdentity] = useState<string>('');
+  const [selectedAddress, setSelectedAddress] = useState<string>("");
   const [idData, setIdData] = useState<WalletId>();
   const [usdBalance, setUsdBalance] = useState<string>('');
   const [addresses, setAddresses] = useState<Array<Address>>([]);
@@ -50,6 +51,10 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       setRequests(res);
     });
   }, [identity]);
+
+  useEffect(() => {
+    if(idData && idData.default && idData.default.address) setSelectedAddress(idData?.default.address as string)
+  }, [idData])
 
   useEffect(() => {
     if (identity) {
@@ -155,6 +160,8 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     setSeedPhrase,
     requests,
     setRequests,
+    selectedAddress,
+    setSelectedAddress
   };
 
   return (

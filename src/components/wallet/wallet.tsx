@@ -46,9 +46,9 @@ export default function WalletComp({
         </div>
         <div className="ml-3 flex flex-col items-start justify-center">
           <div className="flex">
-            <p className="w-[20ch] truncate text-lg font-medium">{address}</p>
+            <p className="w-[20ch] truncate text-md font-medium">{address}</p>
           </div>
-          <p className="mt-2 rounded-full bg-gray-200 px-4 text-start text-black">
+          <p className="mt-2 text-xs rounded-full bg-gray-200 px-4 text-start text-black">
             {type} address
           </p>
         </div>

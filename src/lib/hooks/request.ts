@@ -201,6 +201,20 @@ export const buildTransaction = async (params: BuildTransactionParams) => {
               gasFeesUsd
               toToken
           }
+          payee
+          userConfig {
+            fromId {
+              id
+            }
+            fromAddress
+            fromToken
+            fromChain {
+              id
+              name
+              chainId
+            }
+            amount
+          }
         }
       }`,
     {

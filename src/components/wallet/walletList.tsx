@@ -19,7 +19,7 @@ const WalletList = ({
           {/* left side */}
           <div className="flex items-center">
             <div className="h-8 w-8 rounded-full bg-gradient-to-b from-yellow-500 to-orange-600" />
-            <span className="ml-3 text-lg font-bold">{name}</span>
+            <span className="ml-3 text-lg font-semibold">{name}</span>
           </div>
           {/* right side */}
           <div className="flex items-center space-x-2">
