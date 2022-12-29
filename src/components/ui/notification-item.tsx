@@ -16,6 +16,7 @@ const NotificationItem = ({ request, address, chain, amount, requestedBy }: INot
   const [token, setToken] = useState<Partial<Balance>>()
 
   useEffect(() => {
+    console.log(address, "Das")
     getTokenDetail(address, chain)
       .then(res => {
         setToken(res)
