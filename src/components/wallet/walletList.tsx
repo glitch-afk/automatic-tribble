@@ -13,13 +13,13 @@ const WalletList = ({
 }) => {
   const [isExpand, setIsExpand] = useState(false);
   return (
-    <li className=" mb-3 w-full">
+    <li className=" mb-3 w-full list-none">
       <div className="relative w-full rounded-xl bg-white px-2 py-3">
         <div className="flex items-center justify-between">
           {/* left side */}
           <div className="flex items-center">
-            <div className="h-6 w-6 rounded-full bg-gradient-to-b from-yellow-500 to-orange-600" />
-            <span className="ml-1 text-sm font-semibold">{name}</span>
+            <div className="h-8 w-8 rounded-full bg-gradient-to-b from-yellow-500 to-orange-600" />
+            <span className="ml-3 text-lg font-bold">{name}</span>
           </div>
           {/* right side */}
           <div className="flex items-center space-x-2">

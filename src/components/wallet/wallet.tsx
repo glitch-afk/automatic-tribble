@@ -15,7 +15,7 @@ export type CoinList =
   | 'Polygon Mainnet';
 
 const coinIcons: Record<CoinList, JSX.Element> = {
-  'Ethereum Mainnet': <Ethereum />,
+  'Ethereum Mainnet': <Ethereum className="h-8 w-8 border" />,
   'Binance Mainnet': <Bnb />,
   'Polygon Mainnet': <Polygon />,
 };
@@ -44,15 +44,13 @@ export default function WalletComp({
   }
   return (
     <div className="mb-6 flex items-center justify-between">
-      <div className="flex">
-        <div className="flex items-center">
-          <div className="ml-2.5">{coinIcons[chain]}</div>
+      <div className="flex items-start">
+        <div className="flex ">
+          <div className="">{coinIcons[chain]}</div>
         </div>
         <div className="ml-3 flex flex-col items-start justify-center">
           <div className="flex">
-            <div className="whitespace-nowrap text-sm  text-black">
-              {address}
-            </div>
+            <p className="text-lg font-medium">{address}</p>
           </div>
           <p className="mt-2 rounded-full bg-gray-200 px-4 text-start text-black">
             {type} address
@@ -65,9 +63,9 @@ export default function WalletComp({
         onClick={() => handleCopyToClipboard()}
       >
         {copyButtonStatus ? (
-          <Check className="h-auto w-3.5 text-green-500" />
+          <Check className="h-auto w-5 text-green-500" />
         ) : (
-          <Copy className="h-auto w-3.5" />
+          <Copy className="h-5 w-5 " />
         )}
       </div>
       {/* right side */}

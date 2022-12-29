@@ -7,13 +7,16 @@ import WalletComp from '@/components/wallet/wallet';
 import WalletList from '@/components/wallet/walletList';
 import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
+import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
 
 const ReceivePage: NextPageWithLayout = () => {
   const { openConnectModal } = useConnectModal();
+  const { idData } = useAppContext();
+  console.log(idData);
 
   return (
-    <div className="relative max-h-[600px] min-h-[600px]">
+    <div className="relative max-h-[600px] min-h-[600px] font-sans ">
       <header className="flex w-full items-center">
         {/* back button */}
         <Link href="/home" className="z-20">
@@ -45,22 +48,22 @@ const ReceivePage: NextPageWithLayout = () => {
         </WalletList>
       </div>
       {/* chains */}
-      <div className="absolute bottom-2 w-full">
+      <div className="absolute bottom-2 flex w-full flex-col items-center justify-center space-y-2 font-bold">
         <>
           {openConnectModal && (
             <button
               onClick={openConnectModal}
               type="button"
-              className="mt-6 mb-2 w-full rounded-xl bg-black p-3 text-white"
+              className=" w-full rounded-xl border border-black bg-black p-3 text-white"
             >
               Add Wallet
             </button>
           )}
         </>
-        <Link href={'/create'}>
+        <Link href={'/create'} className="w-full p-0 ">
           <button
             type="button"
-            className="mt-4 mb-2 w-full rounded-xl border border-black p-3 text-black"
+            className=" w-full rounded-xl border border-black p-3 text-black"
           >
             Create Wallet
           </button>
