@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 
+import WalletsHome from '@/components/home/walletfeat';
 import { Bell } from '@/components/icons/bell';
 import { Down } from '@/components/icons/down';
 import { Logo } from '@/components/icons/logo';
@@ -72,6 +73,7 @@ const HomePage: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
+      <WalletsHome />
       {/* transactions */}
       <Transactions />
     </div>
