@@ -3,25 +3,21 @@ import { useCopyToClipboard } from 'react-use';
 
 import { Bnb } from '@/components/icons/coins/bnb';
 import { Ethereum } from '@/components/icons/coins/ethereum';
-import { useAppContext } from '@/lib/store';
 
 import { Check } from '../icons/check';
 import { Polygon } from '../icons/coins/polygon';
 import { Copy } from '../icons/copy';
 
-export type CoinList =
-  | 'Ethereum Mainnet'
-  | 'Binance Mainnet'
-  | 'Polygon Mainnet';
+export type CoinList = 1 | 2 | 3;
 
-const coinIcons: Record<CoinList, JSX.Element> = {
-  'Ethereum Mainnet': <Ethereum className="h-8 w-8 border" />,
-  'Binance Mainnet': <Bnb />,
-  'Polygon Mainnet': <Polygon />,
+const coinIcons: Record<number, JSX.Element> = {
+  1: <Ethereum className="h-8 w-8 " />,
+  2: <Bnb className="h-8 w-8 " />,
+  3: <Polygon className="h-8 w-8 " />,
 };
 
 interface CurrencySwapProps {
-  chain: CoinList;
+  chain: number;
   address: string;
   type: string;
 }
@@ -31,17 +27,17 @@ export default function WalletComp({
   address,
   type,
 }: CurrencySwapProps) {
-  const { idData } = useAppContext();
-
   const [copyButtonStatus, setCopyButtonStatus] = useState(false);
   const [_, copyToClipboard] = useCopyToClipboard();
   function handleCopyToClipboard() {
-    copyToClipboard(idData?.id as string); // replace mandar@backpack with anything you want to be copied
+    copyToClipboard(address); // replace mandar@backpack with anything you want to be copied
     setCopyButtonStatus(true);
     setTimeout(() => {
       setCopyButtonStatus(copyButtonStatus);
     }, 2500);
   }
+
+  console.log(chain);
   return (
     <div className="mb-6 flex items-center justify-between">
       <div className="flex items-start">
@@ -50,7 +46,7 @@ export default function WalletComp({
         </div>
         <div className="ml-3 flex flex-col items-start justify-center">
           <div className="flex">
-            <p className="text-lg font-medium">{address}</p>
+            <p className="w-[20ch] truncate text-lg font-medium">{address}</p>
           </div>
           <p className="mt-2 rounded-full bg-gray-200 px-4 text-start text-black">
             {type} address

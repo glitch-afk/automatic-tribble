@@ -13,7 +13,6 @@ import type { NextPageWithLayout } from '@/types';
 const ReceivePage: NextPageWithLayout = () => {
   const { openConnectModal } = useConnectModal();
   const { idData } = useAppContext();
-  console.log(idData);
 
   return (
     <div className="relative max-h-[600px] min-h-[600px] font-sans ">
@@ -29,22 +28,22 @@ const ReceivePage: NextPageWithLayout = () => {
       </header>
       {/* qrcode */}
       <div className="mt-8 flex w-full flex-col items-center  ">
-        <WalletList name="vikash@fetcch">
+        <WalletList name={idData?.id as string}>
           <WalletComp
-            address="0xlkwjdoweijweofjmowe"
-            chain="Ethereum Mainnet"
+            address={idData?.default.address as string}
+            chain={idData?.default?.chain.id as number}
             type="AA"
           />
-          <WalletComp
-            address="0xlkwjdoweijweofjmowe"
-            chain="Ethereum Mainnet"
-            type="AA"
-          />
-          <WalletComp
-            address="0xlkwjdoweijweofjmowe"
-            chain="Ethereum Mainnet"
-            type="AA"
-          />
+          {idData?.others.map((wallet, index) => {
+            return (
+              <WalletComp
+                key={index}
+                address={wallet?.address}
+                chain={wallet?.chain[0].id as number}
+                type="AA"
+              />
+            );
+          })}
         </WalletList>
       </div>
       {/* chains */}
