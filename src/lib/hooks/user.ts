@@ -6,11 +6,11 @@ export interface WalletId {
   provider: string;
   default: {
     address: string;
-    chain: number;
+    chain: any;
   };
   others: {
     address: string;
-    chain: number[];
+    chain: any[];
   }[];
   isContract?: boolean;
   currentSignature: string;
@@ -30,6 +30,7 @@ export const findWalletId = async (where: any) => {
         default {
             address
             chain {
+                id
                 name
                 chainId
             }
@@ -37,6 +38,7 @@ export const findWalletId = async (where: any) => {
         others {
             address
             chain {
+                id
                 name
                 chainId
             }
@@ -52,21 +54,18 @@ export const findWalletId = async (where: any) => {
       }
     }`,
     {
-      where
+      where,
     }
   );
 
   const data = await res.data;
-  console.log(
-    data.data
-  );
+  console.log(data.data);
 
   return data.data.walletIds.length > 0 ? data.data.walletIds[0] : undefined;
 };
 
 export const generateMessage = async (walletId: Partial<WalletId>) => {
   try {
-
     const res = await request(
       `query A($id: WalletIdCreateInput!) {
 				generateMessage(id: $id) {
@@ -102,19 +101,18 @@ export const generateMessage = async (walletId: Partial<WalletId>) => {
 				}
 			}
 `,
-      {id: walletId}
+      { id: walletId }
     );
 
-    const data = await res.data
+    const data = await res.data;
 
-    return data.data.generateMessage
-
+    return data.data.generateMessage;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
     throw e;
   }
-}
+};
 
 export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
   try {
@@ -151,9 +149,9 @@ export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
             }
           }
         }`,
-        {
-          walletId
-        }
+      {
+        walletId,
+      }
     );
 
     const data = await res.data;
