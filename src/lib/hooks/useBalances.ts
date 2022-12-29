@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-loop-func */
+// @ts-nocheck
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
