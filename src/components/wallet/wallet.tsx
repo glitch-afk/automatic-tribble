@@ -12,8 +12,8 @@ export type CoinList = 1 | 2 | 3;
 
 const coinIcons: Record<number, JSX.Element> = {
   1: <Ethereum className="h-8 w-8 " />,
-  2: <Bnb className="h-8 w-8 " />,
-  3: <Polygon className="h-8 w-8 " />,
+  2: <Polygon className="h-8 w-8 " />,
+  3: <Bnb className="h-8 w-8 " />,
 };
 
 interface CurrencySwapProps {

@@ -44,19 +44,24 @@ const ChooseUserName: NextPageWithLayout = () => {
 
   const createUsername = async () => {
     setLoading(true)
+    const otherChains = chains
+      .filter((i) => i.selected)
+      .slice(1)
+      .map((i) => Number(i.id));
+
     let data: WalletId = {
       identifier: identity,
       provider: process.env.NEXT_PUBLIC_DEFAULT_PROVIDER as string,
       default: {
         address: addresses[0]?.address as string,
-        chain: Number(chains[0]?.id) as number,
+        chain: Number(chains.find(i => i.selected)?.id) as number,
         isContract: false
       },
-      others: addresses.map(address => ({
+      others: otherChains.length > 0 ? addresses.map(address => ({
         address: address.address,
-        chain: chains.slice(1).filter(i => i.selected).map(i => Number(i.id)),
+        chain: chains.filter(i => i.selected).slice(1).map(i => Number(i.id)),
         isContract: false
-      })),
+      })) : [],
       currentSignature: ""
     };
 
