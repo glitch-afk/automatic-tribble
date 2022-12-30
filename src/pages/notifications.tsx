@@ -40,16 +40,19 @@ const NotificationsPage: NextPageWithLayout = () => {
       <div className="mt-8 max-h-[500px] overflow-y-auto">
         <ul className=" flex w-full flex-col items-center justify-center space-y-3 rounded-xl">
           {requests.length > 0 ? (
-            requests.map((notification: any, index) => (
-              <NotificationItem
-                request={notification}
-                address={notification.token}
-                chain={notification.chain.id}
-                amount={notification.amount}
-                key={index}
-                requestedBy={notification.payee.id}
-              />
-            ))
+            requests.map((notification: any, index) => {
+              if(notification.executed) return <></>
+              else return (
+                <NotificationItem
+                  request={notification}
+                  address={notification.token}
+                  chain={notification.chain.chainId}
+                  amount={notification.amount}
+                  key={index}
+                  requestedBy={notification.payee.id}
+                />
+              )
+            })
           ) : (
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="w-fit rounded-md bg-slate-500 py-3 px-4">

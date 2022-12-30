@@ -13,6 +13,7 @@ interface CreatePaymentRequest {
 }
 
 interface UpdatePaymentRequest {
+  payer: string;
   id: number;
   transactionHash: string;
   fromChain: string;
@@ -237,7 +238,7 @@ export const getTokenDetail = async (address: string, chain: string): Promise<Pa
   const res = await axios({
     url: `/api/tokens/`,
     params: {
-      address,
+      address: address.toLowerCase() === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? (chain === "137" ? "0x0000000000000000000000000000000000001010" : (chain === "1" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c")) : address,
       chain
     }
   })
