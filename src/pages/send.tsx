@@ -29,7 +29,7 @@ const SendPage: NextPageWithLayout = () => {
 
   const { balances, selectedAddress } = useAppContext();
   const [tokens, _setTokens] = useState(
-    balances != null ? Object.values(balances).flat() : []
+    balances != null ? Object.values(balances).filter(i => i.find(x => x.address.toLowerCase() === selectedAddress.toLowerCase())).flat() : []
   );
 
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
@@ -242,6 +242,7 @@ const SendPage: NextPageWithLayout = () => {
           setErrorMessage={setErrorMessage}
           setSuccess={setSuccess}
           request={txRequest}
+          account={selectedAddress}
         />
       )}
       {loading && (

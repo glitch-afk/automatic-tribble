@@ -1,5 +1,11 @@
 import { request } from '@/utils/request';
 
+export interface WalletAddress {
+    address: string;
+    chain: any;
+    isContract: boolean;
+}
+
 export interface WalletId {
   id?: string;
   identifier: string;
