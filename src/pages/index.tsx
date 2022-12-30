@@ -44,19 +44,24 @@ const Home: NextPageWithLayout = () => {
 
   const retrieve = async () => {
     if(signer) {
-      const signature = await signer.signMessage('wagpay did this')
-
-      const id = await findWalletId({
-        signedMsg: signature
-      })
-
-      setIdData(id)
-      setIdentity(id.identifier)
-      const addresses = [id.default.address, id.others.map((o: any) => o.address)].flat()
-      console.log(addresses, id, id.identifier);
-      setAddresses(addresses.map(ad => ({ address: ad, type: 'injected' })))
-
-      router.push("/home/")
+      try {
+        const signature = await signer.signMessage('wagpay did this')
+  
+        const id = await findWalletId({
+          signedMsg: signature
+        })
+        
+        if(!id) throw new Error()
+  
+        setIdData(id)
+        setIdentity(id.identifier)
+        const addresses = [id.default.address, id.others.map((o: any) => o.address)].flat()
+        
+        setAddresses(addresses.map(ad => ({ address: ad, type: 'injected' })))
+  
+  
+        router.push("/home/")
+      } catch (e) {}
     }
   }
 
