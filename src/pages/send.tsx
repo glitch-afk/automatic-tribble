@@ -53,7 +53,7 @@ const SendPage: NextPageWithLayout = () => {
         setTxRequest(request)
         setSelectedToken(token)
         setPayerId(request.payer.id)
-        setAmount(request.amount)
+        setAmount(ethers.utils.formatUnits(request.amount, token.tokenDecimal));
       } catch (e) {
         setLockInput(false)
       }
