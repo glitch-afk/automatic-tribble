@@ -1,8 +1,6 @@
 import { Listbox, Transition } from "@headlessui/react";
-import type { Balance } from "@/lib/hooks/useBalances";
 
 import { ChevDown } from "./icons/ChevDown";
-import { chainsList } from "@/lib/data/mockData";
 import { Address } from "@/types";
 
 const SelectAddress = ({

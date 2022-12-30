@@ -9,7 +9,7 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
-import { buildTransaction, createPaymentRequest } from '@/lib/hooks/request';
+import { buildTransaction } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import LoadingScreen from '@/components/loading';

@@ -49,11 +49,13 @@ const ChooseUserName: NextPageWithLayout = () => {
       provider: process.env.NEXT_PUBLIC_DEFAULT_PROVIDER as string,
       default: {
         address: addresses[0]?.address as string,
-        chain: Number(chains[0]?.id) as number
+        chain: Number(chains[0]?.id) as number,
+        isContract: false
       },
       others: addresses.map(address => ({
         address: address.address,
-        chain: chains.slice(1).filter(i => i.selected).map(i => Number(i.id))
+        chain: chains.slice(1).filter(i => i.selected).map(i => Number(i.id)),
+        isContract: false
       })),
       currentSignature: ""
     };
