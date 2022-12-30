@@ -54,7 +54,8 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   useEffect(() => {
     if(idData && idData.default && idData.default.address) setSelectedAddress(idData?.default.address as string)
-  }, [idData])
+    else if(addresses.length > 0) setSelectedAddress(addresses[0]?.address as string)
+  }, [idData, addresses])
 
   useEffect(() => {
     if (identity) {

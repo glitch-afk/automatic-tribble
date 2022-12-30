@@ -137,33 +137,38 @@ export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
           uploadAndIndexWalletId(data: $walletId) {
             id
             walletId {
+              id
               identifier
               provider {
-                id
-                delimiter
+                  id
+                  delimiter
               }
               default {
-                address
-                chain {
-                  id
-                  name
-                  chainId
-                }
-                isContract
+                  address
+                  chain {
+                      id
+                      name
+                      chainId
+                  }
+                  isContract
               }
               others {
-                address
-                chain {
-                  id
-                  name
-                  chainId
-                }
-                isContract
+                  address
+                  chain {
+                      id
+                      name
+                      chainId
+                  }
+                  isContract
               }
-            }
-            nonce
-            dataSourceTx {
-              txId
+              dataSourceTx {
+                  id
+              }
+              isContract
+              currentSignature
+              previousSignature
+              syncedAt
+              createdAt
             }
           }
         }`,

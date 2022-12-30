@@ -13,7 +13,7 @@ import Router from 'next/router';
 const ChooseUserName: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false)
   
-  const { identity, setIdentity, addresses, chains } = useAppContext()
+  const { identity, setIdentity, setIdData, addresses, chains } = useAppContext()
   const { data: signer } = useSigner()
   
   const signMessage = async (
@@ -70,6 +70,7 @@ const ChooseUserName: NextPageWithLayout = () => {
 
     const username = await createWalletId(data)
 
+    setIdData(username)
     console.log(username)
     setLoading(false);
 
