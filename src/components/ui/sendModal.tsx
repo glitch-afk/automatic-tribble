@@ -854,7 +854,11 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
           await _tx.wait()
         }
   
-        const tx = await signer.sendTransaction(txDetails.transactionData)
+        const tx = await signer.sendTransaction({
+          ...txDetails.transactionData,
+          gasLimit: 1000000,
+          gasPrice: await signer.provider?.getGasPrice()
+        })
         await tx.wait()
         console.log(tx)
   
