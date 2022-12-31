@@ -66,10 +66,7 @@ export const createPaymentRequest = async (
         }
     }`,
     {
-      request: {
-        ...requestData,
-        chain: fetcchChains[requestData.chain]
-      },
+      request: requestData
     }
   );
 

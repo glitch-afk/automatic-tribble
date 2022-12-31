@@ -10,7 +10,7 @@ import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
-import { createPaymentRequest } from '@/lib/hooks/request';
+import { createPaymentRequest, fetcchChains } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { tokensList } from '@/lib/data/mockData';
 import { Balance } from '@/lib/hooks/useBalances';
@@ -48,6 +48,7 @@ const RequestPage: NextPageWithLayout = () => {
   const createRequest = async () => {
     setLoading(true)
     try {
+      console.log(selectedToken?.chain as string, ((selectedToken?.chain) === 2 || (selectedToken?.chain) === 3) ? selectedToken?.chain : fetcchChains[selectedToken?.chain as string], "selcte");
       await createPaymentRequest({
         payee: idData?.id as string,
         payer: payerId,
@@ -56,7 +57,10 @@ const RequestPage: NextPageWithLayout = () => {
           "0x0000000000000000000000000000000000001010"
             ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
             : (selectedToken?.tokenAddress?.toString() as string),
-        chain: selectedToken?.chain as string,
+        chain:
+          (selectedToken?.chain === 2 || selectedToken?.chain === 3
+            ? selectedToken?.chain
+            : fetcchChains[selectedToken?.chain as string]).toString(),
         amount: ethers.utils
           .parseUnits(amount, selectedToken?.tokenDecimal)
           .toString(),
@@ -86,6 +90,8 @@ const RequestPage: NextPageWithLayout = () => {
       }, 5000);
     }
   }, [error]);
+
+  useEffect(() => console.log(selectedToken, "selcte"), [selectedToken])
 
   return (
     <div>
