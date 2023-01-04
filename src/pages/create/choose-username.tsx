@@ -9,10 +9,17 @@ import { ethers } from 'ethers';
 import { useSigner } from 'wagmi';
 import LoadingScreen from '@/components/loading';
 import Router from 'next/router';
+import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
+import ErrorScreen from '@/components/error';
+import SucessScreen from '@/components/success';
 
 const ChooseUserName: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false)
-  
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("")
+  useLockBodyScroll(loading);
+
   const { identity, setIdentity, setIdData, addresses, chains } = useAppContext()
   const { data: signer } = useSigner()
   
@@ -44,42 +51,57 @@ const ChooseUserName: NextPageWithLayout = () => {
 
   const createUsername = async () => {
     setLoading(true)
-    const otherChains = chains
-      .filter((i) => i.selected)
-      .slice(1)
-      .map((i) => Number(i.id));
+    try {
+      const otherChains = chains
+        .filter((i) => i.selected)
+        .slice(1)
+        .map((i) => Number(i.id));
+  
+      let data: WalletId = {
+        identifier: identity,
+        provider: process.env.NEXT_PUBLIC_DEFAULT_PROVIDER as string,
+        default: {
+          address: addresses[0]?.address as string,
+          chain: Number(chains.find(i => i.selected)?.id) as number,
+          isContract: false
+        },
+        others: otherChains.length > 0 ? addresses.map(address => ({
+          address: address.address,
+          chain: chains.filter(i => i.selected).slice(1).map(i => Number(i.id)),
+          isContract: false
+        })) : [],
+        currentSignature: ""
+      };
+  
+      const message = await generateMessage(data)
 
-    let data: WalletId = {
-      identifier: identity,
-      provider: process.env.NEXT_PUBLIC_DEFAULT_PROVIDER as string,
-      default: {
-        address: addresses[0]?.address as string,
-        chain: Number(chains.find(i => i.selected)?.id) as number,
-        isContract: false
-      },
-      others: otherChains.length > 0 ? addresses.map(address => ({
-        address: address.address,
-        chain: chains.filter(i => i.selected).slice(1).map(i => Number(i.id)),
-        isContract: false
-      })) : [],
-      currentSignature: ""
-    };
+      if(!message) throw new Error("Can't generate a message for signing, try again later...")
+  
+      const signature = await signMessage(addresses[0]?.address as string, message.message)
+      
+      console.log(signature, data, message)
+  
+      data.currentSignature = signature
+  
+      const username = await createWalletId(data)
+      console.log(username)
+      if (!username.walletId)
+        throw new Error(
+          username.error.length > 0 ? username.error[0].message : JSON.stringify(username.error)
+        );
+  
+      setIdData(username)
+      console.log(username)
+      setLoading(false);
 
-    const message = await generateMessage(data)
-
-    const signature = await signMessage(addresses[0]?.address as string, message.message)
-    
-    console.log(signature, data, message)
-
-    data.currentSignature = signature
-
-    const username = await createWalletId(data)
-
-    setIdData(username)
-    console.log(username)
-    setLoading(false);
-
-    Router.push("/home/")
+      setSuccess(true)
+  
+      Router.push("/home/")
+    } catch (e: any) {
+      setError(true)
+      setErrorMessage(e.message as string)
+      setLoading(false)
+    }
   }
 
   return (
@@ -88,14 +110,17 @@ const ChooseUserName: NextPageWithLayout = () => {
         <label htmlFor="input#2" className="text-sm text-neutral-500">
           Choose Username
         </label>
-        <input
-          value={identity}
-          onChange={(e) => setIdentity(e.target.value)}
-          type="email"
-          name="username"
-          placeholder="rohann@fetcch"
-          className="w-full rounded-xl border-none bg-white py-3 px-2 text-sm outline-none placeholder:text-neutral-400"
-        />
+        <div className='bg-white w-full flex justify-end items-center'>
+          <input
+            value={identity}
+            onChange={(e) => setIdentity(e.target.value)}
+            type="email"
+            name="username"
+            placeholder="name"
+            className="w-2/3 rounded-xl border-none bg-white py-3 px-2 text-sm outline-none placeholder:text-neutral-400"
+          />
+          <p className='w-1/3 text-right pr-3'>@fetcch</p>
+        </div>
         <p className="text-xs text-neutral-500">
           You can transfer, receive and request any assets from any wallet using
           this username, which serves as your transactional identity.
@@ -114,6 +139,20 @@ const ChooseUserName: NextPageWithLayout = () => {
       </div>
       {loading && (
         <LoadingScreen isLoading={loading} setIsLoading={setLoading} />
+      )}
+      {error && (
+        <ErrorScreen
+          message={errorMessage}
+          isLoading={error}
+          setIsLoading={setError}
+        />
+      )}
+      {success && (
+        <SucessScreen
+          message={"Successfully created wallet id"}
+          isLoading={success}
+          setIsLoading={setSuccess}
+        />
       )}
     </div>
   );

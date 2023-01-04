@@ -130,7 +130,7 @@ export const generateMessage = async (walletId: Partial<WalletId>) => {
   }
 }
 
-export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
+export const createWalletId = async (walletId: WalletId): Promise<{walletId: WalletId, error?: any}> => {
   try {
     const res = await request(
       `mutation UploadAndIndexWalletId($walletId: WalletIdCreateInput!) {
@@ -179,7 +179,13 @@ export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
 
     const data = await res.data;
 
-    return data.data.uploadAndIndexWalletId.walletId;
+    return {
+      walletId:
+        data.data.uploadAndIndexWalletId && data.data.uploadAndIndexWalletId.walletId
+          ? data.data.uploadAndIndexWalletId.walletId
+          : undefined,
+      error: data.errors ? data.errors : undefined,
+    };
   } catch (e: any) {
     // eslint-disable-next-line no-console
     console.error(e);
