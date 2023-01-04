@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useEffect } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import { Wait } from '@/components/icons/wait';
@@ -9,14 +9,11 @@ import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { useAppContext } from '@/lib/store';
 import { getPaymentRequest, getTokenDetail } from '@/lib/hooks/request';
-import tokens from './api/tokens';
 import { getToken } from 'fetcch-chain-data';
 import { Balance } from '@/lib/hooks/useBalances';
 
 const NotificationsPage: NextPageWithLayout = () => {
   const { requests, idData, setRequests } = useAppContext()  
-
-  const [tokens, setTokens] = useState<any>()
 
   useEffect(() => {    
     getPaymentRequest({
@@ -76,7 +73,6 @@ const NotificationsPage: NextPageWithLayout = () => {
               if(notification.executed) return <></>
               else return (
                 <NotificationItem
-                  token={tokens && tokens[notification.token]}
                   request={notification}
                   address={notification.token}
                   chain={notification.chain.chainId}

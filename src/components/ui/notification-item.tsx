@@ -1,4 +1,3 @@
-import { Balance } from '@/lib/hooks/useBalances';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 
@@ -8,10 +7,9 @@ interface INotificationItemProps {
   chain: string;
   requestedBy: string;
   request: any;
-  token: Partial<Balance>
 }
 
-const NotificationItem = ({ token, request, amount, requestedBy }: INotificationItemProps) => {
+const NotificationItem = ({ request, amount, requestedBy }: INotificationItemProps) => {
   return (
     <li className="flex w-full flex-col space-y-2 rounded-xl bg-white p-2">
       {/* amount */}
