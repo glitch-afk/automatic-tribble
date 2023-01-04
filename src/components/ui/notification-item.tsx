@@ -1,8 +1,6 @@
-import { getTokenDetail } from '@/lib/hooks/request';
 import { Balance } from '@/lib/hooks/useBalances';
 import { ethers } from 'ethers';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 interface INotificationItemProps {
   amount: string; // change the type as per api requirement
@@ -10,28 +8,19 @@ interface INotificationItemProps {
   chain: string;
   requestedBy: string;
   request: any;
+  token: Partial<Balance>
 }
 
-const NotificationItem = ({ request, address, chain, amount, requestedBy }: INotificationItemProps) => {
-  const [token, setToken] = useState<Partial<Balance>>()
-
-  useEffect(() => {
-    console.log(address, "Das")
-    getTokenDetail(address, chain)
-      .then(res => {
-        setToken(res)
-      })
-  }, [])
-  
+const NotificationItem = ({ token, request, amount, requestedBy }: INotificationItemProps) => {
   return (
     <li className="flex w-full flex-col space-y-2 rounded-xl bg-white p-2">
       {/* amount */}
       <div className="flex w-full items-center justify-between">
         <h3 className="text-sm font-semibold text-neutral-500">Amount</h3>
-        {token && token.tokenTicker && token.tokenDecimal && (
+        {request.token && request.token.tokenTicker && request.token.tokenDecimal && (
           <span className="text-sm font-semibold">
-            {ethers.utils.formatUnits(amount, token.tokenDecimal)}{" "}
-            {token.tokenTicker}
+            {ethers.utils.formatUnits(amount, request.token.tokenDecimal)}{" "}
+            {request.token.tokenTicker}
           </span>
         )}
       </div>
@@ -42,10 +31,12 @@ const NotificationItem = ({ request, address, chain, amount, requestedBy }: INot
       </div>
       <div className="flex w-full items-center space-x-2">
         <Link
-          href={`/send?request=${JSON.stringify(request)}&token=${JSON.stringify(token)}`}
+          href={`/send?request=${JSON.stringify(
+            request
+          )}&token=${JSON.stringify(request.token)}`}
           className="w-full rounded-xl bg-black text-center py-3 text-sm font-semibold text-white"
         >
-            Pay
+          Pay
         </Link>
         <button className="w-full rounded-xl border border-neutral-400 py-3 text-sm font-semibold">
           Cancel

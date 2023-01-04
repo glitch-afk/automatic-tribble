@@ -25,6 +25,7 @@
     "axios": "^1.2.1",
     "clsx": "^1.2.1",
     "ethers": "^5.7.2",
+    "fetcch-chain-data": "^0.0.6",
     "framer-motion": "^8.0.2",
     "next": "13.1.0",
     "next-seo": "^5.15.0",

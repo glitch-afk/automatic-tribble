@@ -28,17 +28,21 @@ const SelectToken = ({
         >
           <Listbox.Button className="flex h-12 w-full items-center justify-between rounded-xl bg-white px-4 text-sm font-medium text-gray-900 outline-none duration-200 focus:outline-neutral-400 sm:h-12 sm:px-5">
             <div className="flex items-center">
-              {selectedToken?.tokenLogo && (
+              {selectedToken && (
                 <>
-                  {typeof selectedToken.tokenLogo === "string" ? (
-                    <img
-                      src={selectedToken?.tokenLogo}
-                      alt=""
-                      className="h-5 w-5"
-                    />
-                  ) : (
-                    <selectedToken.tokenLogo className="h-5 w-5" />
-                  )}
+                  {selectedToken.tokenLogo && 
+                    <>
+                      {typeof selectedToken.tokenLogo === "string" ? (
+                        <img
+                          src={selectedToken?.tokenLogo}
+                          alt=""
+                          className="h-5 w-5"
+                        />
+                      ) : (
+                        <selectedToken.tokenLogo className="h-5 w-5" />
+                      )}
+                    </>
+                  }
                   <p className="ml-2">
                     {selectedToken?.tokenTicker ? (
                       selectedToken?.tokenTicker

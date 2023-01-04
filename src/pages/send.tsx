@@ -47,14 +47,18 @@ const SendPage: NextPageWithLayout = () => {
     if (query) {
       try {
         setLockInput(true)
+        console.log(query, "balance")
         const request = JSON.parse(query.request as string);
         const token = JSON.parse(query.token as string)
+
+        console.log(request, token, "balance")
   
         setTxRequest(request)
         setSelectedToken(token)
         setPayerId(request.payer.id)
         setAmount(ethers.utils.formatUnits(request.amount, token.tokenDecimal));
       } catch (e) {
+        console.log(e, "balance")
         setLockInput(false)
       }
     }
