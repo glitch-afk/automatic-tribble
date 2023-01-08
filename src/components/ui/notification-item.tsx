@@ -15,17 +15,27 @@ const NotificationItem = ({ request, amount, requestedBy }: INotificationItemPro
       {/* amount */}
       <div className="flex w-full items-center justify-between">
         <h3 className="text-sm font-semibold text-neutral-500">Amount</h3>
-        {request.token && request.token.tokenTicker && request.token.tokenDecimal && (
-          <span className="text-sm font-semibold">
-            {ethers.utils.formatUnits(amount, request.token.tokenDecimal)}{" "}
-            {request.token.tokenTicker}
-          </span>
-        )}
+        {request.token &&
+          request.token.tokenTicker &&
+          request.token.tokenDecimal && (
+            <span className="text-sm font-semibold">
+              {ethers.utils.formatUnits(amount, request.token.tokenDecimal)}{" "}
+              {request.token.tokenTicker}
+            </span>
+          )}
       </div>
       {/* requested by */}
       <div className="flex w-full items-center justify-between">
         <h3 className="text-sm font-semibold text-neutral-500">Requested by</h3>
         <span className="text-sm font-semibold">{requestedBy}</span>
+      </div>
+      <div className="flex w-full items-center justify-between">
+        <h3 className="text-sm font-semibold text-neutral-500">Message</h3>
+        <span className="text-sm font-semibold">{request.message}</span>
+      </div>
+      <div className="flex w-full items-center justify-between">
+        <h3 className="text-sm font-semibold text-neutral-500">Label</h3>
+        <span className="text-sm font-semibold">{request.label}</span>
       </div>
       <div className="flex w-full items-center space-x-2">
         <Link
