@@ -55,7 +55,7 @@ const SendPage: NextPageWithLayout = () => {
   
         setTxRequest(request)
         setSelectedToken(token)
-        setPayerId(request.payer.id)
+        setPayerId(request.payee.id)
         setAmount(ethers.utils.formatUnits(request.amount, token.tokenDecimal));
       } catch (e) {
         console.log(e, "balance")
