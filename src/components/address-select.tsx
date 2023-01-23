@@ -17,7 +17,7 @@ const SelectAddress = ({
   return (
     <div className="mb-8">
       <label htmlFor="token" className="mb-2 text-sm">
-        Select Token
+        Select Address
       </label>
       <div className="relative">
         <Listbox

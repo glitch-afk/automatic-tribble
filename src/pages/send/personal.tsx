@@ -718,8 +718,10 @@ const SendPersonalPage: NextPageWithLayout = () => {
     balances != null ? Object.values(balances).flat() : []
   );
 
+  const { idData } = useAppContext();
+  
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
-  const [selectedAddress, setSelectedAddress] = useState<Address>();
+  const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(idData ? {address: idData?.default.address as string, type: "injected"} as Address : undefined);
   const [isValid, setIsValid] = useState(true);
 
   const [payerId, setPayerId] = useState("");
@@ -754,8 +756,6 @@ const SendPersonalPage: NextPageWithLayout = () => {
       setIsValid(false);
     else setIsValid(true);
   }, [amount, payerId]);
-
-  const { idData } = useAppContext();
 
   const sendDetails = async () => {
     // TODO

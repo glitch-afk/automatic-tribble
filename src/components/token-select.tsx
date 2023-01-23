@@ -30,7 +30,7 @@ const SelectToken = ({
             <div className="flex items-center">
               {selectedToken && (
                 <>
-                  {selectedToken.tokenLogo && 
+                  {selectedToken.tokenLogo && (
                     <>
                       {typeof selectedToken.tokenLogo === "string" ? (
                         <img
@@ -42,7 +42,7 @@ const SelectToken = ({
                         <selectedToken.tokenLogo className="h-5 w-5" />
                       )}
                     </>
-                  }
+                  )}
                   <p className="ml-2">
                     {selectedToken?.tokenTicker ? (
                       selectedToken?.tokenTicker
@@ -53,6 +53,13 @@ const SelectToken = ({
                     )}
                   </p>
                 </>
+              )}
+              {!selectedToken && (
+                <p className="ml-2">
+                    <span className="text-sm text-neutral-300">
+                      No tokens available
+                    </span>
+                </p>
               )}
             </div>
             {tokens.length > 0 && <ChevDown className="h-3 w-3" />}

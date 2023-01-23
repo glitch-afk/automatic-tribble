@@ -90,7 +90,7 @@ const ChooseUserName: NextPageWithLayout = () => {
           username.error.length > 0 ? username.error[0].message : JSON.stringify(username.error)
         );
   
-      setIdData(username)
+      setIdData(username.walletId)
       console.log(username)
       setLoading(false);
 
