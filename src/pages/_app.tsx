@@ -1,6 +1,5 @@
 import '../styles/globals.css';
 
-import Head from "next/head"
 import Script from 'next/script';
 
 import { Inter as FontSans } from '@next/font/google';
