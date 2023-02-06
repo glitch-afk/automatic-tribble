@@ -1,4 +1,4 @@
-import { request, request2 } from '@/utils/request';
+// import { request, request2 } from '@/utils/request';
 import axios from 'axios';
 
 export interface WalletAddress {
