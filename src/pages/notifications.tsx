@@ -17,7 +17,7 @@ const NotificationsPage: NextPageWithLayout = () => {
 
   useEffect(() => {    
     getPaymentRequest({
-      payerId: idData?.id
+      payer: idData?.id
     }).then(async (res) => {
       let responses = []
       
