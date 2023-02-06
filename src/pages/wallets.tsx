@@ -34,7 +34,7 @@ const ReceivePage: NextPageWithLayout = () => {
             chain={idData?.default?.chain.id as number}
             type={idData?.default.isContract ? "AA" : "EOA"}
           />
-          {idData?.others.map((wallet, index) => {
+          {idData?.secondary.map((wallet, index) => {
             return (
               <WalletComp
                 key={index}
@@ -59,7 +59,7 @@ const ReceivePage: NextPageWithLayout = () => {
             </button>
           )}
         </>
-        <Link href={'/create'} className="w-full p-0 ">
+        <Link href={"/create"} className="w-full p-0 ">
           <button
             type="button"
             className=" w-full rounded-xl border border-black p-3 text-black"

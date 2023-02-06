@@ -3,21 +3,21 @@ import axios from 'axios';
 import { Balance } from './useBalances';
 
 interface CreatePaymentRequest {
-  payee: string;
+  receiver: string;
   payer: string;
   token: string;
-  chain: string;
+  chain: number;
   amount: string;
   message: string;
   label: string;
 }
 
 interface UpdatePaymentRequest {
-  payer: string;
   id: number;
   transactionHash: string;
   fromChain: string;
   fromToken: string;
+  executed: boolean;
 }
 
 // type PaymentRequest = CreatePaymentRequest & UpdatePaymentRequest;
@@ -32,203 +32,267 @@ export const fetcchChains: any = {
 export const createPaymentRequest = async (
   requestData: CreatePaymentRequest
 ) => {
-  const res = await request(
-    `mutation PaymentRequest($request: RequestCreateInput!) {
-        paymentRequests(request: $request) {
-            id
-            payer {
-              id
-            }
-            payee {
-              id
-            }
-            token
-            chain {
-              id
-              name
-              chainId
-            }
-            amount
-            message
-            label
-            data
-            executed
-            transactionHash
-            sameChain
-            fromChain {
-              id
-              name
-              chainId
-            }
-            fromToken
-            dstTransactionHash
-            createdAt
-        }
-    }`,
-    {
-      request: requestData
-    }
-  );
+  // const res = await request(
+  //   `mutation PaymentRequest($request: RequestCreateInput!) {
+  //       paymentRequests(request: $request) {
+  //           id
+  //           payer {
+  //             id
+  //           }
+  //           payee {
+  //             id
+  //           }
+  //           token
+  //           chain {
+  //             id
+  //             name
+  //             chainId
+  //           }
+  //           amount
+  //           message
+  //           label
+  //           data
+  //           executed
+  //           transactionHash
+  //           sameChain
+  //           fromChain {
+  //             id
+  //             name
+  //             chainId
+  //           }
+  //           fromToken
+  //           dstTransactionHash
+  //           createdAt
+  //       }
+  //   }`,
+  //   {
+  //     request: requestData
+  //   }
+  // );
+
+  // const data = await res.data;
+
+  // return data.data.paymentRequests;
+
+  const res = await axios({
+    method: "POST",
+    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+    data: requestData,
+    headers: {
+      "content-type": "application/json",
+      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+    },
+  });
 
   const data = await res.data;
 
-  return data.data.paymentRequests;
+  if (data.error) throw new Error(data.error);
+
+  return data.data;
 };
 
 export const updatePaymentRequest = async (
   requestData: UpdatePaymentRequest
 ) => {
-  const res = await request(
-    `mutation PaymentRequest($request: RequestCreateInput!) {
-        paymentRequests(request: $request) {
-            id
-            payer {
-              id
-            }
-            payee {
-              id
-            }
-            token
-            chain {
-              id
-              name
-              chainId
-            }
-            amount
-            message
-            label
-            data
-            executed
-            transactionHash
-            sameChain
-            fromChain {
-              id
-              name
-              chainId
-            }
-            fromToken
-            dstTransactionHash
-            createdAt
-        }
-    }`,
-    {
-      request: requestData,
-    }
-  );
+  // const res = await request(
+  //   `mutation PaymentRequest($request: RequestCreateInput!) {
+  //       paymentRequests(request: $request) {
+  //           id
+  //           payer {
+  //             id
+  //           }
+  //           payee {
+  //             id
+  //           }
+  //           token
+  //           chain {
+  //             id
+  //             name
+  //             chainId
+  //           }
+  //           amount
+  //           message
+  //           label
+  //           data
+  //           executed
+  //           transactionHash
+  //           sameChain
+  //           fromChain {
+  //             id
+  //             name
+  //             chainId
+  //           }
+  //           fromToken
+  //           dstTransactionHash
+  //           createdAt
+  //       }
+  //   }`,
+  //   {
+  //     request: requestData,
+  //   }
+  // );
+
+  // const data = await res.data;
+
+  // return data.data.paymentRequests;
+
+  const res = await axios({
+    method: "PATCH",
+    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+    data: requestData,
+    headers: {
+      "content-type": "application/json",
+      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+    },
+  });
 
   const data = await res.data;
 
-  return data.data.paymentRequests;
+  if (data.error) throw new Error(data.error);
+
+  return data.data;
 };
 
 export const getPaymentRequest = async (params: any) => {
-  const res = await request(
-    `query PaymentRequest($request: RequestWhereInput!) {
-        requests(where: $request) {
-            id
-            payer {
-              id
-            }
-            payee {
-              id
-            }
-            token
-            chain {
-              id
-              name
-              chainId
-              explorers {
-                url
-              }
-            }
-            amount
-            message
-            label
-            data
-            executed
-            transactionHash
-            sameChain
-            fromChain {
-              id
-              name
-              chainId
-              explorers {
-                url
-              }
-            }
-            fromToken
-            dstTransactionHash
-            createdAt
-        }
-    }`,
-    {
-      request: params,
-    }
-  );
+  // const res = await request(
+  //   `query PaymentRequest($request: RequestWhereInput!) {
+  //       requests(where: $request) {
+  //           id
+  //           payer {
+  //             id
+  //           }
+  //           payee {
+  //             id
+  //           }
+  //           token
+  //           chain {
+  //             id
+  //             name
+  //             chainId
+  //             explorers {
+  //               url
+  //             }
+  //           }
+  //           amount
+  //           message
+  //           label
+  //           data
+  //           executed
+  //           transactionHash
+  //           sameChain
+  //           fromChain {
+  //             id
+  //             name
+  //             chainId
+  //             explorers {
+  //               url
+  //             }
+  //           }
+  //           fromToken
+  //           dstTransactionHash
+  //           createdAt
+  //       }
+  //   }`,
+  //   {
+  //     request: params,
+  //   }
+  // );
+
+  // const data = await res.data;
+
+  // return data.data.requests;
+
+  const res = await axios({
+    method: "GET",
+    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+    params: params,
+    headers: {
+      "content-type": "application/json",
+      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+    },
+  });
 
   const data = await res.data;
 
-  return data.data.requests;
+  if (data.error) throw new Error(data.error);
+
+  return data.data;  
 };
 
 interface BuildTransactionParams {
-  payee?: string;
-  paymentRequestId?: string;
-  userConfig: {
-    fromId: string;
-    fromToken: string;
-    fromAddress: string;
-    fromChain: string;
+  receiver?: string;
+  transactionRequestId?: string;
+  payerConfig: {
+    payer: string;
+    token: string;
+    address: string;
+    chain: number;
     amount: string;
   };
 }
 
 export const buildTransaction = async (params: BuildTransactionParams) => {
-  const res = await request(
-    `query t($data: BuildTransactionInput) {
-        buildTransaction(data:$data){
-          transactionData
-          approvalTransaction
-          bridgeDetails {
-              tool
-              name
-              estAmount
-              toChain {
-                  name
-              }
-              gasFeesUsd
-              toToken
-          }
-          payee
-          userConfig {
-            fromId {
-              id
-            }
-            fromAddress
-            fromToken
-            fromChain {
-              id
-              name
-              chainId
-            }
-            amount
-          }
-        }
-      }`,
-    {
-      data: {
-        ...params,
-        userConfig: {
-          ...params.userConfig,
-          fromChain: fetcchChains[params.userConfig.fromChain]
-        }
-      },
-    }
-  );
+  // const res = await request(
+  //   `query t($data: BuildTransactionInput) {
+  //       buildTransaction(data:$data){
+  //         transactionData
+  //         approvalTransaction
+  //         bridgeDetails {
+  //             tool
+  //             name
+  //             estAmount
+  //             toChain {
+  //                 name
+  //             }
+  //             gasFeesUsd
+  //             toToken
+  //         }
+  //         payee
+  //         userConfig {
+  //           fromId {
+  //             id
+  //           }
+  //           fromAddress
+  //           fromToken
+  //           fromChain {
+  //             id
+  //             name
+  //             chainId
+  //           }
+  //           amount
+  //         }
+  //       }
+  //     }`,
+  //   {
+  //     data: {
+  //       ...params,
+  //       userConfig: {
+  //         ...params.userConfig,
+  //         fromChain: fetcchChains[params.userConfig.fromChain]
+  //       }
+  //     },
+  //   }
+  // );
+
+  // const data = await res.data;
+
+  // return data.data.buildTransaction;
+
+  const res = await axios({
+    method: "POST",
+    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/payment/build-transaction`,
+    data: params,
+    headers: {
+      "content-type": "application/json",
+      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+    },
+  });
 
   const data = await res.data;
 
-  return data.data.buildTransaction;
+  if (data.error) throw new Error(data.error);
+
+  return data.data;
 }
 
 export const getTokenDetail = async (address: string, chain: string): Promise<Partial<Balance>> => {

@@ -57,40 +57,44 @@ const ChooseUserName: NextPageWithLayout = () => {
         .slice(1)
         .map((i) => Number(i.id));
   
+      const secondaryAddresses = []
+
+      for(let i = 0; i < otherChains.length; i++) {
+        for(let k = 0; k < addresses.length; k++) {
+          secondaryAddresses.push({
+            address: addresses[k]?.address as string,
+            chain: otherChains[i],
+            isContract: false
+          })
+        }
+      }
+
       let data: WalletId = {
+        id: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER as string}`,
         identifier: identity,
         provider: process.env.NEXT_PUBLIC_DEFAULT_PROVIDER as string,
         default: {
           address: addresses[0]?.address as string,
-          chain: Number(chains.find(i => i.selected)?.id) as number,
-          isContract: false
+          chain: Number(chains.find((i) => i.selected)?.id) as number,
+          isContract: false,
         },
-        others: otherChains.length > 0 ? addresses.map(address => ({
-          address: address.address,
-          chain: chains.filter(i => i.selected).slice(1).map(i => Number(i.id)),
-          isContract: false
-        })) : [],
-        currentSignature: ""
+        secondary: secondaryAddresses,
+        currentSignature: "",
       };
   
       const message = await generateMessage(data)
 
       if(!message) throw new Error("Can't generate a message for signing, try again later...")
   
-      const signature = await signMessage(addresses[0]?.address as string, message.message)
+      const signature = await signMessage(addresses[0]?.address as string, message)
       
       console.log(signature, data, message)
   
       data.currentSignature = signature
   
       const username = await createWalletId(data)
-      console.log(username)
-      if (!username.walletId)
-        throw new Error(
-          username.error.length > 0 ? username.error[0].message : JSON.stringify(username.error)
-        );
   
-      setIdData(username.walletId)
+      setIdData(username)
       console.log(username)
       setLoading(false);
 

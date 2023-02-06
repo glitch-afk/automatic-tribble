@@ -58,7 +58,7 @@ const WalletsHome = () => {
           (idData?.default.address.toLowerCase() as string)
         }
       />
-      {idData?.others.map((other) => (
+      {idData?.secondary.map((other) => (
         <Wallet
           walletName={other.isContract ? "AA Wallet" : "Other Wallet"}
           address={other.address}

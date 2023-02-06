@@ -9,13 +9,14 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
-import { buildTransaction } from '@/lib/hooks/request';
+import { buildTransaction, fetcchChains } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import LoadingScreen from '@/components/loading';
 import { useRouter } from 'next/router';
 import ErrorScreen from '@/components/error';
 import SucessScreen from '@/components/success';
+import { tokensList } from "@/lib/data/mockData";
 
 const SendPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
@@ -55,7 +56,7 @@ const SendPage: NextPageWithLayout = () => {
   
         setTxRequest(request)
         setSelectedToken(token)
-        setPayerId(request.payee.id)
+        setPayerId(request.receiver.id)
         setAmount(ethers.utils.formatUnits(request.amount, token.tokenDecimal));
       } catch (e) {
         console.log(e, "balance")
@@ -108,12 +109,12 @@ const SendPage: NextPageWithLayout = () => {
 
       if(paymentRequest) {
         tx = await buildTransaction({
-          paymentRequestId: paymentRequest.id,
-          userConfig: {
-            fromId: idData?.id as string,
-            fromAddress: selectedAddress,
-            fromChain: selectedToken?.chain.toString() as string,
-            fromToken:
+          transactionRequestId: paymentRequest.id,
+          payerConfig: {
+            payer: idData?.id as string,
+            address: selectedAddress,
+            chain: Number(fetcchChains[selectedToken?.chain as string]),
+            token:
               (selectedToken?.tokenAddress.toString() as string) ===
               "0x0000000000000000000000000000000000001010"
                 ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
@@ -125,12 +126,12 @@ const SendPage: NextPageWithLayout = () => {
         });
       } else {
         tx = await buildTransaction({
-          payee: payerId,
-          userConfig: {
-            fromId: idData?.id as string,
-            fromAddress: selectedAddress,
-            fromChain: selectedToken?.chain.toString() as string,
-            fromToken:
+          receiver: payerId,
+          payerConfig: {
+            payer: idData?.id as string,
+            address: selectedAddress,
+            chain: Number(selectedToken?.chain),
+            token:
               (selectedToken?.tokenAddress.toString() as string) ===
               "0x0000000000000000000000000000000000001010"
                 ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
@@ -182,7 +183,7 @@ const SendPage: NextPageWithLayout = () => {
         </div>
         {/* select token */}
         <SelectToken
-          tokens={tokens}
+          tokens={[...tokens, ...tokensList]}
           setSelectedToken={setSelectedToken}
           selectedToken={selectedToken}
           lockInput={lockInput}

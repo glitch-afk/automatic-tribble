@@ -846,17 +846,17 @@ const SendPersonalPage: NextPageWithLayout = () => {
             disabled={lockInput}
           />
         </div>
-        {idData?.default &&
+        {idData?.default && (
           <SelectAddress
             addresses={[
               { address: idData.default.address } as Address,
-              idData?.others.map((i) => ({ address: i.address } as Address)),
+              idData?.secondary.map((i) => ({ address: i.address } as Address)),
             ].flat()}
             selectedAddress={selectedAddress}
             setSelectedAddress={setSelectedAddress}
             lockInput={false}
           />
-        }
+        )}
         {/* select token */}
         <SelectToken
           tokens={tokens}
@@ -911,7 +911,11 @@ const SendPersonalPage: NextPageWithLayout = () => {
       {/* modal */}
       {showModal && (
         <SendModal
-          reviewDetails={{ payerId: payerId.substring(0, 20), amount, selectedToken }}
+          reviewDetails={{
+            payerId: payerId.substring(0, 20),
+            amount,
+            selectedToken,
+          }}
           txDetails={transactionDetails}
           isOpen={showModal}
           setIsOpen={setShowModal}

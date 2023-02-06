@@ -50,7 +50,7 @@ const RequestPage: NextPageWithLayout = () => {
     try {
       console.log(selectedToken?.chain as string, ((selectedToken?.chain) === 2 || (selectedToken?.chain) === 3) ? selectedToken?.chain : fetcchChains[selectedToken?.chain as string], "selcte");
       await createPaymentRequest({
-        payee: idData?.id as string,
+        receiver: idData?.id as string,
         payer: payerId,
         token:
           (selectedToken?.tokenAddress?.toString() as string) ===
@@ -59,8 +59,8 @@ const RequestPage: NextPageWithLayout = () => {
             : (selectedToken?.tokenAddress?.toString() as string),
         chain:
           (selectedToken?.chain === 2 || selectedToken?.chain === 3
-            ? selectedToken?.chain
-            : fetcchChains[selectedToken?.chain as string]).toString(),
+            ? Number(selectedToken?.chain)
+            : Number(fetcchChains[selectedToken?.chain as string])),
         amount: ethers.utils
           .parseUnits(amount, selectedToken?.tokenDecimal)
           .toString(),

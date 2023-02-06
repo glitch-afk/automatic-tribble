@@ -45,9 +45,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     console.log(identity, 'dsa');
     getPaymentRequest({
-      payer: {
-        id: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`,
-      },
+      payerId: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
     }).then((res) => {
       console.log(res, 'dsa');
       setRequests(res);

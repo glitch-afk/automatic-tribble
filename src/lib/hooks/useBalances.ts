@@ -55,7 +55,7 @@ export const getBalances = async (id: string) => {
         address: walletId.default.address,
         chain: [walletId.default.chain.chainId],
       },
-      walletId.others.map((other: any) => ({
+      walletId.secondary.map((other: any) => ({
         address: other.address,
         chain: other.chain.map((chain: any) => chain.chainId),
       })),
@@ -154,7 +154,7 @@ export const useBalances = () => {
           address: walletId.default.address,
           chain: [walletId.default.chain.chainId],
         },
-        walletId.others.map((other: any) => ({
+        walletId.secondary.map((other: any) => ({
           address: other.address,
           chain: other.chain.map((chain: any) => chain.chainId),
         })),

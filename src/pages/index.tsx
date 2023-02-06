@@ -55,7 +55,10 @@ const Home: NextPageWithLayout = () => {
   
         setIdData(id)
         setIdentity(id.identifier)
-        const addresses = [id.default.address, id.others.map((o: any) => o.address)].flat()
+        const addresses = [
+          id.default.address,
+          id.secondary.map((o: any) => o.address),
+        ].flat();
         
         setAddresses(addresses.map(ad => ({ address: ad, type: 'injected' })))
   

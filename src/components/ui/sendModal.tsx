@@ -754,7 +754,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
       const address: WalletAddress =
         idData?.default.address.toLowerCase() === account.toLowerCase()
           ? idData.default
-          : (idData?.others.find(
+          : (idData?.secondary.find(
               (i) => i.address.toLowerCase() === account.toLowerCase()
             ) as WalletAddress);
 
@@ -765,7 +765,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
       if(addressWithPrivate?.privateKey) {
         const wallet = new ethers.Wallet(addressWithPrivate.privateKey)
         const provider = ethers.getDefaultProvider(
-          rpcs[txDetails.userConfig.fromChain.id]
+          rpcs[txDetails.payerConfig.chain.id]
         );
         signer = wallet.connect(provider)
       } else {
@@ -780,13 +780,13 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
       const currChainId = await signer.getChainId()
       const currAddress = await signer.getAddress()
 
-      if(currChainId !== Number(txDetails.userConfig.fromChain.chainId) && switchNetwork) {
-        switchNetwork(Number(txDetails.userConfig.fromChain.chainId));
+      if(currChainId !== Number(txDetails.payerConfig.chain.chainId) && switchNetwork) {
+        switchNetwork(Number(txDetails.payerConfig.chain.chainId));
       }
 
       if (
         (currAddress.toLowerCase() !==
-        txDetails.userConfig.fromAddress.toLowerCase()) && !address.isContract
+        txDetails.payerConfig.address.toLowerCase()) && !address.isContract
       )
         throw new Error("from");
 
@@ -864,7 +864,6 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
   
         if(request) {
           await updatePaymentRequest({
-            payer: idData?.id as string,
             id: Number(request.id),
             fromChain:
               fetcchChains[reviewDetails.selectedToken.chain.toString()],
@@ -875,6 +874,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
                 ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                 : reviewDetails.selectedToken.tokenAddress.toString(),
             transactionHash: tx.hash,
+            executed: true
           });
         }
       }
@@ -960,7 +960,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
                           {
                             chainsList.find(
                               (i) =>
-                                i.chainId.toString() ===
+                                i.id.toString() ===
                                 reviewDetails.selectedToken.chain.toString()
                             )?.name
                           }
@@ -972,19 +972,15 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
                           Netwrok Fee
                         </h3>
                         <span className="font-semibold">
-                          {txDetails && txDetails.bridgeDetails && (
-                            <p>${txDetails?.bridgeDetails?.gasFeesUsd}</p>
-                          )}
                           {txDetails &&
-                            !txDetails.bridgeDetails &&
-                            txDetails.transactionData &&
-                            txDetails.transactionData.gasLimit &&
+                            txDetails.transaction &&
+                            txDetails.transaction.gasLimit &&
                             ethPrice && (
                               <p>
                                 $
                                 {(
                                   BigNumber.from(
-                                    txDetails?.transactionData.gasLimit
+                                    txDetails?.transaction.gasLimit
                                   ).toNumber() *
                                   Number(ethPrice) *
                                   0.000000001
@@ -998,20 +994,22 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
                           Need Approval
                         </h3>
                         <span className="font-semibold">
-                          {txDetails.approvalTransaction ? "Yes" : "No"}
+                          {txDetails.approveTransaction ? "Yes" : "No"}
                         </span>
                       </div>
                       {/* Bridge Used */}
-                      {txDetails?.bridgeDetails && (
+                      {txDetails?.receiverConfig.bridgeDetails && (
                         <div className="flex items-center justify-between">
                           <h3 className="font-semibold text-neutral-500">
                             Bridge Used
                           </h3>
                           <span className="font-semibold">
-                            {txDetails?.bridgeDetails?.name
+                            {txDetails?.receiverConfig.bridgeDetails?.name
                               .charAt(0)
                               .toUpperCase() +
-                              txDetails?.bridgeDetails?.name.slice(1)}
+                              txDetails?.receiverConfig.bridgeDetails?.name.slice(
+                                1
+                              )}
                           </span>
                         </div>
                       )}
