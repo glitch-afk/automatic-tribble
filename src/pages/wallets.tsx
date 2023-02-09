@@ -39,7 +39,7 @@ const ReceivePage: NextPageWithLayout = () => {
               <WalletComp
                 key={index}
                 address={wallet?.address}
-                chain={wallet?.chain[0].id as number}
+                chain={wallet?.chain.id as number}
                 type={wallet.isContract ? "AA" : "EOA"}
               />
             );
