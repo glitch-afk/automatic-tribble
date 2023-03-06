@@ -799,25 +799,15 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
         let batchAddresses: string[] = []
         let batchData: string[] = [];
         
-        if(txDetails.approvalTransaction) {
-          const approval = txDetails.approvalTransaction;
-          const contract = new ethers.Contract(
-            approval.tokenAddress,
-            ERC_20_ABI,
-            signer
-          );
+        if(txDetails.approveTransaction) {
+          const approval = txDetails.approveTransaction;
           // console.log(account)
-          const balance = await contract.balanceOf(account)
-          if(Number(balance) < Number(approval.approvalAmount)) throw new Error("balance too low")
-          const erc20 = new ethers.utils.Interface(ERC_20_ABI)
 
-          const approvalData = erc20.encodeFunctionData("approve", [approval.to, approval.approvalAmount])
-
-          batchAddresses.push(approval.tokenAddress)
-          batchData.push(approvalData)
+          batchAddresses.push(approval.to)
+          batchData.push(approval.data)
         }
 
-        const txData = txDetails.transactionData;
+        const txData = txDetails.transaction;
 
         if(txData.data) {
           batchAddresses.push(txData.to);
@@ -843,19 +833,14 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
 
         await tx.wait()
       } else {
-        if(txDetails.approvalTransaction) {
-          const approval = txDetails.approvalTransaction;
-          const contract = new ethers.Contract(
-            approval.tokenAddress,
-            ERC_20_ABI,
-            signer
-          );
-          const _tx = await contract.approve(approval.to, approval.approvalAmount)
+        if(txDetails.approveTransaction) {
+          const approval = txDetails.approveTransaction;
+          const _tx = await signer.sendTransaction(approval)
           await _tx.wait()
         }
   
         const tx = await signer.sendTransaction({
-          ...txDetails.transactionData,
+          ...txDetails.transaction,
           gasLimit: 1000000,
           gasPrice: await signer.provider?.getGasPrice()
         })
