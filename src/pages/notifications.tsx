@@ -8,7 +8,7 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { useAppContext } from '@/lib/store';
-import { getPaymentRequest, getTokenDetail } from '@/lib/hooks/request';
+import { getPaymentRequest } from '@/lib/hooks/request';
 import { getToken } from 'fetcch-chain-data';
 import { Balance } from '@/lib/hooks/useBalances';
 
@@ -25,24 +25,16 @@ const NotificationsPage: NextPageWithLayout = () => {
         const r = res[i]
         const detail = getToken(r.token, r.chain.id)
         
-        if(!detail) {
-          const detail = await getTokenDetail(r.token, r.chain.chainId)
-          
-          r.token = detail;
+        r.token = {
+          tokenAddress: detail.address,
+          chain: detail.chainId,
+          tokenDecimal: detail.decimals,
+          tokenName: detail.name,
+          tokenTicker: detail.symbol,
+          tokenLogo: detail.logoURI
+        } as Partial<Balance>;
 
-          responses.push(r);
-        } else {
-          r.token = {
-            tokenAddress: detail.address,
-            chain: detail.chainId,
-            tokenDecimal: detail.decimals,
-            tokenName: detail.name,
-            tokenTicker: detail.symbol,
-            tokenLogo: detail.logoURI
-          } as Partial<Balance>;
-  
-          responses.push(r)
-        }
+        responses.push(r)
       }
 
       console.log(responses)
