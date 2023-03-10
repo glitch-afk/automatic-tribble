@@ -17,7 +17,7 @@ interface IWalleConnectProps {
 
 const { chains, provider } = configureChains(
   [mainnet, goerli, polygon, bsc, polygonMumbai],
-  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }), jsonRpcProvider({ rpc: (c) => ({ http: "https://bsc-dataseed.binance.org/" }) })]
+  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }), jsonRpcProvider({ rpc: (_c) => ({ http: "https://bsc-dataseed.binance.org/" }) })]
 );
 
 const { connectors } = getDefaultWallets({
