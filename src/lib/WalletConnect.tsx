@@ -7,7 +7,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import type { ReactNode } from 'react';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { mainnet, polygon, polygonMumbai, goerli } from 'wagmi/chains';
+import { mainnet, polygon, polygonMumbai, goerli, bsc } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 
 interface IWalleConnectProps {
@@ -15,7 +15,7 @@ interface IWalleConnectProps {
 }
 
 const { chains, provider } = configureChains(
-  [mainnet, goerli, polygon, polygonMumbai],
+  [mainnet, goerli, polygon, bsc, polygonMumbai],
   [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string })]
 );
 
