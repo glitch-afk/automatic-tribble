@@ -59,8 +59,8 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
   const { idData } = useAppContext()
   const { data: signerData } = useSigner()
   const { openConnectModal } = useConnectModal();
-  const { switchNetwork } =
-    useSwitchNetwork();
+  // const { switchNetwork } =
+  //   useSwitchNetwork();
 
   const { addresses } = useAppContext()
 
