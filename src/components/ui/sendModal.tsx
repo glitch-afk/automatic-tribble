@@ -92,12 +92,12 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
         }
       }
 
-      const currChainId = await signer.getChainId()
+      // const currChainId = await signer.getChainId()
       const currAddress = await signer.getAddress()
 
-      if(currChainId !== Number(txDetails.payerConfig.chain.chainId) && switchNetwork) {
-        switchNetwork(Number(txDetails.payerConfig.chain.chainId));
-      }
+      // if(currChainId !== Number(txDetails.payerConfig.chain.chainId) && switchNetwork) {
+      //   switchNetwork(Number(txDetails.payerConfig.chain.chainId));
+      // }
 
       if (
         (currAddress.toLowerCase() !==
