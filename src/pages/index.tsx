@@ -48,7 +48,7 @@ const Home: NextPageWithLayout = () => {
         const signature = await signer.signMessage('wagpay did this')
   
         const id = await findWalletId({
-          signedMsg: signature
+          signedMessage: signature
         })
         
         if(!id) throw new Error()

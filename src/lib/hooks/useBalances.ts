@@ -73,30 +73,30 @@ export const getBalances = async (id: string) => {
           address.chain[j] as string
         );
         const data = await res.data;
-
+        console.log(data, "data")
         if (!data) continue;
 
-        const tokens = data.assets;
+        const tokens = data;
         for (let k = 0; k < tokens.length; k++) {
           const token = tokens[k];
           console.log(token);
 
-          if (!balances[token.contract.ticker_symbol])
-            balances[token.contract.ticker_symbol] = [];
+          if (!balances[token.contract_ticker_symbol])
+            balances[token.contract_ticker_symbol] = [];
 
-          usdBalance += token.balance_in_usd;
+          usdBalance += token.quote;
 
-          balances[token.contract.ticker_symbol]?.push({
+          balances[token.contract_ticker_symbol]?.push({
             address: address.address,
-            tokenAddress: token.contract.address,
-            tokenTicker: token.contract.ticker_symbol,
-            tokenName: token.contract.name,
-            tokenLogo: token.provider_specific.logo_url,
-            tokenDecimal: token.contract.decimals,
+            tokenAddress: token.contract_address,
+            tokenTicker: token.contract_ticker_symbol,
+            tokenName: token.contract_name,
+            tokenLogo: token.logo_url,
+            tokenDecimal: token.contract_decimals,
             balance: Number(
-              ethers.utils.formatUnits(token.balance, token.contract.decimals)
+              ethers.utils.formatUnits(token.balance, token.contract_decimals)
             ).toFixed(2),
-            balanceUsd: token.balance_in_usd.toFixed(2),
+            balanceUsd: token.quote.toFixed(2),
             chain: address.chain[j] as string,
           });
 
@@ -170,28 +170,29 @@ export const useBalances = () => {
           getBalanceOnApi(address.address, address.chain[j] as string)
             .then((res) => res.data.assets)
             .then((tokens) => {
+              console.log(tokens, 45678)
               for (let k = 0; k < tokens.length; k++) {
                 const token = tokens[k];
                 console.log(token);
 
-                if (!balances[token.contract.ticker_symbol])
-                  balances[token.contract.ticker_symbol] = [];
+                if (!balances[token.contract_ticker_symbol])
+                  balances[token.contract_ticker_symbol] = [];
 
-                usdBalance += token.balance_in_usd;
-
-                balances[token.contract.ticker_symbol]?.push({
-                  tokenAddress: token.contract.address,
-                  tokenTicker: token.contract.ticker_symbol,
-                  tokenName: token.contract.name,
-                  tokenLogo: token.provider_specific.logo_url,
-                  tokenDecimal: token.contract.decimals,
+                usdBalance += Number(token.quote);
+console.log(token)
+                balances[token.contract_ticker_symbol]?.push({
+                  tokenAddress: token.contract_address,
+                  tokenTicker: token.contract_ticker_symbol,
+                  tokenName: token.contract_name,
+                  tokenLogo: token.logo_url,
+                  tokenDecimal: token.contract_decimals,
                   balance: Number(
                     ethers.utils.formatUnits(
                       token.balance,
-                      token.contract.decimals
+                      token.contract_decimals
                     )
                   ).toFixed(2),
-                  balanceUsd: token.balance_in_usd.toFixed(2),
+                  balanceUsd: token.quote.toFixed(2),
                   chain: address.chain[j] as string,
                 });
 
