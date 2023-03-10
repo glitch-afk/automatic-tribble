@@ -130,7 +130,7 @@ const SendPage: NextPageWithLayout = () => {
           payerConfig: {
             payer: idData?.id as string,
             address: selectedAddress,
-            chain: Number(selectedToken?.chain),
+            chain: Number(fetcchChains[selectedToken?.chain as string]),
             token:
               (selectedToken?.tokenAddress.toString() as string) ===
               "0x0000000000000000000000000000000000001010"
