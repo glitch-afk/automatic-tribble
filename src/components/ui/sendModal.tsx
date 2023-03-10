@@ -10,7 +10,7 @@ import { useAppContext } from '@/lib/store';
 import { BigNumber, ethers } from 'ethers';
 import { fetcchChains, getTokenDetail, updatePaymentRequest } from '@/lib/hooks/request';
 import { chainsList } from '@/lib/data/mockData';
-import { useSigner, useSwitchNetwork } from 'wagmi';
+import { useSigner } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { WalletAddress } from '@/lib/hooks/user';
 
