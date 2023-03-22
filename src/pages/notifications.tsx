@@ -1,16 +1,48 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
-import React from 'react';
+import { ReactElement, useEffect } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import { Wait } from '@/components/icons/wait';
 import NotificationItem from '@/components/ui/notification-item';
 import { ActionLayout } from '@/layouts/Action';
-import { NotificationsData } from '@/lib/data/mockData';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
+import { useAppContext } from '@/lib/store';
+import { getPaymentRequest } from '@/lib/hooks/request';
+import { getToken } from 'fetcch-chain-data';
+import { Balance } from '@/lib/hooks/useBalances';
 
 const NotificationsPage: NextPageWithLayout = () => {
+  const { requests, idData, setRequests } = useAppContext()  
+
+  useEffect(() => {    
+    getPaymentRequest({
+      payer: idData?.id
+    }).then(async (res) => {
+      let responses = []
+      
+      for(let i = 0; i < res.length; i++) {
+        const r = res[i]
+        const detail = getToken(r.token, r.chain.id)
+        
+        r.token = {
+          tokenAddress: detail.address,
+          chain: detail.chainId,
+          tokenDecimal: detail.decimals,
+          tokenName: detail.name,
+          tokenTicker: detail.symbol,
+          tokenLogo: detail.logoURI
+        } as Partial<Balance>;
+
+        responses.push(r)
+      }
+
+      console.log(responses)
+      
+      setRequests(responses);
+    });
+  }, []);
+
   return (
     <div>
       <header className="flex w-full items-center">
@@ -26,14 +58,20 @@ const NotificationsPage: NextPageWithLayout = () => {
       {/* notification list */}
       <div className="mt-8 max-h-[500px] overflow-y-auto">
         <ul className=" flex w-full flex-col items-center justify-center space-y-3 rounded-xl">
-          {NotificationsData.length > 0 ? (
-            NotificationsData.map((notification, index) => (
-              <NotificationItem
-                amount={notification.amount}
-                key={index}
-                requestedBy={notification.requestedBy}
-              />
-            ))
+          {requests.length > 0 ? (
+            requests.map((notification: any, index) => {
+              if(notification.executed) return <></>
+              else return (
+                <NotificationItem
+                  request={notification}
+                  address={notification.token}
+                  chain={notification.chain.chainId}
+                  amount={notification.amount}
+                  key={index}
+                  requestedBy={notification.receiver.id}
+                />
+              )
+            })
           ) : (
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="w-fit rounded-md bg-slate-500 py-3 px-4">

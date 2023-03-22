@@ -1,8 +1,8 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable react/jsx-key */
-import { ethers } from 'ethers';
 
-import CurrencySwap from '@/components/ui/curreny-swap';
+import CurrencySwap, { CoinList } from '@/components/ui/curreny-swap';
+import { chainsList } from '@/lib/data/mockData';
 import { useAppContext } from '@/lib/store';
 
 import TransactionsList from './list';
@@ -11,8 +11,8 @@ const Index = () => {
   const { balances: result } = useAppContext();
 
   return (
-    <ul className="mx-auto mt-10 max-h-[480px] w-full overflow-y-scroll">
-      {result ? (
+    <ul className="mx-auto mt-10 max-h-[400px] w-full overflow-y-scroll">
+      {result && Object.keys(result).length > 0 ? (
         <>
           {Object.keys(result).map((keys) => {
             // @ts-ignore
@@ -26,14 +26,8 @@ const Index = () => {
                 <TransactionsList
                   // @ts-ignore
                   tokenTicker={result[keys][0]?.tokenTicker}
-                  balance={ethers.utils
-                    .formatUnits(
-                      // @ts-ignore
-                      result[keys][0]?.balance as string,
-                      // @ts-ignore
-                      result[keys][0]?.tokenDecimal as number
-                    )
-                    .toString()}
+                  // @ts-ignore
+                  balance={result[keys][0]?.balance as string}
                   // @ts-ignore
                   image={result[keys][0]?.tokenLogo}
                 >
@@ -41,15 +35,9 @@ const Index = () => {
                     <div className="mb-3" key={index}>
                       <CurrencySwap
                         from={res.tokenTicker.substring(0, 8) as any}
-                        to="ETH"
-                        balance={ethers.utils
-                          .formatUnits(
-                            // @ts-ignore
-                            res?.balance as string,
-                            // @ts-ignore
-                            res?.tokenDecimal as number
-                          )
-                          .toString()}
+                        to={chainsList.find(i => i.chainId.toString() === res.chain.toString())?.name as CoinList}
+                        // @ts-ignore
+                        balance={res?.balance as string}
                         usdBalance={res.balanceUsd as string}
                         image={res.tokenLogo as string}
                       />

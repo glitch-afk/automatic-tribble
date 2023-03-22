@@ -1,23 +1,40 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
 
 import { Check } from '@/components/icons/check';
 import { Copy } from '@/components/icons/copy';
 import CreateWalletLayout from '@/layouts/create';
-import { secretPhrase } from '@/lib/data/mockData';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
+import { ethers } from 'ethers';
+import { useAppContext } from '@/lib/store';
 
 const RecoveryPhrasePage: NextPageWithLayout = () => {
+  const { seedPhrase, setSeedPhrase, setAddresses } = useAppContext();
+
+  const generateSeedPhrase = () => {
+    const wallet = ethers.Wallet.createRandom();
+
+    setSeedPhrase(wallet.mnemonic.phrase.split(" "));
+    setAddresses([{
+      address: wallet.address,
+      privateKey: wallet.privateKey,
+      type: 'created'
+    }])
+  };
+
+  useEffect(() => {
+    generateSeedPhrase()
+  }, [])
+  
   const [copyButtonStatus, setCopyButtonStatus] = useState(false);
 
-  let secret_phrase = '';
 
   const [_, copyToClipboard] = useCopyToClipboard();
   function handleCopyToClipboard() {
-    copyToClipboard(secret_phrase); // value your want to be copied
+    copyToClipboard(seedPhrase.join(" ")); // value your want to be copied
     setCopyButtonStatus(true);
     setTimeout(() => {
       setCopyButtonStatus(copyButtonStatus);
@@ -34,8 +51,7 @@ const RecoveryPhrasePage: NextPageWithLayout = () => {
       <div className="mt-4 max-h-[500px] w-full overflow-y-auto">
         {/* secret grid */}
         <div className="grid w-full grid-cols-3 gap-2">
-          {secretPhrase.map((item, index) => {
-            secret_phrase += `${item} `;
+          {seedPhrase.map((item, index) => {
             return (
               <div className="w-full rounded-md bg-white p-2" key={index}>
                 <span className="inline-flex select-none">{index + 1}.</span>

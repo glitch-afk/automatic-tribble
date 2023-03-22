@@ -3565,6 +3565,13 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
+fetcch-chain-data@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/fetcch-chain-data/-/fetcch-chain-data-0.0.6.tgz#d4280420c069e020e4b7ee19bd284f4e86c00d54"
+  integrity sha512-xYh17pjEq9si7f5v0mTl9EPl1G+3UecU/+jeWOCDp7Crjy8VPHZGiLlZWq4BFnDFw2C3i0Gu0+0SccFAoURjvw==
+  dependencies:
+    ts-node "^10.9.1"
+
 figures@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-3.2.0.tgz#625c18bd293c604dc4a8ddb2febf0c88341746af"
@@ -6580,7 +6587,7 @@ ts-easing@^0.2.0:
   resolved "https://registry.yarnpkg.com/ts-easing/-/ts-easing-0.2.0.tgz#c8a8a35025105566588d87dbda05dd7fbfa5a4ec"
   integrity sha512-Z86EW+fFFh/IFB1fqQ3/+7Zpf9t2ebOAxNI/V6Wo7r5gqiqtxmgTlQ1qbqQcjLKYeSHPTsEmvlJUDg/EuL0uHQ==
 
-ts-node@^10.8.1:
+ts-node@^10.8.1, ts-node@^10.9.1:
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==

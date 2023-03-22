@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
-import React, { useState } from 'react';
+import { ReactElement, useEffect } from 'react';
+import { useState } from 'react';
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import LoadingScreen from '@/components/loading';
@@ -10,16 +10,89 @@ import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
+import { createPaymentRequest, fetcchChains } from '@/lib/hooks/request';
+import { ethers } from 'ethers';
+import { tokensList } from '@/lib/data/mockData';
+import { Balance } from '@/lib/hooks/useBalances';
+import SucessScreen from '@/components/success';
+import ErrorScreen from '@/components/error';
 
 const RequestPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState(false);
   useLockBodyScroll(loading);
   const { balances } = useAppContext();
   const [tokens, _setTokens] = useState(
-    balances != null ? Object.values(balances).flat() : []
+    (balances != null ? Object.values(balances).flat() : [])
   );
 
-  const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const [_isValid, setIsValid] = useState(true)
+
+  const [selectedToken, setSelectedToken] = useState(tokens[0] ? tokens[0] : tokensList[0]);
+  const [payerId, setPayerId] = useState("")
+  const [amount, setAmount] = useState("")
+
+  const { idData } = useAppContext()
+
+  useEffect(() => {
+    console.log(
+      amount,
+      selectedToken?.balance,
+      Number(amount) > Number(selectedToken?.balance)
+    );
+    if(!amount || Number(amount) > Number(selectedToken?.balance) || !payerId) setIsValid(false)
+    else setIsValid(true)
+  }, [amount, payerId])
+
+  const createRequest = async () => {
+    setLoading(true)
+    try {
+      console.log(selectedToken?.chain as string, ((selectedToken?.chain) === 2 || (selectedToken?.chain) === 3) ? selectedToken?.chain : fetcchChains[selectedToken?.chain as string], "selcte");
+      await createPaymentRequest({
+        receiver: idData?.id as string,
+        payer: payerId,
+        token:
+          (selectedToken?.tokenAddress?.toString() as string) ===
+          "0x0000000000000000000000000000000000001010"
+            ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            : (selectedToken?.tokenAddress?.toString() as string),
+        chain:
+          (selectedToken?.chain === 2 || selectedToken?.chain === 3
+            ? Number(selectedToken?.chain)
+            : Number(fetcchChains[selectedToken?.chain as string])),
+        amount: ethers.utils
+          .parseUnits(amount, selectedToken?.tokenDecimal)
+          .toString(),
+        message: "YOYO",
+        label: "123",
+      });
+
+      setSuccess(true)
+    } catch (e) {
+      setError(true)
+    }
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    if(success) {
+      setTimeout(() => {
+        setSuccess(false)
+      }, 5000)
+    }
+  }, [success])
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+    }
+  }, [error]);
+
+  useEffect(() => console.log(selectedToken, "selcte"), [selectedToken])
+
   return (
     <div>
       <header className="flex w-full items-center">
@@ -39,6 +112,8 @@ const RequestPage: NextPageWithLayout = () => {
             Request to
           </label>
           <input
+            value={payerId}
+            onChange={(e) => setPayerId(e.target.value)}
             type="email"
             name="wallet_id"
             id="wallet_id"
@@ -49,19 +124,27 @@ const RequestPage: NextPageWithLayout = () => {
         </div>
         {/* select token */}
         <SelectToken
-          tokens={tokens}
+          tokens={[...tokens, ...tokensList]}
           setSelectedToken={setSelectedToken}
-          selectedToken={selectedToken}
+          selectedToken={selectedToken as Balance}
+          lockInput={false}
         />
         {/* amount */}
         <div className="mb-4 mt-8 flex flex-col">
           <div className="mb-1 flex items-center justify-between">
             <label htmlFor="amount">Amount</label>
-            <span className="text-xs text-neutral-500">
-              Max ${selectedToken?.balance ?? '0.00'}
+            <span
+              onClick={() =>
+                setAmount(selectedToken?.balance?.toString() ?? "0")
+              }
+              className="cursor-pointer text-xs text-neutral-500"
+            >
+              Max ${selectedToken?.balance ?? "0.00"}
             </span>
           </div>
           <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
             type="number"
             name="amount"
             id="amount"
@@ -70,16 +153,31 @@ const RequestPage: NextPageWithLayout = () => {
           />
         </div>
         {/* send button */}
+
         <button
           type="button"
           className="w-full rounded-xl bg-black py-3 text-sm text-white"
-          onClick={() => setLoading(true)}
+          onClick={() => createRequest()}
         >
           Request
         </button>
       </div>
       {loading && (
         <LoadingScreen isLoading={loading} setIsLoading={setLoading} />
+      )}
+      {error && (
+        <ErrorScreen
+          message={"Can't send a payment request"}
+          isLoading={error}
+          setIsLoading={setError}
+        />
+      )}
+      {success && (
+        <SucessScreen
+          message={"Successful transaction"}
+          isLoading={success}
+          setIsLoading={setSuccess}
+        />
       )}
     </div>
   );

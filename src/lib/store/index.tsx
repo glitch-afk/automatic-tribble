@@ -1,6 +1,9 @@
 import { createContext, useContext } from 'react';
 
 import type { Balance } from '@/lib/hooks/useBalances';
+import type { Address, Chain } from '@/types';
+
+import type { WalletId } from '../hooks/user';
 
 export interface ContextInterface {
   balances: {
@@ -11,6 +14,18 @@ export interface ContextInterface {
   setUsdBalance: Function;
   identity: string;
   setIdentity: Function;
+  addresses: Address[];
+  setAddresses: Function;
+  chains: Chain[];
+  setChains: Function;
+  idData: WalletId | undefined;
+  setIdData: Function;
+  seedPhrase: string[];
+  setSeedPhrase: Function;
+  requests: any[];
+  setRequests: Function;
+  selectedAddress: string;
+  setSelectedAddress: Function;
 }
 
 export const AppContext = createContext<ContextInterface>(

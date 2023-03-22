@@ -4,30 +4,25 @@ import React, { useState } from 'react';
 import { ChevDown } from '../icons/ChevDown';
 import { ChevUp } from '../icons/ChevUp';
 
-const TransactionsList = ({
-  tokenTicker,
-  balance,
-  image,
+const WalletList = ({
+  name,
   children,
 }: {
-  tokenTicker: string;
-  balance: string;
-  image: string;
+  name: string;
   children: React.ReactNode;
 }) => {
   const [isExpand, setIsExpand] = useState(false);
   return (
-    <li className="mb-3">
+    <li className=" mb-3 w-full list-none">
       <div className="relative w-full rounded-xl bg-white px-2 py-3">
         <div className="flex items-center justify-between">
           {/* left side */}
           <div className="flex items-center">
-            <img src={image} alt="" className="h-5 w-5" />
-            <span className="ml-1 text-sm font-semibold">{tokenTicker}</span>
+            <div className="h-8 w-8 rounded-full bg-gradient-to-b from-yellow-500 to-orange-600" />
+            <span className="ml-3 text-lg font-semibold">{name}</span>
           </div>
           {/* right side */}
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-semibold">{balance}</span>
             <div
               className="rounded-xl bg-card p-2"
               onClick={() => setIsExpand(!isExpand)}
@@ -64,4 +59,4 @@ const TransactionsList = ({
   );
 };
 
-export default TransactionsList;
+export default WalletList;

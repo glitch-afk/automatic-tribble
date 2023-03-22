@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 
+import WalletsHome from '@/components/home/walletfeat';
 import { Bell } from '@/components/icons/bell';
 import { Down } from '@/components/icons/down';
 import { Logo } from '@/components/icons/logo';
@@ -8,15 +9,12 @@ import { Up } from '@/components/icons/up';
 import { UpDown } from '@/components/icons/upDown';
 import Transactions from '@/components/transactions';
 import AuthLayout from '@/layouts/Auth';
-import { useBalances } from '@/lib/hooks/useBalances';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
 
 const HomePage: NextPageWithLayout = () => {
-  const { identity, usdBalance } = useAppContext();
-
-  const { result: _result } = useBalances(identity);
+  const { usdBalance, idData } = useAppContext();
 
   return (
     <div className="flex flex-col">
@@ -27,7 +25,7 @@ const HomePage: NextPageWithLayout = () => {
         <div className="flex items-center space-x-6">
           {/* wallets */}
           <div>
-            <Link href="/home">
+            <Link href="/wallets">
               <div className="h-6 w-6 rounded-full bg-gradient-to-b from-yellow-500 to-orange-600" />
             </Link>
             <span className="sr-only">Wallets</span>
@@ -40,10 +38,10 @@ const HomePage: NextPageWithLayout = () => {
       </div>
       {/* header end */}
       <div className="mt-12 flex w-full flex-col items-center justify-center">
-        <h2 className="mb-1 text-2xl font-bold sm:text-3xl">
-          {+usdBalance > 0 ? `$ ${usdBalance}` : '$ 0.00'}
+        <h2 className="mb-1 text-4xl font-bold">
+          {+usdBalance > 0 ? `$${usdBalance}` : '$0.00'}
         </h2>
-        <h3>mandar@backpack</h3>
+        <h3>{idData?.id}</h3>
         {/* send - receive - request */}
         <div className="mt-8 flex w-2/3 items-center justify-between">
           <div className="text-center">
@@ -75,6 +73,7 @@ const HomePage: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
+      <WalletsHome />
       {/* transactions */}
       <Transactions />
     </div>

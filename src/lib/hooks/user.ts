@@ -1,6 +1,11 @@
+// import { request, request2 } from '@/utils/request';
 import axios from 'axios';
 
-import { request } from '@/utils/request';
+export interface WalletAddress {
+    address: string;
+    chain: any;
+    isContract: boolean;
+}
 
 export interface WalletId {
   id?: string;
@@ -8,112 +13,221 @@ export interface WalletId {
   provider: string;
   default: {
     address: string;
-    chain: number;
+    chain: any;
+    isContract: boolean;
   };
-  others: {
+  secondary: {
     address: string;
-    chain: number[];
+    chain: any;
+    isContract: boolean;
   }[];
   isContract?: boolean;
   currentSignature: string;
   previousSignature?: string;
 }
 
-export const findWalletId = async (id: string) => {
-  const res = await request(
-    `query WalletId($id: String!) {
-      walletIds(where: { id: $id }) {
-        id
-        identifier
-        provider {
-            id
-            delimiter
-        }
-        default {
-            address
-            chain {
-                name
-                chainId
-            }
-        }
-        others {
-            address
-            chain {
-                name
-                chainId
-            }
-        }
-        dataSourceTx {
-            id
-        }
-        isContract
-        currentSignature
-        previousSignature
-        syncedAt
-        createdAt
-      }
-    }`,
-    {
-      id,
-    }
-  );
+export const findWalletId = async (where: any) => {
+  // const res = await request(
+  //   `query WalletId($where: WalletIdWhereInput!) {
+  //     walletIds(where: $where) {
+  //       id
+  //       identifier
+  //       provider {
+  //           id
+  //           delimiter
+  //       }
+  //       default {
+  //           address
+  //           chain {
+  //               id
+  //               name
+  //               chainId
+  //           }
+  //           isContract
+  //       }
+  //       others {
+  //           address
+  //           chain {
+  //               id
+  //               name
+  //               chainId
+  //           }
+  //           isContract
+  //       }
+  //       dataSourceTx {
+  //           id
+  //       }
+  //       isContract
+  //       currentSignature
+  //       previousSignature
+  //       syncedAt
+  //       createdAt
+  //     }
+  //   }`,
+  //   {
+  //     where,
+  //   }
+  // );
+
+  const res = await axios({
+    method: "GET",
+    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/identity`,
+    params: where,
+    headers: {
+      "content-type": "application/json",
+      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+    },
+  });
 
   const data = await res.data;
+  
+  if(data.error) throw new Error(data.error)
 
-  return data.data.walletIds.length > 0 ? data.data.walletIds[0] : undefined;
+  return data.data;
 };
 
-export const createWalletId = async (walletId: WalletId): Promise<WalletId> => {
+export const generateMessage = async (walletId: Partial<WalletId>) => {
   try {
+
+//     const res = await request(
+//       `query A($id: WalletIdCreateInput!) {
+// 				generateMessage(id: $id) {
+// 					message
+// 					nonce
+// 					walletId {
+// 						id
+// 						provider {
+// 							id
+// 							delimiter
+// 						}
+// 						identifier
+// 						currentSignature
+// 						previousSignature
+// 						default {
+// 							address
+// 							chain {
+// 								id
+// 								name
+// 								chainId
+// 							}
+//               isContract
+// 						}
+// 						others {
+// 							address
+// 							chain {
+// 								id
+// 								name
+// 								chainId
+// 							}
+//               isContract
+// 						}
+// 					}
+// 					providerSignature
+// 				}
+// 			}
+// `,
+//       { id: walletId }
+//     );
+
+//     const data = await res.data
+
+//     return data.data.generateMessage
+
     const res = await axios({
-      url: process.env.BACKEND_BASE_URL,
-      method: 'POST',
-      data: {
-        query: `mutation UploadAndIndexWalletId($walletId: WalletIdCreateInput!) {
-            uploadAndIndexWalletId(data: $walletId) {
-              id
-              walletId {
-                identifier
-                provider {
-                  id
-                  delimiter
-                }
-                default {
-                  address
-                  chain {
-                    id
-                    name
-                    chainId
-                  }
-                }
-                others {
-                  address
-                  chain {
-                    id
-                    name
-                    chainId
-                  }
-                }
-              }
-              nonce
-              dataSourceTx {
-                txId
-              }
-            }
-          }`,
-        variables: {
-          walletId,
-        },
-      },
+      method: "POST",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/identity/generate-message`,
+      data: walletId,
       headers: {
-        'content-type': 'application/json',
-        'secret-key': process.env.SECRET_KEY,
+        "content-type": "application/json",
+        "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
       },
     });
 
     const data = await res.data;
 
-    return data.data.uploadAndIndexWalletId.walletId;
+    if (data.error) throw new Error(data.error);
+    console.log(data.data.message)
+    return data.data.message;
+
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+    throw e;
+  }
+}
+
+export const createWalletId = async (walletId: WalletId): Promise<{walletId: WalletId, error?: any}> => {
+  try {
+    // const res = await request(
+    //   `mutation UploadAndIndexWalletId($walletId: WalletIdCreateInput!) {
+    //       uploadAndIndexWalletId(data: $walletId) {
+    //         id
+    //         walletId {
+    //           id
+    //           identifier
+    //           provider {
+    //               id
+    //               delimiter
+    //           }
+    //           default {
+    //               address
+    //               chain {
+    //                   id
+    //                   name
+    //                   chainId
+    //               }
+    //               isContract
+    //           }
+    //           others {
+    //               address
+    //               chain {
+    //                   id
+    //                   name
+    //                   chainId
+    //               }
+    //               isContract
+    //           }
+    //           dataSourceTx {
+    //               id
+    //           }
+    //           isContract
+    //           currentSignature
+    //           previousSignature
+    //           syncedAt
+    //           createdAt
+    //         }
+    //       }
+    //     }`,
+    //   {
+    //     walletId,
+    //   }
+    // );
+
+    // const data = await res.data;
+
+    // return {
+    //   walletId:
+    //     data.data.uploadAndIndexWalletId && data.data.uploadAndIndexWalletId.walletId
+    //       ? data.data.uploadAndIndexWalletId.walletId
+    //       : undefined,
+    //   error: data.errors ? data.errors : undefined,
+    // };
+
+    const res = await axios({
+      method: "POST",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/identity`,
+      data: walletId,
+      headers: {
+        "content-type": "application/json",
+        "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+      },
+    });
+
+    const data = await res.data;
+
+    if (data.error) throw new Error(data.error);
+
+    return data.data;    
   } catch (e: any) {
     // eslint-disable-next-line no-console
     console.error(e);

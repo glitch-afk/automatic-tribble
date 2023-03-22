@@ -1,9 +1,9 @@
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
-import { useAccount } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 
 import { Check } from '@/components/icons/check';
 import { Copy } from '@/components/icons/copy';
@@ -11,11 +11,16 @@ import { Logo } from '@/components/icons/logo';
 import { Main } from '@/layouts/Main';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
+import { useRouter } from 'next/router';
+import { useAppContext } from '@/lib/store';
+import { findWalletId } from '@/lib/hooks/user';
 
 const Home: NextPageWithLayout = () => {
   const { openConnectModal } = useConnectModal();
   const { isConnected, address } = useAccount();
   const [copyButtonStatus, setCopyButtonStatus] = useState(false);
+
+  const { data: signer } = useSigner()
 
   const [_, copyToClipboard] = useCopyToClipboard();
   function handleCopyToClipboard() {
@@ -24,6 +29,43 @@ const Home: NextPageWithLayout = () => {
     setTimeout(() => {
       setCopyButtonStatus(copyButtonStatus);
     }, 2500);
+  }
+
+  const router = useRouter();
+  const { idData } = useAppContext()
+
+  useEffect(() => {
+    if (idData) {
+      router.push("/home");
+    }
+  }, []);
+
+  const { setIdData, setIdentity, setAddresses } = useAppContext()
+
+  const retrieve = async () => {
+    if(signer) {
+      try {
+        const signature = await signer.signMessage('wagpay did this')
+  
+        const id = await findWalletId({
+          signedMessage: signature
+        })
+        
+        if(!id) throw new Error()
+  
+        setIdData(id)
+        setIdentity(id.identifier)
+        const addresses = [
+          id.default.address,
+          id.secondary.map((o: any) => o.address),
+        ].flat();
+        
+        setAddresses(addresses.map(ad => ({ address: ad, type: 'injected' })))
+  
+  
+        router.push("/home/")
+      } catch (e) {}
+    }
   }
 
   return (
@@ -50,12 +92,20 @@ const Home: NextPageWithLayout = () => {
               </div>
             </div>
           )}
-          <Link
-            href="/home"
-            className="w-full rounded-md bg-black p-3 text-center text-white"
-          >
-            Continue
-          </Link>
+          <div className="w-full flex flex-col justify-center items-center space-y-1">
+            <Link
+              href="/create/?connect=true"
+              className="w-full rounded-md bg-black p-3 text-center text-white"
+            >
+              Continue
+            </Link>
+            <div
+              onClick={() => retrieve()}
+              className="w-full rounded-md bg-black p-3 text-center text-white"
+            >
+              Retrieve
+            </div>
+          </div>
         </>
       ) : (
         <>
@@ -69,7 +119,7 @@ const Home: NextPageWithLayout = () => {
             </button>
           )}
           <Link
-            href="/create"
+            href="/create?connect=false"
             className="w-full rounded-xl border border-black p-3 text-center text-black"
           >
             Create Wallet

@@ -1,15 +1,19 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useRef } from 'react';
-import { useClickAway, useLockBodyScroll } from 'react-use';
-
-import { Loading } from './icons/loading';
+import { AnimatePresence, motion } from "framer-motion";
+import { useRef } from "react";
+import { useClickAway, useLockBodyScroll } from "react-use";
+import { CrossRed } from "./icons/cross-red";
 
 interface ILoadingScreenProps {
+  message: string;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
 }
 
-const LoadingScreen = ({ isLoading, setIsLoading }: ILoadingScreenProps) => {
+const ErrorScreen = ({
+  message,
+  isLoading,
+  setIsLoading,
+}: ILoadingScreenProps) => {
   const modalContainerRef = useRef<HTMLDivElement>(null);
   useClickAway(modalContainerRef, () => {
     setIsLoading(false);
@@ -37,8 +41,8 @@ const LoadingScreen = ({ isLoading, setIsLoading }: ILoadingScreenProps) => {
         >
           {/* add here */}
           <div className="flex h-44 flex-col items-center justify-center">
-            <Loading className="mb-4 h-20 w-20 animate-spin" />
-            <h3>Processing Transaction</h3>
+            <CrossRed className="text-red-500 border-4 border-red-500 rounded-full p-3 mb-4 h-20 w-20" />
+            <h3>{message}</h3>
           </div>
         </motion.div>
       </motion.div>
@@ -46,4 +50,4 @@ const LoadingScreen = ({ isLoading, setIsLoading }: ILoadingScreenProps) => {
   );
 };
 
-export default LoadingScreen;
+export default ErrorScreen;
