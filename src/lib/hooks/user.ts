@@ -69,21 +69,25 @@ export const findWalletId = async (where: any) => {
   //   }
   // );
 
-  const res = await axios({
-    method: "GET",
-    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/identity`,
-    params: where,
-    headers: {
-      "content-type": "application/json",
-      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
-    },
-  });
-
-  const data = await res.data;
+  try {
+    const res = await axios({
+      method: "GET",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/identity`,
+      params: where,
+      headers: {
+        "content-type": "application/json",
+        "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+      },
+    });
   
-  if(data.error) throw new Error(data.error)
-
-  return data.data;
+    const data = await res.data;
+    
+    if(data.error) throw new Error(data.error)
+  
+    return data.data;
+  } catch (e: any) {
+    throw new Error(e.response.data?.error)
+  }
 };
 
 export const generateMessage = async (walletId: Partial<WalletId>) => {
@@ -149,10 +153,10 @@ export const generateMessage = async (walletId: Partial<WalletId>) => {
     console.log(data.data.message)
     return data.data.message;
 
-  } catch (e) {
+  } catch (e: any) {
     // eslint-disable-next-line no-console
     console.error(e);
-    throw e;
+    throw new Error(e.response.data?.error)
   }
 }
 
@@ -230,7 +234,6 @@ export const createWalletId = async (walletId: WalletId): Promise<{walletId: Wal
     return data.data;    
   } catch (e: any) {
     // eslint-disable-next-line no-console
-    console.error(e);
-    throw e;
+    throw new Error(e.response.data?.error)
   }
 };

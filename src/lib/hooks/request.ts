@@ -74,21 +74,25 @@ export const createPaymentRequest = async (
 
   // return data.data.paymentRequests;
 
-  const res = await axios({
-    method: "POST",
-    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
-    data: requestData,
-    headers: {
-      "content-type": "application/json",
-      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
-    },
-  });
-
-  const data = await res.data;
-
-  if (data.error) throw new Error(data.error);
-
-  return data.data;
+  try {
+    const res = await axios({
+      method: "POST",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+      data: requestData,
+      headers: {
+        "content-type": "application/json",
+        "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+      },
+    });
+  
+    const data = await res.data;
+  
+    if (data.error) throw new Error(data.error);
+  
+    return data.data;
+  } catch (e: any) {
+    throw new Error(e.response.data?.error)
+  }
 };
 
 export const updatePaymentRequest = async (
@@ -136,21 +140,25 @@ export const updatePaymentRequest = async (
 
   // return data.data.paymentRequests;
 
-  const res = await axios({
-    method: "PATCH",
-    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
-    data: requestData,
-    headers: {
-      "content-type": "application/json",
-      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
-    },
-  });
-
-  const data = await res.data;
-
-  if (data.error) throw new Error(data.error);
-
-  return data.data;
+  try {
+    const res = await axios({
+      method: "PATCH",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+      data: requestData,
+      headers: {
+        "content-type": "application/json",
+        "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+      },
+    });
+  
+    const data = await res.data;
+  
+    if (data.error) throw new Error(data.error);
+  
+    return data.data;
+  } catch (e: any) {
+    throw new Error(e.response.data?.error)
+  }
 };
 
 export const getPaymentRequest = async (params: any) => {
@@ -202,21 +210,25 @@ export const getPaymentRequest = async (params: any) => {
 
   // return data.data.requests;
 
-  const res = await axios({
-    method: "GET",
-    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
-    params: params,
-    headers: {
-      "content-type": "application/json",
-      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
-    },
-  });
-
-  const data = await res.data;
-
-  if (data.error) throw new Error(data.error);
-
-  return data.data;  
+  try {
+    const res = await axios({
+      method: "GET",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+      params: params,
+      headers: {
+        "content-type": "application/json",
+        "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+      },
+    });
+  
+    const data = await res.data;
+  
+    if (data.error) throw new Error(data.error);
+  
+    return data.data;  
+  } catch (e: any) {
+    throw new Error(e.response.data?.error)
+  }
 };
 
 interface BuildTransactionParams {
@@ -278,21 +290,25 @@ export const buildTransaction = async (params: BuildTransactionParams) => {
 
   // return data.data.buildTransaction;
 
-  const res = await axios({
-    method: "POST",
-    url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/payment/build-transaction`,
-    data: params,
-    headers: {
-      "content-type": "application/json",
-      "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
-    },
-  });
-
-  const data = await res.data;
-
-  if (data.error) throw new Error(data.error);
-
-  return data.data;
+  try {
+    const res = await axios({
+      method: "POST",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/payment/build-transaction`,
+      data: params,
+      headers: {
+        "content-type": "application/json",
+        "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+      },
+    });
+  
+    const data = await res.data;
+  
+    if (data.error) throw new Error(data.error);
+  
+    return data.data;
+  } catch (e: any) {
+    throw new Error(e.response.data?.error)
+  }
 }
 
 export const getTokenDetail = async (address: string, chain: string): Promise<Partial<Balance>> => {

@@ -21,6 +21,7 @@ const RequestPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Can't send a payment request")
   useLockBodyScroll(loading);
   const { balances } = useAppContext();
   const [tokens, _setTokens] = useState(
@@ -69,7 +70,9 @@ const RequestPage: NextPageWithLayout = () => {
       });
 
       setSuccess(true)
-    } catch (e) {
+    } catch (e: any) {
+      console.log(e)
+      setErrorMessage(e.message ?? errorMessage)
       setError(true)
     }
     setLoading(false)
@@ -167,7 +170,7 @@ const RequestPage: NextPageWithLayout = () => {
       )}
       {error && (
         <ErrorScreen
-          message={"Can't send a payment request"}
+          message={errorMessage}
           isLoading={error}
           setIsLoading={setError}
         />

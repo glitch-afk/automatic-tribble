@@ -45,10 +45,10 @@ const Home: NextPageWithLayout = () => {
   const retrieve = async () => {
     if(signer) {
       try {
-        const signature = await signer.signMessage('wagpay did this')
+        await signer.signMessage('wagpay did this')
   
         const id = await findWalletId({
-          signedMessage: signature
+          address: await signer.getAddress()
         })
         
         if(!id) throw new Error()

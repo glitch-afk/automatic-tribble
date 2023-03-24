@@ -147,7 +147,8 @@ const SendPage: NextPageWithLayout = () => {
       setTransactionDetails(tx)
   
       setShowModal(true)
-    } catch (e) {
+    } catch (e: any) {
+      setErrorMessage(e.message)
       setError(true)
     }
     setLoading(false);
