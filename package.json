@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.7",
-    "@next/font": "^13.1.0",
+    "@next/font": "13.1.0",
     "@rainbow-me/rainbowkit": "^0.8.1",
     "@scure/bip39": "^1.2.0",
     "@solana/web3.js": "^1.74.0",
