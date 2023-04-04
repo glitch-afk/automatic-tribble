@@ -12,7 +12,6 @@ import Router from 'next/router';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import ErrorScreen from '@/components/error';
 import SucessScreen from '@/components/success';
-import { Aptos } from '@/components/icons/coins/aptos';
 import * as aptos from "aptos"
 import base58 from 'bs58';
 import nacl from "tweetnacl"
@@ -24,7 +23,7 @@ const ChooseUserName: NextPageWithLayout = () => {
   const [errorMessage, setErrorMessage] = useState("")
   useLockBodyScroll(loading);
 
-  const { identity, setIdentity, setIdData, addresses, chains } = useAppContext()
+  const { identity, setIdentity, setIdData, addresses } = useAppContext()
   const { data: signer } = useSigner()
   
   const signMessage = async (
@@ -74,10 +73,10 @@ const ChooseUserName: NextPageWithLayout = () => {
   const createUsername = async () => {
     setLoading(true)
     try {
-      const otherChains = chains
-        .filter((i) => i.selected)
-        .slice(1)
-        .map((i) => Number(i.id));
+      // const otherChains = chains
+      //   .filter((i) => i.selected)
+      //   .slice(1)
+      //   .map((i) => Number(i.id));
   
       const secondaryAddresses = []
 
@@ -113,6 +112,12 @@ const ChooseUserName: NextPageWithLayout = () => {
       console.log(signature, data, message)
   
       data.currentSignature = signature
+
+
+      console.log(addresses[0], "213")
+      if(addresses[0]?.chain === 8) {
+        data.default.address = addresses[0].publicKey as string
+      }
   
       const username = await createWalletId(data)
   

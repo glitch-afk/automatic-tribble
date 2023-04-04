@@ -7,6 +7,7 @@ export type NextPageWithLayout<P = {}> = NextPage<P> & {
 
 export interface Address {
   address: string
+  publicKey?: string
   privateKey?: string
   chain: number
   fetcchType: 'default' | 'secondary'

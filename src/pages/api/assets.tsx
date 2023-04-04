@@ -19,7 +19,7 @@ const getBalanceOnApi = async (address: string, chain: string) => {
   });
 };
 
-const getBalanceMoralisAptos = async (address: string, chain: string) => {
+const getBalanceMoralisAptos = async (address: string) => {
   return axios({
     url: `https://mainnet-aptos-api.moralis.io/wallets/coins?limit=100&owner_addresses%5B0%5D=${address}`,
     headers: {
@@ -45,7 +45,7 @@ const assets = async (req: NextApiRequest, res: NextApiResponse) => {
     const params = req.query
     console.log(params)
     if(params.chain === '8') {
-      const ress = await getBalanceMoralisAptos(params.address as string, params.chain as string)
+      const ress = await getBalanceMoralisAptos(params.address as string)
       const data = await ress.data;
 
       const resTokens = await getTokensAptos(data.result.map((x: any) => x.coin_type_hash))

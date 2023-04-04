@@ -52,6 +52,7 @@ const RecoveryPhrasePage: NextPageWithLayout = () => {
           const address = aptos.AptosAccount.fromDerivePath(path, seedPhraseAptos)
           addresses.push({
             address: address.address().toString(),
+            publicKey: address.pubKey().toString(),
             privateKey: aptos.HexString.fromUint8Array(address.signingKey.secretKey).toString(),
             type: 'created',
             chain: 8,

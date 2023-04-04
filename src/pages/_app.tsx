@@ -5,7 +5,6 @@ import Script from 'next/script';
 import { Inter as FontSans } from '@next/font/google';
 import type { AppProps } from 'next/app';
 import { useEffect, useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
 
 import { chainsList } from '@/lib/data/mockData';
 import { getPaymentRequest } from '@/lib/hooks/request';
