@@ -52,21 +52,47 @@ const Home: NextPageWithLayout = () => {
         })
         
         if(!id) throw new Error()
-  
         setIdData(id)
         setIdentity(id.identifier)
         const addresses = [
-          id.default.address,
-          id.secondary.map((o: any) => o.address),
+          id.default,
+          id.secondary.map((o: any) => o),
         ].flat();
         
-        setAddresses(addresses.map(ad => ({ address: ad, type: 'injected' })))
-  
+        setAddresses(addresses.map((ad, i) => ({ address: ad.address, chain: ad.chain.id, fetcchType: i === 0 ? 'default': "secondary",  type: 'injected' })))
   
         router.push("/home/")
       } catch (e) {}
     }
   }
+
+  useEffect(() => {
+    (async () => {
+      if (signer) {
+        const address = await signer.getAddress()
+        const chain = await signer.getChainId()
+        setAddresses((_addresses: any) => {
+          const shallowCopy = [..._addresses];
+  
+          const found = shallowCopy.find(
+            (s) => s.address.toLowerCase() === address.toLowerCase()
+          );
+  
+          if (!found) {
+            console.log("HERE")
+            shallowCopy.push({
+              address: address as string,
+              chain: chain,
+              fetcchType: shallowCopy.length > 0 ? "secondary" : "default",
+              type: 'injected',
+            });
+          }
+  
+          return shallowCopy;
+        });
+      }
+    })()
+  }, [signer]);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">

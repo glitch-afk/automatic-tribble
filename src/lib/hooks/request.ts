@@ -20,60 +20,25 @@ interface UpdatePaymentRequest {
   executed: boolean;
 }
 
-// type PaymentRequest = CreatePaymentRequest & UpdatePaymentRequest;
-
 export const fetcchChains: any = {
   '1': '1',
+  '2': '2',
+  '3': '3',
+  '4': '4',
+  '5': '5',
+  '6': '6',
   '137': '2',
   '56': '3',
-  '10': '4'
+  '10': '5',
+  '43114': '4',
+  '42161': '6',
+  '7': '7',
+  '8': '8'
 }
 
 export const createPaymentRequest = async (
   requestData: CreatePaymentRequest
 ) => {
-  // const res = await request(
-  //   `mutation PaymentRequest($request: RequestCreateInput!) {
-  //       paymentRequests(request: $request) {
-  //           id
-  //           payer {
-  //             id
-  //           }
-  //           payee {
-  //             id
-  //           }
-  //           token
-  //           chain {
-  //             id
-  //             name
-  //             chainId
-  //           }
-  //           amount
-  //           message
-  //           label
-  //           data
-  //           executed
-  //           transactionHash
-  //           sameChain
-  //           fromChain {
-  //             id
-  //             name
-  //             chainId
-  //           }
-  //           fromToken
-  //           dstTransactionHash
-  //           createdAt
-  //       }
-  //   }`,
-  //   {
-  //     request: requestData
-  //   }
-  // );
-
-  // const data = await res.data;
-
-  // return data.data.paymentRequests;
-
   try {
     const res = await axios({
       method: "POST",
@@ -98,53 +63,14 @@ export const createPaymentRequest = async (
 export const updatePaymentRequest = async (
   requestData: UpdatePaymentRequest
 ) => {
-  // const res = await request(
-  //   `mutation PaymentRequest($request: RequestCreateInput!) {
-  //       paymentRequests(request: $request) {
-  //           id
-  //           payer {
-  //             id
-  //           }
-  //           payee {
-  //             id
-  //           }
-  //           token
-  //           chain {
-  //             id
-  //             name
-  //             chainId
-  //           }
-  //           amount
-  //           message
-  //           label
-  //           data
-  //           executed
-  //           transactionHash
-  //           sameChain
-  //           fromChain {
-  //             id
-  //             name
-  //             chainId
-  //           }
-  //           fromToken
-  //           dstTransactionHash
-  //           createdAt
-  //       }
-  //   }`,
-  //   {
-  //     request: requestData,
-  //   }
-  // );
-
-  // const data = await res.data;
-
-  // return data.data.paymentRequests;
-
   try {
     const res = await axios({
       method: "PATCH",
       url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
-      data: requestData,
+      data: {
+        ...requestData,
+        fromChain: Number(requestData.fromChain)
+      },
       headers: {
         "content-type": "application/json",
         "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
@@ -162,54 +88,6 @@ export const updatePaymentRequest = async (
 };
 
 export const getPaymentRequest = async (params: any) => {
-  // const res = await request(
-  //   `query PaymentRequest($request: RequestWhereInput!) {
-  //       requests(where: $request) {
-  //           id
-  //           payer {
-  //             id
-  //           }
-  //           payee {
-  //             id
-  //           }
-  //           token
-  //           chain {
-  //             id
-  //             name
-  //             chainId
-  //             explorers {
-  //               url
-  //             }
-  //           }
-  //           amount
-  //           message
-  //           label
-  //           data
-  //           executed
-  //           transactionHash
-  //           sameChain
-  //           fromChain {
-  //             id
-  //             name
-  //             chainId
-  //             explorers {
-  //               url
-  //             }
-  //           }
-  //           fromToken
-  //           dstTransactionHash
-  //           createdAt
-  //       }
-  //   }`,
-  //   {
-  //     request: params,
-  //   }
-  // );
-
-  // const data = await res.data;
-
-  // return data.data.requests;
-
   try {
     const res = await axios({
       method: "GET",
@@ -244,52 +122,6 @@ interface BuildTransactionParams {
 }
 
 export const buildTransaction = async (params: BuildTransactionParams) => {
-  // const res = await request(
-  //   `query t($data: BuildTransactionInput) {
-  //       buildTransaction(data:$data){
-  //         transactionData
-  //         approvalTransaction
-  //         bridgeDetails {
-  //             tool
-  //             name
-  //             estAmount
-  //             toChain {
-  //                 name
-  //             }
-  //             gasFeesUsd
-  //             toToken
-  //         }
-  //         payee
-  //         userConfig {
-  //           fromId {
-  //             id
-  //           }
-  //           fromAddress
-  //           fromToken
-  //           fromChain {
-  //             id
-  //             name
-  //             chainId
-  //           }
-  //           amount
-  //         }
-  //       }
-  //     }`,
-  //   {
-  //     data: {
-  //       ...params,
-  //       userConfig: {
-  //         ...params.userConfig,
-  //         fromChain: fetcchChains[params.userConfig.fromChain]
-  //       }
-  //     },
-  //   }
-  // );
-
-  // const data = await res.data;
-
-  // return data.data.buildTransaction;
-
   try {
     const res = await axios({
       method: "POST",
@@ -315,12 +147,17 @@ export const getTokenDetail = async (address: string, chain: string): Promise<Pa
   const res = await axios({
     url: `/api/tokens/`,
     params: {
-      address: address.toLowerCase() === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? (chain === "137" ? "0x0000000000000000000000000000000000001010" : (chain === "1" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c")) : address,
+      token: address.toLowerCase() === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? 
+                (chain === "137" ? "0x0000000000000000000000000000000000001010" : 
+                  (chain === "1" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c")) : address,
       chain
     }
   })
 
-  const data = (await res.data).data
+  const data = (await res.data)
+  console.log(data, "123333")
+  
+  console.log(data, await res.data)
 
   return {
     tokenAddress: data.id,

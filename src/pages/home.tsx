@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 
 import WalletsHome from '@/components/home/walletfeat';
 import { Bell } from '@/components/icons/bell';
@@ -12,9 +12,25 @@ import AuthLayout from '@/layouts/Auth';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
+import { getBalances } from '@/lib/hooks/useBalances';
 
 const HomePage: NextPageWithLayout = () => {
-  const { usdBalance, idData } = useAppContext();
+  const { usdBalance, idData, identity, setBalances, setUsdBalance } = useAppContext();
+
+  useEffect(() => {
+    console.log("HERE")
+    if (identity) {
+      getBalances(
+        `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
+      ).then((res) => {
+        console.log(res);
+        if (res) {
+          setBalances(res?.balances);
+          setUsdBalance(res?.usdBalance.toFixed(2));
+        }
+      });
+    }
+  }, [identity]);
 
   return (
     <div className="flex flex-col">

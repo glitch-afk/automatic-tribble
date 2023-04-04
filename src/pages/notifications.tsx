@@ -8,7 +8,7 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { useAppContext } from '@/lib/store';
-import { getPaymentRequest } from '@/lib/hooks/request';
+import { getPaymentRequest, getTokenDetail } from '@/lib/hooks/request';
 import { getToken } from 'fetcch-chain-data';
 import { Balance } from '@/lib/hooks/useBalances';
 
@@ -23,16 +23,22 @@ const NotificationsPage: NextPageWithLayout = () => {
       
       for(let i = 0; i < res.length; i++) {
         const r = res[i]
-        const detail = getToken(r.token, r.chain.id)
         
-        r.token = {
-          tokenAddress: detail.address,
-          chain: detail.chainId,
-          tokenDecimal: detail.decimals,
-          tokenName: detail.name,
-          tokenTicker: detail.symbol,
-          tokenLogo: detail.logoURI
-        } as Partial<Balance>;
+        if(r.chain.id === 8 || r.chain.id === 7) {
+          const detail = await getTokenDetail(r.token, r.chain.id)
+          r.token = detail
+        } else {
+          const detail = getToken(r.token, r.chain.id)
+          
+          r.token = {
+            tokenAddress: detail.address,
+            chain: detail.chainId,
+            tokenDecimal: detail.decimals,
+            tokenName: detail.name,
+            tokenTicker: detail.symbol,
+            tokenLogo: detail.logoURI
+          } as Partial<Balance>;
+        }
 
         responses.push(r)
       }

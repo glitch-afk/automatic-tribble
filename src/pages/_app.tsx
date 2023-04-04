@@ -5,7 +5,7 @@ import Script from 'next/script';
 import { Inter as FontSans } from '@next/font/google';
 import type { AppProps } from 'next/app';
 import { useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 
 import { chainsList } from '@/lib/data/mockData';
 import { getPaymentRequest } from '@/lib/hooks/request';
@@ -34,7 +34,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     [key: string]: Array<Balance>;
   }>({});
   const [identity, setIdentity] = useState<string>('');
-  const [selectedAddress, setSelectedAddress] = useState<string>("");
+  const [selectedAddress, setSelectedAddress] = useState<Address>();
   const [idData, setIdData] = useState<WalletId>();
   const [usdBalance, setUsdBalance] = useState<string>('');
   const [addresses, setAddresses] = useState<Array<Address>>([]);
@@ -53,11 +53,17 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   }, [identity]);
 
   useEffect(() => {
-    if(idData && idData.default && idData.default.address) setSelectedAddress(idData?.default.address as string)
-    else if(addresses.length > 0) setSelectedAddress(addresses[0]?.address as string)
+    if(idData && idData.default && idData.default.address) setSelectedAddress({
+      address: idData?.default.address as string,
+      fetcchType: "default",
+      type: "injected",
+      chain: idData.default.chain.id
+    })
+    else if(addresses.length > 0) setSelectedAddress(addresses[0])
   }, [idData, addresses])
 
   useEffect(() => {
+    console.log("HERE")
     if (identity) {
       getBalances(
         `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
@@ -73,6 +79,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   useEffect(() => {
     const _addresses = JSON.parse(localStorage.getItem('addresses') as string);
+    console.log(_addresses, "HERE")
     if (_addresses) setAddresses(_addresses);
   }, []);
 
@@ -119,30 +126,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     if (seedPhrase.length > 0)
       localStorage.setItem('seedPhrase', seedPhrase.join(' '));
-  }, [seedPhrase]);
-
-  const { address } = useAccount();
-
-  useEffect(() => {
-    if (address) {
-      setAddresses((_addresses) => {
-        const shallowCopy = [..._addresses];
-
-        const found = shallowCopy.find(
-          (s) => s.address.toLowerCase() === address.toLowerCase()
-        );
-
-        if (!found) {
-          shallowCopy.push({
-            address: address as string,
-            type: 'injected',
-          });
-        }
-
-        return shallowCopy;
-      });
-    }
-  }, [address]);
+  }, [seedPhrase])
 
   const sharedState = {
     balances,
@@ -165,7 +149,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     setSelectedAddress
   };
 
-  const [valid, setValid] = useState(false)
+  const [valid, setValid] = useState(true)
   const [otp, setOtp] = useState("")
 
   // useEffect(() => {

@@ -53,25 +53,27 @@ export const getBalances = async (id: string) => {
     const addresses: { address: string; chain: string[] }[] = [
       {
         address: walletId.default.address,
-        chain: [walletId.default.chain.chainId],
+        chain: walletId.default.chain.chainId,
       },
       walletId.secondary.map((other: any) => ({
         address: other.address,
-        chain: other.chain.map((chain: any) => chain.chainId),
+        chain: other.chain.chainId,
       })),
     ].flat();
 
+    console.log("ADDRESS => ", addresses)
     for (let i = 0; i < addresses.length; i++) {
       const address = addresses[i];
 
       // eslint-disable-next-line no-continue
       if (!address) continue;
 
-      for (let j = 0; j < address.chain.length; j++) {
+      // for (let j = 0; j < address.chain.length; j++) {
         const res = await getBalanceOnApi(
           address.address,
-          address.chain[j] as string
+          address.chain as string
         );
+
         const data = await res.data;
         console.log(data, "data")
         if (!data) continue;
@@ -88,16 +90,16 @@ export const getBalances = async (id: string) => {
 
           balances[token.contract_ticker_symbol]?.push({
             address: address.address,
-            tokenAddress: token.contract_address,
+            tokenAddress: token.contract_address === "So11111111111111111111111111111111111111112" ? "11111111111111111111111111111111111111111111" : token.contract_address,
             tokenTicker: token.contract_ticker_symbol,
             tokenName: token.contract_name,
             tokenLogo: token.logo_url,
             tokenDecimal: token.contract_decimals,
             balance: Number(
               ethers.utils.formatUnits(token.balance, token.contract_decimals)
-            ).toFixed(2),
-            balanceUsd: token.quote.toFixed(2),
-            chain: address.chain[j] as string,
+            ).toFixed(5),
+            balanceUsd: token.quote.toFixed(5),
+            chain: address.chain as string,
           });
 
           // balances[token.contract_ticker_symbol]?.push({
@@ -110,7 +112,7 @@ export const getBalances = async (id: string) => {
           //   balanceUsd: token.quote_rate,
           //   chain: address.chain[j] as string,
           // });
-        }
+        // }
       }
     }
 
@@ -166,14 +168,14 @@ export const useBalances = () => {
         // eslint-disable-next-line no-continue
         if (!address) continue;
 
-        for (let j = 0; j < address.chain.length; j++) {
-          getBalanceOnApi(address.address, address.chain[j] as string)
+        // for (let j = 0; j < address.chain.length; j++) {
+          getBalanceOnApi(address.address, address.chain as string)
             .then((res) => res.data.assets)
             .then((tokens) => {
               console.log(tokens, 45678)
               for (let k = 0; k < tokens.length; k++) {
                 const token = tokens[k];
-                console.log(token);
+                console.log(token)
 
                 if (!balances[token.contract_ticker_symbol])
                   balances[token.contract_ticker_symbol] = [];
@@ -213,7 +215,7 @@ console.log(token)
               setIsLoading(false);
               setError(null);
             });
-        }
+        // }
       }
     } catch (e) {
       // eslint-disable-next-line no-console

@@ -10,19 +10,75 @@ import { Meta } from '@/lib/Meta';
 import type { NextPageWithLayout } from '@/types';
 import { ethers } from 'ethers';
 import { useAppContext } from '@/lib/store';
+import * as aptos from 'aptos'
+import { Keypair } from '@solana/web3.js';
+import base58 from 'bs58';
+import * as bip39 from "@scure/bip39"
+import { wordlist } from "@scure/bip39/wordlists/english"
 
 const RecoveryPhrasePage: NextPageWithLayout = () => {
-  const { seedPhrase, setSeedPhrase, setAddresses } = useAppContext();
+  const { seedPhrase, setSeedPhrase, setAddresses, chains } = useAppContext();
 
   const generateSeedPhrase = () => {
     const wallet = ethers.Wallet.createRandom();
+    const seedPhrase = wallet.mnemonic.phrase
+    let path = wallet.mnemonic.path
+
+    const hdNode = ethers.utils.HDNode.fromMnemonic(seedPhrase)
 
     setSeedPhrase(wallet.mnemonic.phrase.split(" "));
-    setAddresses([{
-      address: wallet.address,
-      privateKey: wallet.privateKey,
-      type: 'created'
-    }])
+    
+    let addresses = []
+
+    for(let i = 0; i < chains.length; i++) {
+      const chain = chains[i]
+
+      if(!chain?.selected) continue
+
+      if(chain) {
+        if(chain.type === 'EVM') {
+          const address = hdNode.derivePath(path)
+          path = path.substring(0, path.length - 1) + (Number(path[path.length - 1]) + 1).toString()
+          addresses.push({
+            address: address.address,
+            privateKey: address.privateKey,
+            type: 'created',
+            chain: chain.id,
+            fetcchType: i === 0 ? 'default' : 'secondary'
+          })
+        } else if (chain.type === 'APTOS') {
+          const seedPhraseAptos = bip39.generateMnemonic(wordlist)
+          const path = `m/44'/637'/0'/0'/0'`
+          const address = aptos.AptosAccount.fromDerivePath(path, seedPhraseAptos)
+          addresses.push({
+            address: address.address().toString(),
+            privateKey: aptos.HexString.fromUint8Array(address.signingKey.secretKey).toString(),
+            type: 'created',
+            chain: 8,
+            fetcchType: i === 0 ? 'default' : 'secondary'
+          })
+        } else if (chain.type === 'SOLANA') {
+          const address = Keypair.generate()
+          addresses.push({
+            address: address.publicKey.toBase58(),
+            privateKey: base58.encode(address.secretKey),
+            type: 'created',
+            chain: 7,
+            fetcchType: i === 0 ? 'default' : 'secondary'
+          })
+        }
+      }
+    }
+
+    console.log(addresses, "Address")
+    
+    // setAddresses([{
+    //   address: wallet.address,
+    //   privateKey: wallet.privateKey,
+    //   type: 'created'
+    // }])
+
+    setAddresses(addresses)
   };
 
   useEffect(() => {

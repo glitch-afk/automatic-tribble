@@ -8,6 +8,8 @@ export type NextPageWithLayout<P = {}> = NextPage<P> & {
 export interface Address {
   address: string
   privateKey?: string
+  chain: number
+  fetcchType: 'default' | 'secondary'
   type: 'injected' | 'created'
 }
 
@@ -16,6 +18,7 @@ export interface Chain {
   chainId: string | number
   name: string
   logo: any
+  type: 'EVM' | 'APTOS' | 'SOLANA'
   blockExplorer: string
   selected: boolean
 }

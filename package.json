@@ -22,7 +22,11 @@
     "@headlessui/react": "^1.7.7",
     "@next/font": "^13.1.0",
     "@rainbow-me/rainbowkit": "^0.8.1",
+    "@scure/bip39": "^1.2.0",
+    "@solana/web3.js": "^1.74.0",
+    "aptos": "^1.7.2",
     "axios": "^1.2.1",
+    "bs58": "^5.0.0",
     "clsx": "^1.2.1",
     "ethers": "^5.7.2",
     "fetcch-chain-data": "^0.0.6",
@@ -35,6 +39,7 @@
     "react-dom": "18.2.0",
     "react-use": "^17.4.0",
     "tailwind-merge": "^1.8.0",
+    "tweetnacl": "^1.0.3",
     "wagmi": "^0.9.5"
   },
   "devDependencies": {

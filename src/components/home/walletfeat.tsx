@@ -31,7 +31,7 @@ const Wallet = ({ walletName, address, onClick, balance, btnLable, selected }: P
 };
 
 const WalletsHome = () => {
-  const { idData, balances, selectedAddress, setSelectedAddress } = useAppContext()
+  const { idData, balances, selectedAddress, setSelectedAddress, addresses } = useAppContext()
   
   return (
     <div className="mt-8 flex space-x-4 overflow-scroll ">
@@ -51,10 +51,10 @@ const WalletsHome = () => {
           )
           .flat()
           .reduce((partialSum, a) => partialSum + a, 0)}
-        onClick={() => setSelectedAddress(idData?.default.address as string)}
+        onClick={() => setSelectedAddress(addresses.find(x => x.address.toLowerCase() === idData?.default.address.toLowerCase()) ?? { address: idData?.default.address, type: 'injected', fetcchType: 'secondary', chain: idData?.default.chain.id })}
         btnLable="Send funds to Main Wallet"
         selected={
-          selectedAddress.toLowerCase() ===
+          selectedAddress?.address.toLowerCase() ===
           (idData?.default.address.toLowerCase() as string)
         }
       />
@@ -68,18 +68,18 @@ const WalletsHome = () => {
                 .filter(
                   (x) =>
                     x.address.toLowerCase() === other.address.toLowerCase() &&
-                    other.chain.includes(x.chain)
+                    other.chain == x.chain
                 )
                 .map((x) => Number(x.balanceUsd))
             )
             .flat()
             .reduce((partialSum, a) => partialSum + a, 0)}
-          onClick={() => setSelectedAddress(other.address)}
+          onClick={() => setSelectedAddress(addresses.find(x => x.address.toLowerCase() === other.address.toLowerCase()) ?? { address: other.address, type: 'injected', fetcchType: 'secondary', chain: other.chain.id })}
           btnLable={`Send funds to ${
             other.isContract ? "AA Wallet" : "Other Wallet"
           }`}
           selected={
-            selectedAddress.toLowerCase() ===
+            selectedAddress?.address.toLowerCase() ===
             (other.address.toLowerCase() as string)
           }
         />

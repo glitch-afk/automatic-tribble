@@ -18,7 +18,7 @@ const RecentElement = ({
             </div>
             {/* right side */}
             <div className="flex flex-col justify-start items-start space-y-1">
-              <span className="text-sm font-semibold">{request.payee.id}</span>
+              <span className="text-sm font-semibold">{request.receiver.id}</span>
               <span className="text-xs font-semibold text-[#535768]">
                 {new Date(request.createdAt).getDate()}/
                 {new Date(request.createdAt).getMonth()}/

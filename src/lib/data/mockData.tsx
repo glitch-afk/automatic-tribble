@@ -1,7 +1,12 @@
+import { Aptos } from "@/components/icons/coins/aptos";
+import { Arbitrium } from "@/components/icons/coins/arbitrium";
+import { Avax } from "@/components/icons/coins/avax";
 import { Bnb } from "@/components/icons/coins/bnb";
 import { Busd } from "@/components/icons/coins/busd";
 import { Ethereum } from "@/components/icons/coins/ethereum";
+import { Optimism } from "@/components/icons/coins/optimism";
 import { Polygon } from "@/components/icons/coins/polygon";
+import { Solana } from "@/components/icons/coins/solana";
 import { Usdc } from "@/components/icons/coins/usdc";
 import { Chain } from "@/types";
 import { Balance } from "../hooks/useBalances";
@@ -56,6 +61,7 @@ export const chainsList: Chain[] = [
     logo: Ethereum,
     blockExplorer: "https://etherscan.io",
     selected: false,
+    type: 'EVM'
   },
   {
     id: 2,
@@ -64,6 +70,7 @@ export const chainsList: Chain[] = [
     logo: Polygon,
     blockExplorer: "https://polygonscan.io",
     selected: false,
+    type: 'EVM'
   },
   {
     id: 3,
@@ -72,6 +79,52 @@ export const chainsList: Chain[] = [
     logo: Bnb,
     blockExplorer: "https://bscscan.io",
     selected: false,
+    type: 'EVM'
+  },
+  {
+    id: 4,
+    chainId: 43114,
+    name: "Avalanche C-Chain Mainnet",
+    logo: Avax,
+    blockExplorer: "https://bscscan.io",
+    selected: false,
+    type: 'EVM'
+  },
+  {
+    id: 5,
+    chainId: 10,
+    name: "Optimism Mainnet",
+    logo: Optimism,
+    blockExplorer: "https://bscscan.io",
+    selected: false,
+    type: 'EVM'
+  },
+  {
+    id: 6,
+    chainId: 42161,
+    name: "Arbitrium Mainnet",
+    logo: Arbitrium,
+    blockExplorer: "https://bscscan.io",
+    selected: false,
+    type: 'EVM'
+  },
+  {
+    id: 7,
+    chainId: 7,
+    name: "Solana Mainnet",
+    logo: Solana,
+    blockExplorer: "https://bscscan.io",
+    selected: false,
+    type: 'SOLANA'
+  },
+  {
+    id: 8,
+    chainId: 8,
+    name: "Aptos Mainnet",
+    logo: Aptos,
+    blockExplorer: "https://bscscan.io",
+    selected: false,
+    type: 'APTOS'
   },
 ];
 
@@ -123,5 +176,21 @@ export const tokensList: Partial<Balance>[] = [
     tokenLogo: Bnb,
     tokenDecimal: 18,
     chain: 3,
+  },
+  {
+    tokenName: "Aptos",
+    tokenTicker: "APT",
+    tokenAddress: "0x1::aptos_coin::AptosCoin",
+    tokenLogo: Aptos,
+    tokenDecimal: 10,
+    chain: 8,
+  },
+  {
+    tokenName: "Solana",
+    tokenTicker: "SOL",
+    tokenAddress: "11111111111111111111111111111111111111111111",
+    tokenLogo: Solana,
+    tokenDecimal: 9,
+    chain: 7,
   },
 ];

@@ -150,8 +150,8 @@ export const generateMessage = async (walletId: Partial<WalletId>) => {
     const data = await res.data;
 
     if (data.error) throw new Error(data.error);
-    console.log(data.data.message)
-    return data.data.message;
+
+    return data.data;
 
   } catch (e: any) {
     // eslint-disable-next-line no-console

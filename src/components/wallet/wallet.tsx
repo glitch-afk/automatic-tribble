@@ -7,6 +7,11 @@ import { Ethereum } from '@/components/icons/coins/ethereum';
 import { Check } from '../icons/check';
 import { Polygon } from '../icons/coins/polygon';
 import { Copy } from '../icons/copy';
+import { Aptos } from '../icons/coins/aptos';
+import { Solana } from '../icons/coins/solana';
+import { Arbitrium } from '../icons/coins/arbitrium';
+import { Optimism } from '../icons/coins/optimism';
+import { Avax } from '../icons/coins/avax';
 
 export type CoinList = 1 | 2 | 3;
 
@@ -14,6 +19,11 @@ const coinIcons: Record<number, JSX.Element> = {
   1: <Ethereum className="h-8 w-8 " />,
   2: <Polygon className="h-8 w-8 " />,
   3: <Bnb className="h-8 w-8 " />,
+  4: <Avax className="h-8 w-8 " />,
+  5: <Optimism className="h-8 w-8 " />,
+  6: <Arbitrium className="h-8 w-8 " />,
+  7: <Solana className="h-8 w-8 " />,
+  8: <Aptos className="h-8 w-8 " />,
 };
 
 interface CurrencySwapProps {

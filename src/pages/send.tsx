@@ -30,7 +30,7 @@ const SendPage: NextPageWithLayout = () => {
 
   const { balances, selectedAddress } = useAppContext();
   const [tokens, _setTokens] = useState(
-    balances != null ? Object.values(balances).filter(i => i.find(x => x.address.toLowerCase() === selectedAddress.toLowerCase())).flat() : []
+    balances != null ? Object.values(balances).filter(i => i.find(x => x.address.toLowerCase() === selectedAddress?.address.toLowerCase())).flat() : []
   );
 
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
@@ -107,12 +107,13 @@ const SendPage: NextPageWithLayout = () => {
       
       let tx: any;
 
+      console.log(selectedToken?.chain as string)
       if(paymentRequest) {
         tx = await buildTransaction({
           transactionRequestId: paymentRequest.id,
           payerConfig: {
             payer: idData?.id as string,
-            address: selectedAddress,
+            address: selectedAddress?.address as string,
             chain: Number(fetcchChains[selectedToken?.chain as string]),
             token:
               (selectedToken?.tokenAddress.toString() as string) ===
@@ -129,7 +130,7 @@ const SendPage: NextPageWithLayout = () => {
           receiver: payerId,
           payerConfig: {
             payer: idData?.id as string,
-            address: selectedAddress,
+            address: selectedAddress?.address as string,
             chain: Number(fetcchChains[selectedToken?.chain as string]),
             token:
               (selectedToken?.tokenAddress.toString() as string) ===
@@ -184,7 +185,7 @@ const SendPage: NextPageWithLayout = () => {
         </div>
         {/* select token */}
         <SelectToken
-          tokens={[...tokens, ...tokensList]}
+          tokens={[...tokens.filter(x => x.chain === selectedAddress?.chain), ...tokensList.filter(x => x.chain === selectedAddress?.chain)]}
           setSelectedToken={setSelectedToken}
           selectedToken={selectedToken}
           lockInput={lockInput}
@@ -248,7 +249,7 @@ const SendPage: NextPageWithLayout = () => {
           setErrorMessage={setErrorMessage}
           setSuccess={setSuccess}
           request={txRequest}
-          account={selectedAddress}
+          account={selectedAddress?.address as string}
         />
       )}
       {loading && (

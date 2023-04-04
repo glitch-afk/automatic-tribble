@@ -24,7 +24,7 @@ export interface ContextInterface {
   setSeedPhrase: Function;
   requests: any[];
   setRequests: Function;
-  selectedAddress: string;
+  selectedAddress: Address | undefined;
   setSelectedAddress: Function;
 }
 

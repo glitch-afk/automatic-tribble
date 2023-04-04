@@ -12,6 +12,10 @@ import Router from 'next/router';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import ErrorScreen from '@/components/error';
 import SucessScreen from '@/components/success';
+import { Aptos } from '@/components/icons/coins/aptos';
+import * as aptos from "aptos"
+import base58 from 'bs58';
+import nacl from "tweetnacl"
 
 const ChooseUserName: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false)
@@ -25,7 +29,8 @@ const ChooseUserName: NextPageWithLayout = () => {
   
   const signMessage = async (
     addressStr: string,
-    message: string
+    message: string,
+    nonce: string
   ) => {
     const address = addresses.find(
       (ad) => ad.address.toLowerCase() === addressStr.toLowerCase()
@@ -35,11 +40,28 @@ const ChooseUserName: NextPageWithLayout = () => {
       throw new Error("This address doesn't exist in provided address by user");
 
     if (address.privateKey) {
-      const signer = new ethers.Wallet(address.privateKey);
+      if(address.chain < 7) {
+        const signer = new ethers.Wallet(address.privateKey);
+  
+        const signature = await signer.signMessage(message);
+  
+        return signature;
+      } else if (address.chain === 7) {
+        const privateKey = base58.decode(address.privateKey)
 
-      const signature = await signer.signMessage(message);
+        const signature = nacl.sign.detached(Buffer.from(message), privateKey)
 
-      return signature;
+        return base58.encode(signature)
+      } else if (address.chain === 8) {
+        const account = new aptos.AptosAccount(aptos.HexString.ensure(address.privateKey).toUint8Array())
+        
+        const newMessage = `APTOS\nmessage: ${message}\nnonce: ${nonce}`
+        console.log(newMessage, account.address().toString(), "123")
+
+        const signature = account.signBuffer(Buffer.from(newMessage))
+        
+        return signature.toString()
+      }
     }
 
     if(!signer) throw new Error("signer doesn't exist")
@@ -59,15 +81,15 @@ const ChooseUserName: NextPageWithLayout = () => {
   
       const secondaryAddresses = []
 
-      for(let i = 0; i < otherChains.length; i++) {
-        for(let k = 0; k < addresses.length; k++) {
+      // for(let i = 0; i < otherChains.length; i++) {
+        for(let k = 1; k < addresses.length; k++) {
           secondaryAddresses.push({
             address: addresses[k]?.address as string,
-            chain: otherChains[i],
+            chain: addresses[k]?.chain,
             isContract: false
           })
         }
-      }
+      // }
 
       let data: WalletId = {
         id: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER as string}`,
@@ -75,7 +97,7 @@ const ChooseUserName: NextPageWithLayout = () => {
         provider: process.env.NEXT_PUBLIC_DEFAULT_PROVIDER as string,
         default: {
           address: addresses[0]?.address as string,
-          chain: Number(chains.find((i) => i.selected)?.id) as number,
+          chain: addresses[0]?.chain,
           isContract: false,
         },
         secondary: secondaryAddresses,
@@ -83,10 +105,10 @@ const ChooseUserName: NextPageWithLayout = () => {
       };
   
       const message = await generateMessage(data)
-
+      console.log(message.message, message.nonce.toString())
       if(!message) throw new Error("Can't generate a message for signing, try again later...")
   
-      const signature = await signMessage(addresses[0]?.address as string, message)
+      const signature = await signMessage(addresses[0]?.address as string, message.message, message.nonce.toString())
       
       console.log(signature, data, message)
   
