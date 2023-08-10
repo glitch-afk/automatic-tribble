@@ -31,16 +31,16 @@ const ReceivePage: NextPageWithLayout = () => {
         <WalletList name={idData?.id as string}>
           <WalletComp
             address={idData?.default.address as string}
-            chain={idData?.default?.chain.id as number}
-            type={idData?.default.isContract ? "AA" : "EOA"}
+            chain={idData?.default?.chainId as number}
+            type={idData?.default.isSmartContractWallet ? "AA" : "EOA"}
           />
           {idData?.secondary.map((wallet, index) => {
             return (
               <WalletComp
                 key={index}
                 address={wallet?.address}
-                chain={wallet?.chain.id as number}
-                type={wallet.isContract ? "AA" : "EOA"}
+                chain={wallet?.chainId! as number}
+                type={wallet.isSmartContractWallet ? "AA" : "EOA"}
               />
             );
           })}

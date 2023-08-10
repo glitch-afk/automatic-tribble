@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next"
 import axios from 'axios'
 
 const chains: any = {
-  '137': 'matic',
+  '2': 'matic',
   '1': 'ethereum',
-  '56': 'bsc',
+  '3': 'bsc',
   '7': 'solana',
   '8': 'aptos'
 }

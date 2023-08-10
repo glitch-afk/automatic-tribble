@@ -36,13 +36,47 @@ export const fetcchChains: any = {
   '8': '8'
 }
 
+export const requestChains: any = {
+  '1': "ETHEREUM",
+  "2": "POLYGON",
+  "3": "BSC",
+  "4": "AVAX",
+  "5": "ARBITRUM",
+  "6": "OPTIMISM",
+  "7": "SOLANA",
+  "8": "APTOS",
+  "9": "SUI"
+}
+
+export const generateMessageForRequest = async (requestData: CreatePaymentRequest) => {
+  try {
+    const res = await axios({
+      method: "POST",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction-request/generate-message`,
+      data: requestData,
+      headers: {
+        "content-type": "application/json",
+        "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+      },
+    });
+  
+    const data = await res.data;
+  
+    if (data.error) throw new Error(data.error);
+  
+    return data.data.message;
+  } catch (e: any) {
+    throw new Error(e.response.data?.error)
+  }
+}
+
 export const createPaymentRequest = async (
-  requestData: CreatePaymentRequest
+  requestData: CreatePaymentRequest & { signature: string }
 ) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction-request`,
       data: requestData,
       headers: {
         "content-type": "application/json",
@@ -66,7 +100,7 @@ export const updatePaymentRequest = async (
   try {
     const res = await axios({
       method: "PATCH",
-      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction-request`,
       data: {
         ...requestData,
         fromChain: Number(requestData.fromChain)
@@ -87,15 +121,16 @@ export const updatePaymentRequest = async (
   }
 };
 
-export const getPaymentRequest = async (params: any) => {
+export const getPaymentRequest = async (params: any, authToken: string) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/request`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/transaction-request`,
       params: params,
       headers: {
         "content-type": "application/json",
         "secret-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+        "Authorization": `Bearer ${authToken}`
       },
     });
   
@@ -110,15 +145,24 @@ export const getPaymentRequest = async (params: any) => {
 };
 
 interface BuildTransactionParams {
-  receiver?: string;
+  payer?: string;
   transactionRequestId?: string;
   payerConfig: {
-    payer: string;
+    id: string;
     token: string;
     address: string;
-    chain: number;
-    amount: string;
+    chain: string;
+    amount: {
+      amount: string
+      type: string
+    };
   };
+  receiverConfig?: {
+    id: string,
+    address?: string
+    chain?: string
+  },
+  type: string
 }
 
 export const buildTransaction = async (params: BuildTransactionParams) => {

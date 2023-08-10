@@ -46,22 +46,22 @@ export const getBalances = async (id: string) => {
     const walletId = await findWalletId({
       id,
     });
-    console.log(walletId);
+    console.log(walletId, "HERE");
 
     if (!walletId) throw new Error(`${id} doesn't exist`);
 
     const addresses: { address: string; chain: string[] }[] = [
       {
         address: walletId.default.address,
-        chain: walletId.default.chain.chainId,
+        chain: walletId.default.chainId,
       },
       walletId.secondary.map((other: any) => ({
         address: other.address,
-        chain: other.chain.chainId,
+        chain: other.chainId,
       })),
     ].flat();
 
-    console.log("ADDRESS => ", addresses)
+    console.log("ADDRESS HERE => ", addresses)
     for (let i = 0; i < addresses.length; i++) {
       const address = addresses[i];
 

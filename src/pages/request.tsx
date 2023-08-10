@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ReactElement, useEffect } from 'react';
 import { useState } from 'react';
+import * as aptos from "aptos"
 
 import { LeftIcon } from '@/components/icons/leftIcon';
 import LoadingScreen from '@/components/loading';
@@ -10,12 +11,15 @@ import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
-import { createPaymentRequest, fetcchChains } from '@/lib/hooks/request';
+import { createPaymentRequest, fetcchChains, generateMessageForRequest } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { tokensList } from '@/lib/data/mockData';
 import { Balance } from '@/lib/hooks/useBalances';
 import SucessScreen from '@/components/success';
 import ErrorScreen from '@/components/error';
+import base58 from 'bs58';
+import nacl from 'tweetnacl';
+import { useSigner } from 'wagmi';
 
 const RequestPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +27,7 @@ const RequestPage: NextPageWithLayout = () => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Can't send a payment request")
   useLockBodyScroll(loading);
-  const { balances } = useAppContext();
+  const { balances, } = useAppContext();
   const [tokens, _setTokens] = useState(
     (balances != null ? Object.values(balances).flat() : [])
   );
@@ -34,7 +38,7 @@ const RequestPage: NextPageWithLayout = () => {
   const [payerId, setPayerId] = useState("")
   const [amount, setAmount] = useState("")
 
-  const { idData } = useAppContext()
+  const { idData, addresses } = useAppContext()
 
   useEffect(() => {
     console.log(
@@ -46,11 +50,58 @@ const RequestPage: NextPageWithLayout = () => {
     else setIsValid(true)
   }, [amount, payerId])
 
+  const { data: signer } = useSigner()
+
+  const signMessage = async (
+    message: string,
+    nonce = "0"
+  ) => {
+
+    const addressStr = idData?.default.address!
+    const address = addresses.find(
+      (ad) => ad.address.toLowerCase() === addressStr.toLowerCase()
+    );
+
+    if (!address)
+      throw new Error("This address doesn't exist in provided address by user");
+
+    if (address.privateKey) {
+      if(address.chain < 7) {
+        const signer = new ethers.Wallet(address.privateKey);
+  
+        const signature = await signer.signMessage(message);
+  
+        return signature;
+      } else if (address.chain === 7) {
+          const privateKey = base58.decode(address.privateKey)
+
+          const signature = nacl.sign.detached(Buffer.from(message), privateKey)
+
+          return base58.encode(signature)
+      } else if (address.chain === 8) {
+        const account = new aptos.AptosAccount(aptos.HexString.ensure(address.privateKey).toUint8Array())
+        
+        const newMessage = `APTOS\nmessage: ${message}\nnonce: ${nonce}`
+        console.log(newMessage, account.address().toString(), "123")
+
+        const signature = account.signBuffer(Buffer.from(newMessage))
+        
+        return signature.toString()
+      }
+    }
+
+    if(!signer) throw new Error("signer doesn't exist")
+
+    const signature = await signer.signMessage(message)
+
+    return signature
+  };
+  
   const createRequest = async () => {
     setLoading(true)
     try {
       console.log(selectedToken?.chain as string, ((selectedToken?.chain) === 2 || (selectedToken?.chain) === 3) ? selectedToken?.chain : fetcchChains[selectedToken?.chain as string], "selcte");
-      await createPaymentRequest({
+      const pr = {
         receiver: idData?.id as string,
         payer: payerId,
         token:
@@ -67,6 +118,13 @@ const RequestPage: NextPageWithLayout = () => {
           .toString(),
         message: "YOYO",
         label: "123",
+      }
+      const message = await generateMessageForRequest(pr)
+      const signature = await signMessage(message)
+      
+      await createPaymentRequest({
+        ...pr,
+        signature
       });
 
       setSuccess(true)

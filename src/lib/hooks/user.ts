@@ -4,7 +4,8 @@ import axios from 'axios';
 export interface WalletAddress {
     address: string;
     chain: any;
-    isContract: boolean;
+    isMultisig: boolean;
+    isSmartContractWallet: boolean
 }
 
 export interface WalletId {
@@ -14,14 +15,17 @@ export interface WalletId {
   default: {
     address: string;
     chain: any;
-    isContract: boolean;
+    chainId?: number
+    isSmartContractWallet: boolean;
+    isMultisig: boolean;
   };
   secondary: {
     address: string;
     chain: any;
-    isContract: boolean;
+    chainId?: number
+    isSmartContractWallet: boolean;
+    isMultisig: boolean;
   }[];
-  isContract?: boolean;
   currentSignature: string;
   previousSignature?: string;
 }

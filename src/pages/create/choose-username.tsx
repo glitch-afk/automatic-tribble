@@ -29,8 +29,9 @@ const ChooseUserName: NextPageWithLayout = () => {
   const signMessage = async (
     addressStr: string,
     message: string,
-    nonce: string
+    nonce = "0"
   ) => {
+    console.log(addressStr, message)
     const address = addresses.find(
       (ad) => ad.address.toLowerCase() === addressStr.toLowerCase()
     );
@@ -85,7 +86,8 @@ const ChooseUserName: NextPageWithLayout = () => {
           secondaryAddresses.push({
             address: addresses[k]?.address as string,
             chain: addresses[k]?.chain,
-            isContract: false
+            isSmartContractWallet: false,
+            isMultisig: false
           })
         }
       // }
@@ -97,17 +99,18 @@ const ChooseUserName: NextPageWithLayout = () => {
         default: {
           address: addresses[0]?.address as string,
           chain: addresses[0]?.chain,
-          isContract: false,
+          isSmartContractWallet: false,
+          isMultisig: false
         },
         secondary: secondaryAddresses,
         currentSignature: "",
       };
   
       const message = await generateMessage(data)
-      console.log(message.message, message.nonce.toString())
+
       if(!message) throw new Error("Can't generate a message for signing, try again later...")
   
-      const signature = await signMessage(addresses[0]?.address as string, message.message, message.nonce.toString())
+      const signature = await signMessage(addresses[0]?.address as string, message.message)
       
       console.log(signature, data, message)
   

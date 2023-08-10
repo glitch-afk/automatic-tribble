@@ -18,7 +18,7 @@ const NotificationItem = ({ request, amount, requestedBy }: INotificationItemPro
         {request.token &&
           request.token.tokenTicker &&
           request.token.tokenDecimal && (
-            <span className="text-sm font-semibold">
+            <span className="text-sm text-black font-semibold">
               {ethers.utils.formatUnits(amount, request.token.tokenDecimal)}{" "}
               {request.token.tokenTicker}
             </span>

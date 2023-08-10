@@ -11,24 +11,26 @@ import { useAppContext } from '@/lib/store';
 import { getPaymentRequest, getTokenDetail } from '@/lib/hooks/request';
 import { getToken } from 'fetcch-chain-data';
 import { Balance } from '@/lib/hooks/useBalances';
+import { createAuthToken } from '@/lib/hooks/authToken';
 
 const NotificationsPage: NextPageWithLayout = () => {
-  const { requests, idData, setRequests } = useAppContext()  
+  const { requests, idData, setRequests, authToken, setAccessToken, addresses } = useAppContext()  
 
+  useEffect(() => console.log(requests, "dsads"), [requests])
   useEffect(() => {    
     getPaymentRequest({
-      payer: idData?.id
-    }).then(async (res) => {
-      let responses = []
+      payer: idData?.id,
+    }, authToken).then(async (res) => {
       
+      let responses = []
       for(let i = 0; i < res.length; i++) {
         const r = res[i]
-        
-        if(r.chain.id === 8 || r.chain.id === 7) {
-          const detail = await getTokenDetail(r.token, r.chain.id)
+        console.log(r, "dsadsads")
+        if(r.chainId === 8 || r.chainId === 7) {
+          const detail = await getTokenDetail(r.token, r.chainId)
           r.token = detail
         } else {
-          const detail = getToken(r.token, r.chain.id)
+          const detail = getToken(r.token, r.chainId)
           
           r.token = {
             tokenAddress: detail.address,
@@ -40,12 +42,19 @@ const NotificationsPage: NextPageWithLayout = () => {
           } as Partial<Balance>;
         }
 
+        console.log(r.token)
         responses.push(r)
       }
 
       console.log(responses)
       
       setRequests(responses);
+    }).catch(async e => {
+      const address = addresses.find(x => x.address.toLowerCase() === idData?.default.address.toLowerCase())
+        if(!address) return
+        const accessToken = await createAuthToken(address.privateKey!, address.chain == 7 ? "SOLANA" : "EVM", idData!.id!)
+    
+        setAccessToken(accessToken)
     });
   }, []);
 
@@ -71,10 +80,10 @@ const NotificationsPage: NextPageWithLayout = () => {
                 <NotificationItem
                   request={notification}
                   address={notification.token}
-                  chain={notification.chain.chainId}
+                  chain={notification.chainId}
                   amount={notification.amount}
                   key={index}
-                  requestedBy={notification.receiver.id}
+                  requestedBy={notification.recevier.ownerId ?? notification.recevier.owner}
                 />
               )
             })

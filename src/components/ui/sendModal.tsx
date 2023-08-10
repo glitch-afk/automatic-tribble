@@ -49,7 +49,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
   const [loading, setLoading] = useState(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
   const [ethPrice, setETHPrice] = useState(0)
-
+console.log(txDetails, "txdetails")
   useEffect(() => {
     getTokenDetail(
       reviewDetails.selectedToken.chain === "137" ? "0x0000000000000000000000000000000000001010" : (reviewDetails.selectedToken.chain === "1" ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"),
@@ -204,8 +204,9 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
 
   const doTransaction = async () => {
     try {
-      if(txDetails.payerConfig.chain.id == 7) return doTransactionSolana()
-      if(txDetails.payerConfig.chain.id === 8) return doTransactionAptos()
+      console.log(txDetails)
+      if(txDetails.buildConfig.fromChain.id == 7) return doTransactionSolana()
+      if(txDetails.buildConfig.fromChain.id === 8) return doTransactionAptos()
 
       const address: WalletAddress =
         idData?.default.address.toLowerCase() === account.toLowerCase()
@@ -221,7 +222,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
       if(addressWithPrivate?.privateKey) {
         const wallet = new ethers.Wallet(addressWithPrivate.privateKey)
         const provider = ethers.getDefaultProvider(
-          rpcs[txDetails.payerConfig.chain.id]
+          rpcs[txDetails.buildConfig.fromChain.id]
         );
         signer = wallet.connect(provider)
       } else {
@@ -242,41 +243,36 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
 
       if (
         (currAddress.toLowerCase() !==
-        txDetails.payerConfig.address.toLowerCase()) && !address.isContract
+        txDetails.buildConfig.fromAddress.toLowerCase()) && !address.isSmartContractWallet
       )
         throw new Error("from");
 
       setIsLoading(true)
-      if(address.isContract) {
+      if(address.isSmartContractWallet) {
         // aa function
         const aaAccount = new ethers.Contract(account, AA_ABI, signer)
         
         let batchAddresses: string[] = []
         let batchData: string[] = [];
         
-        if(txDetails.approveTransaction) {
-          const approval = txDetails.approveTransaction;
-          // console.log(account)
+        const transactions = txDetails.transactions
+        for(let i = 0; i < transactions.length; i++) {
+          batchAddresses.push(transactions[i].tx.to)
 
-          batchAddresses.push(approval.to)
-          batchData.push(approval.data)
-        }
-
-        const txData = txDetails.transaction;
-
-        if(txData.data) {
-          batchAddresses.push(txData.to);
-          batchData.push(txData.data);
-        } else {
-          // eth transfer
-
-          const tx = await aaAccount.transfer(txData.to, txData.amount)
-          await tx.wait()
-
-          setSuccess(true)
-          setLoading(false)
-
-          return
+          if(transactions[i].tx.data) {
+            batchAddresses.push(transactions[i].tx.to);
+            batchData.push(transactions[i].tx.data);
+          } else {
+            // eth transfer
+  
+            const tx = await aaAccount.transfer(transactions[i].tx.to, transactions[i].tx.amount)
+            await tx.wait()
+  
+            setSuccess(true)
+            setLoading(false)
+  
+            return
+          }
         }
 
         console.log(batchAddresses, batchData)
@@ -288,19 +284,20 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
 
         await tx.wait()
       } else {
-        if(txDetails.approveTransaction) {
-          const approval = txDetails.approveTransaction;
-          const _tx = await signer.sendTransaction(approval)
-          await _tx.wait()
-        }
+        
   
-        const tx = await signer.sendTransaction({
-          ...txDetails.transaction,
-          gasLimit: 1000000,
-          gasPrice: await signer.provider?.getGasPrice()
-        })
-        await tx.wait()
-        console.log(tx)
+        const transactions = txDetails.transactions
+        let hash = ''
+        for(let i = 0; i < transactions.length; i++) {
+          const tx = await signer.sendTransaction({
+            ...transactions[i].tx,
+            gasLimit: 1000000,
+            gasPrice: await signer.provider?.getGasPrice()
+          })
+          hash = tx.hash
+          await tx.wait()
+          console.log(tx)
+        }
   
         if(request) {
           setInterval(async () => {
@@ -315,7 +312,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
                     .toLowerCase() === "0x0000000000000000000000000000000000001010"
                     ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                     : reviewDetails.selectedToken.tokenAddress.toString(),
-                transactionHash: tx.hash,
+                transactionHash: hash,
                 executed: true
               });
               clearInterval(this)
@@ -328,6 +325,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
       setSuccess(true)
       setIsLoading(false);
     } catch (e: any) {
+      throw e
       console.log(e.message);
       setIsLoading(false)
       if(e.message.startsWith("Signer") || e.message.startsWith("balance")) setErrorMessage(e.message)
@@ -443,7 +441,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
                         </span>
                       </div>
                       {/* Bridge Used */}
-                      {txDetails?.receiverConfig.bridgeDetails && (
+                      {/* {txDetails?.receiverConfig.bridgeDetails && (
                         <div className="flex items-center justify-between">
                           <h3 className="font-semibold text-neutral-500">
                             Bridge Used
@@ -457,7 +455,7 @@ const SendModal = ({ reviewDetails, account, txDetails, isOpen, setIsOpen, setIs
                               )}
                           </span>
                         </div>
-                      )}
+                      )} */}
                       {/* Speed */}
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-neutral-500">

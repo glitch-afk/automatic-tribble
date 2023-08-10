@@ -14,6 +14,7 @@ import type { NextPageWithLayout } from '@/types';
 import { useRouter } from 'next/router';
 import { useAppContext } from '@/lib/store';
 import { findWalletId } from '@/lib/hooks/user';
+import { fetcchChains } from '@/lib/hooks/request';
 
 const Home: NextPageWithLayout = () => {
   const { openConnectModal } = useConnectModal();
@@ -82,7 +83,7 @@ const Home: NextPageWithLayout = () => {
             console.log("HERE")
             shallowCopy.push({
               address: address as string,
-              chain: chain,
+              chain: Number(fetcchChains[chain]),
               fetcchType: shallowCopy.length > 0 ? "secondary" : "default",
               type: 'injected',
             });

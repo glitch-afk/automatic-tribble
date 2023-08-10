@@ -15,6 +15,7 @@ import { findWalletId } from '@/lib/hooks/user';
 import { AppContext } from '@/lib/store';
 import WalletConnect from '@/lib/WalletConnect';
 import type { Address, Chain, NextPageWithLayout } from '@/types';
+import { createAuthToken } from '@/lib/hooks/authToken';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -40,29 +41,40 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [chains, setChains] = useState<Array<Chain>>(chainsList);
   const [seedPhrase, setSeedPhrase] = useState<Array<string>>([]);
   const [requests, setRequests] = useState([]);
+  const [accessToken, setAccessToken] = useState("")
 
   useEffect(() => {
-    console.log(identity, 'dsa');
+    if(!accessToken) return
     getPaymentRequest({
-      payer: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
-    }).then((res) => {
+      payer: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`,
+    }, accessToken).then((res) => {
       console.log(res, 'dsa');
       setRequests(res);
     });
-  }, [identity]);
+  }, [identity, accessToken]);
+
+  useEffect(() => {
+    (async () => {
+        const address = addresses.find(x => x.address.toLowerCase() === idData?.default.address.toLowerCase())
+        if(!address) return
+        const accessToken = await createAuthToken(address.privateKey!, address.chain == 7 ? "SOLANA" : "EVM", idData!.id!)
+    
+        setAccessToken(accessToken)
+    })()
+  }, [addresses, idData])
 
   useEffect(() => {
     if(idData && idData.default && idData.default.address) setSelectedAddress({
       address: idData?.default.address as string,
       fetcchType: "default",
       type: "injected",
-      chain: idData.default.chain.id
+      chain: idData.default.chainId!
     })
     else if(addresses.length > 0) setSelectedAddress(addresses[0])
   }, [idData, addresses])
 
   useEffect(() => {
-    console.log("HERE")
+    console.log("HERE", `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`)
     if (identity) {
       getBalances(
         `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
@@ -72,7 +84,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           setBalances(res?.balances);
           setUsdBalance(res?.usdBalance.toFixed(2));
         }
-      });
+      }).catch(e => console.log("HERE", e));
     }
   }, [identity]);
 
@@ -145,7 +157,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     requests,
     setRequests,
     selectedAddress,
-    setSelectedAddress
+    setSelectedAddress,
+    authToken: accessToken,
+    setAccessToken
   };
 
   const [valid, setValid] = useState(true)

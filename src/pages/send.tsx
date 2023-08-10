@@ -9,7 +9,7 @@ import { ActionLayout } from '@/layouts/Action';
 import { Meta } from '@/lib/Meta';
 import { useAppContext } from '@/lib/store';
 import type { NextPageWithLayout } from '@/types';
-import { buildTransaction, fetcchChains } from '@/lib/hooks/request';
+import { buildTransaction, fetcchChains, requestChains } from '@/lib/hooks/request';
 import { ethers } from 'ethers';
 import { useLockBodyScroll } from '@/lib/hooks/use-lock-body-scroll';
 import LoadingScreen from '@/components/loading';
@@ -112,35 +112,53 @@ const SendPage: NextPageWithLayout = () => {
         tx = await buildTransaction({
           transactionRequestId: paymentRequest.id,
           payerConfig: {
-            payer: idData?.id as string,
+            id: idData?.id as string,
             address: selectedAddress?.address as string,
-            chain: Number(fetcchChains[selectedToken?.chain as string]),
+            chain: requestChains[fetcchChains[selectedToken?.chain as string]],
             token:
               (selectedToken?.tokenAddress.toString() as string) ===
               "0x0000000000000000000000000000000000001010"
                 ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                 : (selectedToken?.tokenAddress.toString() as string),
-            amount: ethers.utils
+            amount: {
+              amount: ethers.utils
               .parseUnits(amount, selectedToken?.tokenDecimal)
               .toString(),
+              type: "TOKEN"
+            },
           },
+          receiverConfig: {
+            id: payerId,
+            address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            chain: "POLYGON"
+          },
+          type: "TOKEN_P2P"
         });
       } else {
         tx = await buildTransaction({
-          receiver: payerId,
+          payer: idData!.id!,
           payerConfig: {
-            payer: idData?.id as string,
+            id: idData?.id as string,
             address: selectedAddress?.address as string,
-            chain: Number(fetcchChains[selectedToken?.chain as string]),
+            chain: requestChains[fetcchChains[selectedToken?.chain as string]],
             token:
               (selectedToken?.tokenAddress.toString() as string) ===
               "0x0000000000000000000000000000000000001010"
                 ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                 : (selectedToken?.tokenAddress.toString() as string),
-            amount: ethers.utils
+            amount: {
+              amount: ethers.utils
               .parseUnits(amount, selectedToken?.tokenDecimal)
               .toString(),
+              type: "TOKEN"
+            },
           },
+          receiverConfig: {
+            id: payerId,
+            address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            chain: "POLYGON"
+          },
+          type: "TOKEN_P2P"
         });
       }
 

@@ -26,6 +26,8 @@ export interface ContextInterface {
   setRequests: Function;
   selectedAddress: Address | undefined;
   setSelectedAddress: Function;
+  authToken: string;
+  setAccessToken: Function;
 }
 
 export const AppContext = createContext<ContextInterface>(

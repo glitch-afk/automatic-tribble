@@ -45,7 +45,7 @@ const WalletsHome = () => {
                 (x) =>
                   x.address.toLowerCase() ===
                     idData?.default.address.toLowerCase() &&
-                  x.chain === idData.default.chain.id
+                  x.chain === idData.default.chainId
               )
               .map((x) => Number(x.balanceUsd))
           )
@@ -60,7 +60,7 @@ const WalletsHome = () => {
       />
       {idData?.secondary.map((other) => (
         <Wallet
-          walletName={other.isContract ? "AA Wallet" : "Other Wallet"}
+          walletName={other.isSmartContractWallet ? "AA Wallet" : "Other Wallet"}
           address={other.address}
           balance={Object.values(balances)
             .map((i) =>
@@ -76,7 +76,7 @@ const WalletsHome = () => {
             .reduce((partialSum, a) => partialSum + a, 0)}
           onClick={() => setSelectedAddress(addresses.find(x => x.address.toLowerCase() === other.address.toLowerCase()) ?? { address: other.address, type: 'injected', fetcchType: 'secondary', chain: other.chain.id })}
           btnLable={`Send funds to ${
-            other.isContract ? "AA Wallet" : "Other Wallet"
+            other.isSmartContractWallet ? "AA Wallet" : "Other Wallet"
           }`}
           selected={
             selectedAddress?.address.toLowerCase() ===
