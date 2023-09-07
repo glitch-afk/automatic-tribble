@@ -11,7 +11,7 @@ const chains: any = {
 
 const getBalanceOnApi = async (address: string, chain: string) => {
   return axios({
-    url: `https://api.unmarshal.com/v1/${chains[chain]}/address/${address}/assets?auth_key=kfzpwdqrQD9FdaMbIdSXm4CTiD2oBzzt9uQ6fleA`,
+    url: `https://api.unmarshal.com/v1/${chains[chain]}/address/${address}/assets?auth_key=c4ufRP06fXPLfakfUVNloLyrGgrB7SuKqKUz8xxi`,
     headers: {
       "content-type": "application/json",
       "Accept-Encoding": "gzip,deflate,compress",

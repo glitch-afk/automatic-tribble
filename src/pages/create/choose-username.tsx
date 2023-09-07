@@ -47,11 +47,11 @@ const ChooseUserName: NextPageWithLayout = () => {
   
         return signature;
       } else if (address.chain === 7) {
-        const privateKey = base58.decode(address.privateKey)
+          const privateKey = base58.decode(address.privateKey)
 
-        const signature = nacl.sign.detached(Buffer.from(message), privateKey)
+          const signature = nacl.sign.detached(Buffer.from(message), privateKey)
 
-        return base58.encode(signature)
+          return base58.encode(signature)
       } else if (address.chain === 8) {
         const account = new aptos.AptosAccount(aptos.HexString.ensure(address.privateKey).toUint8Array())
         
