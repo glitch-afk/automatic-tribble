@@ -49,7 +49,7 @@ const NotificationsPage: NextPageWithLayout = () => {
       console.log(responses)
       
       setRequests(responses);
-    }).catch(async e => {
+    }).catch(async (_e: any) => {
       const address = addresses.find(x => x.address.toLowerCase() === idData?.default.address.toLowerCase())
         if(!address) return
         const accessToken = await createAuthToken(address.privateKey!, address.chain == 7 ? "SOLANA" : "EVM", idData!.id!)

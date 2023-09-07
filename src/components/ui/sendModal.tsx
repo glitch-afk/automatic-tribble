@@ -325,7 +325,6 @@ console.log(txDetails, "txdetails")
       setSuccess(true)
       setIsLoading(false);
     } catch (e: any) {
-      throw e
       console.log(e.message);
       setIsLoading(false)
       if(e.message.startsWith("Signer") || e.message.startsWith("balance")) setErrorMessage(e.message)
