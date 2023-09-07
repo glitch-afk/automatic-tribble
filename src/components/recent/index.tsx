@@ -16,13 +16,13 @@ const explorers: any = {
 }
 
 export const RecentList = () => {
-  const { requests, setRequests, identity } = useAppContext()
+  const { requests, setRequests, identity, authToken } = useAppContext()
 
   useEffect(() => {
     console.log(identity, 'dsa');
     getPaymentRequest({
       payer: `${identity}@${process.env.NEXT_PUBLIC_DEFAULT_PROVIDER}`
-    }).then((res) => {
+    }, authToken!).then((res) => {
       console.log(res, 'dsa');
       setRequests(res);
     });
